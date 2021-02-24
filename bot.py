@@ -278,7 +278,7 @@ def disabled(ctx):
 
 @bot.check
 async def disabled_command(ctx):
-    return not await helpers.is_disabled(ctx) or ctx.author.id in bot.owner_ids or ctx.author.id == ctx.guild.owner.id
+    return (not await helpers.is_disabled(ctx)) or ctx.author.id in bot.owner_ids or ctx.author.id == ctx.guild.owner.id
 
 
 @bot.slash.slash(name='help', description='Get the help for the bot')
