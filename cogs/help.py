@@ -10,6 +10,14 @@ class Help(commands.Cog):
         self.bot = bot
 
     @commands.check
+    async def callstaff_check(self):
+        if self.guild:
+            if self.guild.id == 681882711945641997:
+                if (datetime.datetime.utcnow() - self.author.joined_at).days > 1:
+                    return True
+        return False
+
+    @commands.check
     async def helper_check(self):
         if self.guild:
             if self.guild.id == 681882711945641997:
@@ -36,8 +44,12 @@ class Help(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
+    @helper_check
     @commands.cooldown(1, 1800, commands.BucketType.user)
-    async def helper(self, ctx, language=None):
+    async def helper(self, ctx, language=None, *, description=None):
+        """
+        Request help for your code. Misusing this command may result in a punishment.
+        """
         roles = {
             'Python': 807098700589301791,
             'JavaScript': 807098827185717299,
@@ -104,16 +116,17 @@ class Help(commands.Cog):
         except:
             channel = self.bot.get_channel(814129029236916274)
             mention = '<@&{}>'.format(roles[language])
-        message = await ctx.send(embed=ctx.embed('Please give a short description of what you need help with. (10-100 characters)', title='What do you need help with?'))
-        check = lambda m: m.channel == message.channel and m.author.id == ctx.author.id
-        try:
-            msg = await self.bot.wait_for('message', check=check, timeout=30)
-            description = msg.content
-            await message.delete()
-            await msg.delete()
-        except asyncio.TimeoutError:
-            ctx.command.reset_cooldown(ctx)
-            return await ctx.send(embed=ctx.error('Timed out!'))
+        if not description:
+            message = await ctx.send(embed=ctx.embed('Please give a short description of what you need help with. (10-100 characters)', title='What do you need help with?'))
+            check = lambda m: m.channel == message.channel and m.author.id == ctx.author.id
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=30)
+                description = msg.content
+                await message.delete()
+                await msg.delete()
+            except asyncio.TimeoutError:
+                ctx.command.reset_cooldown(ctx)
+                return await ctx.send(embed=ctx.error('Timed out!'))
         if len(description) < 10 or len(description) > 100:
             ctx.command.reset_cooldown(ctx)
             return await ctx.send(embed=ctx.error('Please provide a longer description'))
@@ -135,6 +148,56 @@ class Help(commands.Cog):
             return await ctx.send(embed=ctx.embed(title='Cancelled!'))
         await channel.send(content=mention, embed=ctx.embed('[Click Here]({0.message.jump_url}) to help {0.author.mention}'.format(ctx), title=f'{language} Help').add_field(name='Description',value=description))
         await ctx.send(embed=ctx.embed('Submitted your request for help. Please keep in mind that our helpers are human and may not be available immediately.', title='Success'))
+
+    @commands.command(name='callstaff')
+    @commands.is_owner() # disabled for now
+    @callstaff_check
+    @commands.cooldown(1, 600, commands.BucketType.user) # ten minute cooldown
+    async def _callstaff(self, ctx, reason=None):
+        """
+        Request help in chat from staff. For less important issues, please @mention a single online staff member, and only use this command for larger issues such as raid, NSFW, staff abusing powers, etc.
+        """
+        message = await ctx.send(embed=ctx.embed('Please give a short reason of why are calling staff. (10-100 characters)', title='Reason'))
+        check = lambda m: m.channel == message.channel and m.author.id == ctx.author.id
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=30)
+            reason = msg.content
+            await message.delete()
+            await msg.delete()
+        except asyncio.TimeoutError:
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send(embed=ctx.error('Timed out!'))
+        if len(reason) < 10 or len(reason) > 100:
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send(embed=ctx.error('Your reason must be 10-100 total characters'))
+        if not reason.isascii():
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send(embed=ctx.error('Invalid reason'))
+        channel = ctx.guild.get_channel(725747936776159243) # staff chat for now, will change later most likely
+        mention = ctx.guild.get_role(681895900070543411).mention
+
+        message = await ctx.send(embed=ctx.embed(f'Are you sure that you want to request staff help? We always want to help keep our server friendly for everyone, so we will be glad to help. However, using this command without a valid reason or misusing it can and will result in a punishment. For less important issues, please @mention a single online staff member, and only use this command for larger issues such as raid, NSFW, staff abusing powers, etc.',title='Please Confirm'))
+        await message.add_reaction('\U00002705')
+        await message.add_reaction('\U0000274c')
+        check = lambda reaction, user: str(reaction.emoji) in ['\U00002705', '\U0000274c'] and user.id == ctx.author.id
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=30)
+        except asyncio.TimeoutError:
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send(embed=ctx.error('Timed out!'))
+        await message.delete()
+        if str(reaction.emoji) == '\U0000274c':
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send(embed=ctx.embed(title='Cancelled!'))
+        try:
+            message = await channel.send(content=f'`{mention}`', embed=ctx.embed('{0.author.mention} is requesting assistance in {0.channel.mention}. [Click Here]({0.message.jump_url}) to help them, and react with \U00002705 when the situation is **completely** under control.'.format(ctx), title='Report Submitted').add_field(name='Reason',value=reason))
+        except:
+            message = await ctx.send(content=f'`{mention}`', embed=ctx.embed('{0.author.mention} is requesting assistance in {0.channel.mention}. [Click Here]({0.message.jump_url}) to help them, and react with \U00002705 when the situation is **completely** under control.'.format(ctx), title='Report Submitted').add_field(name='Reason',value=reason)) # because bot might not have perms to talk there.
+        # neither of the messages above actually pings mods for now
+        await message.add_reaction('\U00002705')
+        await ctx.send(embed=ctx.embed('Submitted your request for a moderator.', title='Success'))
+
+            
         
 def setup(bot):
     bot.add_cog(Help(bot))
