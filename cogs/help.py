@@ -33,10 +33,11 @@ class Help(commands.Cog):
             'Other': 806920884441972767
         }
         if not language:
-            await ctx.send(embed=ctx.embed(title='What would you like help with?', description=f'**Options:** `{"`, `".join(roles)}`'))
+            msg = await ctx.send(embed=ctx.embed(title='What would you like help with?', description=f'**Options:** `{"`, `".join(roles)}`'))
             check = lambda m: m.channel == ctx.channel and m.author == ctx.author
             try:
                 message = await self.bot.wait_for('message', check=check, timeout=30)
+                await msg.delete()
             except asyncio.TimeoutError:
                 ctx.command.reset_cooldown(ctx)
                 return await ctx.send(embed=ctx.error('Timed out!'))
@@ -87,19 +88,36 @@ class Help(commands.Cog):
         except:
             channel = self.bot.get_channel(814129029236916274)
             mention = '<@&{}>'.format(roles[language])
-        message = await ctx.send(embed=ctx.embed(f'Are you sure that you want to ping for {language} help? By reacting to this message you confirm that you have read <#799527165863395338> and <#754712400757784709>, and that you will follow them. Failure to follow the help rules may result in a punishment from the moderation team. Failure to follow the how to get help may result in you not being helped.',title='Please Confirm'))
+        message = await ctx.send(embed=ctx.embed('Please give a short description of what you need help with. (10-100 characters)', title='What do you need help with?'))
+        check = lambda m: m.channel == message.channel and m.author.id == ctx.author.id
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=30)
+            description = msg.content
+            await message.delete()
+            await msg.delete()
+        except asyncio.TimeoutError:
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send(embed=ctx.error('Timed out!'))
+        if len(description) < 10 or len(description) > 100:
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send(embed=ctx.error('Please provide a longer description'))
+        if not description.isascii():
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send(embed=ctx.error('Invalid description'))
+        message = await ctx.send(embed=ctx.embed(f'Are you sure that you want to ping for {language} help? By reacting to this message you confirm that you have read <#799527165863395338> and <#754712400757784709>, and that you will follow them. Failure to follow the help rules may result in a punishment from the moderation team. Failure to follow the "how to get help" instructions may result in you not being helped.',title='Please Confirm'))
         await message.add_reaction('\U00002705')
         await message.add_reaction('\U0000274c')
         check = lambda reaction, user: str(reaction.emoji) in ['\U00002705', '\U0000274c'] and user.id == ctx.author.id
         try:
             reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=30)
         except asyncio.TimeoutError:
+            ctx.command.reset_cooldown(ctx)
             return await ctx.send(embed=ctx.error('Timed out!'))
         await message.delete()
         if str(reaction.emoji) == '\U0000274c':
             ctx.command.reset_cooldown(ctx)
             return await ctx.send(embed=ctx.embed(title='Cancelled!'))
-        await channel.send(content=mention, embed=ctx.embed('[Click Here]({0.message.jump_url}) to help {0.author.mention}'.format(ctx), title=f'{language} Help'))
+        await channel.send(content=mention, embed=ctx.embed('[Click Here]({0.message.jump_url}) to help {0.author.mention}'.format(ctx), title=f'{language} Help').add_field(name='Description',value=description))
         await ctx.send(embed=ctx.embed('Submitted your request for help. Please keep in mind that our helpers are human and may not be available immediately.', title='Success'))
         
 def setup(bot):
