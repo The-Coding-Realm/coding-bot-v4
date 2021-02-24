@@ -274,11 +274,11 @@ def blacklist(ctx):
 
 @bot.check
 def disabled(ctx):
-    return (not bot.disabled) or ctx.author.id in bot.owner_ids or ctx.author.id == ctx.guild.owner.id
+    return (not bot.disabled) or ctx.author.id in bot.owner_ids
 
 @bot.check
 async def disabled_command(ctx):
-    return not await helpers.is_disabled(ctx)
+    return not await helpers.is_disabled(ctx) or ctx.author.id in bot.owner_ids or ctx.author.id == ctx.guild.owner.id
 
 
 @bot.slash.slash(name='help', description='Get the help for the bot')
