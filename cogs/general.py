@@ -24,13 +24,16 @@ async def filter_links(bot, message):
     urls = []
     for link in matches:
         urls.append(link)
-        async with bot.http._HTTPClient__session.get(link) as resp:
-            urls.append(str(resp.real_url))
+        try:
+            async with bot.http._HTTPClient__session.get(link) as resp:
+                urls.append(str(resp.real_url))
+        except:
+            pass
             
     for url in urls:
         parsed = url_parser.get_url(url)
         if '{0.domain}.{0.top_domain}'.format(parsed) in [
-            'grabify.site',
+            'grabify.link',
             'pornhub.com'
         ]:
             await message.delete()
