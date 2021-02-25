@@ -16,8 +16,8 @@ from discord.ext import commands
 
 
 async def filter_links(bot, message):
-#     if message.author.permissions_in(message.channel).manage_messages:
-#         return
+    if message.author.permissions_in(message.channel).manage_messages:
+        return
     regex = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
     matches = re.findall(regex, message.content, re.MULTILINE)
@@ -30,8 +30,8 @@ async def filter_links(bot, message):
             for url in urls:
                 parsed = url_parser.get_url(url)
                 for blocked in [
-                    'grabify.link',
-                    'pornhub.com'
+                    'grabify.link',                         # Ip Grabber
+                    'pornhub.com',                          # Porn
                 ]:
                     if parsed.replace('http://','https://').startswith('https://' + blocked):
                         await message.delete()
@@ -79,8 +79,7 @@ class General(commands.Cog):
             if after.guild.id == 681882711945641997:
                 invite = await filter_invite(self.bot, after)
                 if not invite:
-                    if after.author.id == 690420846774321221: # so i can test
-                        await filter_links(self.bot, after)
+                    await filter_links(self.bot, after)
         end = time.perf_counter()
         print(f'parsed message in {end - start}')
 
@@ -91,8 +90,7 @@ class General(commands.Cog):
             if message.guild.id == 681882711945641997:
                 invite = await filter_invite(self.bot, message)
                 if not invite:
-                    if message.author.id == 690420846774321221: # so i can test
-                        await filter_links(self.bot, message)
+                    await filter_links(self.bot, message)
         end = time.perf_counter()
         print(f'parsed message in {end - start}')
                     
