@@ -23,21 +23,22 @@ async def filter_links(bot, message):
     matches = re.findall(regex, message.content, re.MULTILINE)
     urls = []
     for link in matches:
-        urls.append(link)
         try:
+            urls = [''.join(url_parser.get_base_url(str(link)).split('//')[1:])]
             async with bot.http._HTTPClient__session.get(link) as resp:
-                urls.append(str(resp.real_url))
+                urls.append(str(''.join(url_parser.get_base_url(str(resp.real_url)).split('//')[1:])))
+            for url in urls:
+                parsed = url_parser.get_url(url)
+                for blocked in [
+                    'grabify.link',
+                    'pornhub.com'
+                ]:
+                    if parsed.replace('http://','https://').startswith('https://' + blocked):
+                        await message.delete()
+                    await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
+                    break
         except:
             pass
-            
-    for url in urls:
-        parsed = url_parser.get_url(url)
-        if '{0.domain}.{0.top_domain}'.format(parsed) in [
-            'grabify.link',
-            'pornhub.com'
-        ]:
-            await message.delete()
-            await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
             
 
 async def filter_invite(bot, message, content=None):
