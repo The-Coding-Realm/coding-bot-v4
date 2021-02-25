@@ -22,7 +22,6 @@ async def filter_links(bot, message):
 
     matches = re.findall(regex, message.content, re.MULTILINE)
     urls = []
-    found = False
     for link in matches:
         try:
             urls = [''.join(url_parser.get_base_url(str(link)).split('//')[1:])]
@@ -36,15 +35,9 @@ async def filter_links(bot, message):
                     if url.startswith(blocked):
                         await message.delete()
                         await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
-                        found = True
-                    if found:
-                        break
-                if found:
-                    break      
+                        return
         except:
             pass
-        if found:
-            break
             
 
 async def filter_invite(bot, message, content=None):
