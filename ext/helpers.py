@@ -103,25 +103,28 @@ async def prepare(bot, guild=None):
         await bot.pools.config.release(connection)
     except:
         bot.pools.config = await asyncio.wait_for(asyncpg.create_pool(database='codingbot', init=init_connection), timeout=5)
-    async with bot.pools.config.acquire() as connection:
-        await connection.execute('''
-            CREATE TABLE IF NOT EXISTS serverconf (
-                id bigint,
-                commands json,
-                prefixes text[]
-            );
-        ''')
-        if guild:
-            data = await connection.fetchrow('SELECT * FROM serverconf WHERE id = $1', guild.id)
-            bot.server_cache[guild.id] = bot.server_cache.get(guild.id, {
-                    'prefixes': [],
-                    'commands': {}
-            })
-            if data:
-                if isinstance(data['prefixes'], list):
-                    bot.server_cache[guild.id]['prefixes'] = data['prefixes']
-                if isinstance(data['commands'], dict):
-                    bot.server_cache[guild.id]['commands'] = data['commands']
+    try:
+        async with bot.pools.config.acquire() as connection:
+            await connection.execute('''
+                CREATE TABLE IF NOT EXISTS serverconf (
+                    id bigint,
+                    commands json,
+                    prefixes text[]
+                );
+            ''')
+            if guild:
+                data = await connection.fetchrow('SELECT * FROM serverconf WHERE id = $1', guild.id)
+                bot.server_cache[guild.id] = bot.server_cache.get(guild.id, {
+                        'prefixes': [],
+                        'commands': {}
+                })
+                if data:
+                    if isinstance(data['prefixes'], list):
+                        bot.server_cache[guild.id]['prefixes'] = data['prefixes']
+                    if isinstance(data['commands'], dict):
+                        bot.server_cache[guild.id]['commands'] = data['commands']
+    except:
+        print('fail')
 
 async def is_disabled(ctx):
     if not ctx.guild:
@@ -130,7 +133,10 @@ async def is_disabled(ctx):
         data = ctx.bot.server_cache[ctx.guild.id].copy()
     except:
         await prepare(ctx.bot, ctx.guild)
-        data = ctx.bot.server_cache[ctx.guild.id].copy()
+        try:
+            data = ctx.bot.server_cache[ctx.guild.id].copy()
+        except:
+            data = []
     ids_to_check = [ctx.guild.id, ctx.channel.id, ctx.author.id] + [r.id for r in ctx.author.roles]
     for id_ in ids_to_check:
         data[int(id_)] = data.get(int(id_), [])
@@ -147,7 +153,10 @@ async def prefix(bot, message):
             data = bot.server_cache[message.guild.id]['prefixes']
         except:
             await prepare(bot, message.guild)
-            data = bot.server_cache[message.guild.id]['prefixes']
+            try:
+                data = bot.server_cache[message.guild.id]['prefixes']
+            except:
+                data = []
         return_prefixes = data or return_prefixes
     return return_prefixes
 
