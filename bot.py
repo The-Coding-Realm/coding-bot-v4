@@ -10,7 +10,6 @@ import random
 import asyncio
 import humanize
 import asyncpg
-import aiosqlite_pool
 import ext.helpers as helpers
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
