@@ -154,8 +154,8 @@ async def prefix(bot, message):
         try:
             data = bot.server_cache[message.guild.id]['prefixes']
         except:
-            await prepare(bot, message.guild)
             try:
+                await prepare(bot, message.guild)
                 data = bot.server_cache[message.guild.id]['prefixes']
             except:
                 data = bot.default_prefixes
