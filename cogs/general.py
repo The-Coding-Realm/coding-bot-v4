@@ -10,12 +10,35 @@ import discord
 import time
 import asyncio
 import re
+import url_parser
 from jishaku.codeblocks import codeblock_converter
 from discord.ext import commands
 
 
-async def filter_invite(bot, message):
-    if message.author.permissions_in(message.channel).manage_messages or message.channel.id in [
+async def filter_links(bot, message):
+    if message.author.permissions_in(message.channel).manage_messages:
+        return
+    regex = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+
+    matches = re.findall(regex, message.content, re.MULTILINE)
+    urls = []
+    for link in matches
+        urls.append(link)
+        async with bot.http._HTTPClient__session.get(link) as resp:
+            urls.append(str(resp.real_url))
+            
+    for url in urls:
+        parsed = url_parser.get_url(url)
+        if '{0.domain}.{0.top_domain}'.format(parsed) in [
+            'grabify.site',
+            'pornhub.com'
+        ]:
+            await message.delete()
+            await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
+            
+
+async def filter_invite(bot, message, content=None):
+    if message.channel.id in [
         754992725480439809,
         801641781028454420
     ]:
@@ -24,13 +47,15 @@ async def filter_invite(bot, message):
     matches = re.findall(pattern,message.content, re.MULTILINE)
     if len(matches) > 5:
         await message.delete()
-        await message.channel.send(':warning: Invite links are not allowed :warning:', delete_after=5)
+        await message.channel.send(f':warning: {message.author.mention} Invite links are not allowed :warning:', delete_after=5)
+        return True
     for code in matches:
         invite = await bot.fetch_invite(code)
         if invite:
             if invite.guild.id != message.guild.id:
                 await message.delete()
-                await message.channel.send(':warning: Invite links are not allowed :warning:', delete_after=5)
+                await message.channel.send(f':warning: {message.author.mention} Invite links are not allowed :warning:', delete_after=5)
+                return True
         
 
 class General(commands.Cog):
@@ -46,14 +71,20 @@ class General(commands.Cog):
             await self.bot.invoke(ctx)
         if after.guild:
             if after.guild.id == 681882711945641997:
-                await filter_invite(self.bot, after)
+                invite = await filter_invite(self.bot, after)
+                if not invite:
+                    if after.author.id == 690420846774321221: # so i can test
+                        await filter_links(self.bot, after)
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.guild:
             if message.guild.id == 681882711945641997:
-                await filter_invite(self.bot, message)
-
+                invite = await filter_invite(self.bot, after)
+                if not invite:
+                    if after.author.id == 690420846774321221: # so i can test
+                        await filter_links(self.bot, after)
+                    
     @commands.command(name="source", aliases=["github", "code"])
     @commands.cooldown(1, 1, commands.BucketType.channel)
     async def source(self, ctx, *, command: str = None):
