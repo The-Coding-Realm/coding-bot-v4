@@ -85,10 +85,10 @@ class General(commands.Cog):
         start = time.perf_counter()
         if message.guild:
             if message.guild.id == 681882711945641997:
-                invite = await filter_invite(self.bot, after)
+                invite = await filter_invite(self.bot, message)
                 if not invite:
                     if after.author.id == 690420846774321221: # so i can test
-                        await filter_links(self.bot, after)
+                        await filter_links(self.bot, message)
         end = time.perf_counter()
         print(f'parsed message in {end - start}')
                     
