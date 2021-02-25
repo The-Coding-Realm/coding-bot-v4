@@ -102,29 +102,29 @@ async def prepare(bot, guild=None):
         connection = await bot.pools.config.acquire()
         await bot.pools.config.release(connection)
     except:
-        bot.pools.config = await asyncio.wait_for(asyncpg.create_pool(database='codingbot', init=init_connection), timeout=5)
-    try:
-        async with bot.pools.config.acquire() as connection:
-            await connection.execute('''
-                CREATE TABLE IF NOT EXISTS serverconf (
-                    id bigint,
-                    commands json,
-                    prefixes text[]
-                );
-            ''')
-            if guild:
-                data = await connection.fetchrow('SELECT * FROM serverconf WHERE id = $1', guild.id)
-                bot.server_cache[guild.id] = bot.server_cache.get(guild.id, {
-                        'prefixes': [],
-                        'commands': {}
-                })
-                if data:
-                    if isinstance(data['prefixes'], list):
-                        bot.server_cache[guild.id]['prefixes'] = data['prefixes']
-                    if isinstance(data['commands'], dict):
-                        bot.server_cache[guild.id]['commands'] = data['commands']
-    except:
-        print('fail')
+        try:
+            bot.pools.config = await asyncio.wait_for(asyncpg.create_pool(database='codingbot', init=init_connection), timeout=5)
+        except:
+            return
+    async with bot.pools.config.acquire() as connection:
+        await connection.execute('''
+            CREATE TABLE IF NOT EXISTS serverconf (
+                id bigint,
+                commands json,
+                prefixes text[]
+            );
+        ''')
+        if guild:
+            data = await connection.fetchrow('SELECT * FROM serverconf WHERE id = $1', guild.id)
+            bot.server_cache[guild.id] = bot.server_cache.get(guild.id, {
+                    'prefixes': [],
+                    'commands': {}
+            })
+            if data:
+                if isinstance(data['prefixes'], list):
+                    bot.server_cache[guild.id]['prefixes'] = data['prefixes']
+                if isinstance(data['commands'], dict):
+                    bot.server_cache[guild.id]['commands'] = data['commands']
 
 async def is_disabled(ctx):
     if not ctx.guild:
