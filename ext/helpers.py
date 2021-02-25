@@ -147,7 +147,7 @@ async def is_disabled(ctx):
     return False
 
 async def prefix(bot, message):
-    return_prefixes = bot.default_prefixes
+    return_prefixes = bot.default_prefixes.copy()
     if not message.guild:
         return_prefixes.append('')
     else:
