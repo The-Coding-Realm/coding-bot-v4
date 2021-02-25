@@ -107,14 +107,14 @@ async def prepare(bot, guild=None):
         except:
             return
     async with bot.pools.config.acquire() as connection:
-        await connection.execute('''
-            CREATE TABLE IF NOT EXISTS serverconf (
-                id bigint,
-                commands json,
-                prefixes text[]
-            );
-        ''')
         if guild:
+            await connection.execute('''
+                CREATE TABLE IF NOT EXISTS serverconf (
+                    id bigint,
+                    commands json,
+                    prefixes text[]
+                );
+            ''')
             data = await connection.fetchrow('SELECT * FROM serverconf WHERE id = $1', guild.id)
             bot.server_cache[guild.id] = bot.server_cache.get(guild.id, {
                     'prefixes': [],
@@ -156,7 +156,7 @@ async def prefix(bot, message):
             try:
                 data = bot.server_cache[message.guild.id]['prefixes']
             except:
-                data = []
+                data = bot.default_prefixes
         return_prefixes = data or return_prefixes
     return return_prefixes
 
