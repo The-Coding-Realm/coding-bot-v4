@@ -31,10 +31,9 @@ async def filter_links(bot, message):
                 for blocked in [
                     'grabify.link',                         # Ip Grabber
                     'pornhub.com',                          # Porn,
-                    'bobdotcom.xyz'                          # testing
+                    'bobdotcom.xyz'                         # testing
                 ]:
-                    print(url)
-                    if url.replace('http://','https://').startswith('https://' + blocked):
+                    if url.startswith(blocked):
                         await message.delete()
                         await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
                         break
