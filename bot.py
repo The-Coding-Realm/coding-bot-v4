@@ -10,7 +10,6 @@ import random
 import asyncio
 import humanize
 import asyncpg
-import sr_api
 import aiosqlite_pool
 import ext.helpers as helpers
 from dotenv import load_dotenv
@@ -102,7 +101,6 @@ bot = helpers.Bot(command_prefix=prefix,description='Coding Bot v4',case_insensi
 
 load_dotenv()
 bot.token = os.getenv('BOT_TOKEN')
-bot.sr_api_token = os.getenv("SR_API_TOKEN")
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ['JISHAKU_RETAIN'] = "True"
 from jishaku.modules import ExtensionConverter # has to be after environ stuff ree
