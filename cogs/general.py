@@ -31,7 +31,8 @@ async def filter_links(bot, message):
                 parsed = url_parser.get_url(url)
                 for blocked in [
                     'grabify.link',                         # Ip Grabber
-                    'pornhub.com',                          # Porn
+                    'pornhub.com',                          # Porn,
+                    'bobdotcom.xyz'                          # testing
                 ]:
                     if parsed.replace('http://','https://').startswith('https://' + blocked):
                         await message.delete()
