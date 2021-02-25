@@ -33,10 +33,11 @@ async def filter_links(bot, message):
                     'pornhub.com',                          # Porn,
                     'bobdotcom.xyz'                          # testing
                 ]:
+                    print(url)
                     if url.replace('http://','https://').startswith('https://' + blocked):
                         await message.delete()
-                    await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
-                    break
+                        await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
+                        break
         except:
             pass
             
