@@ -136,7 +136,7 @@ async def is_disabled(ctx):
         try:
             data = ctx.bot.server_cache[ctx.guild.id].copy()
         except:
-            data = []
+            data = {}
     ids_to_check = [ctx.guild.id, ctx.channel.id, ctx.author.id] + [r.id for r in ctx.author.roles]
     for id_ in ids_to_check:
         data[int(id_)] = data.get(int(id_), [])
