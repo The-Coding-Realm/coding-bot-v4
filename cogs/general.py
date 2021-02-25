@@ -78,7 +78,7 @@ class General(commands.Cog):
                     if after.author.id == 690420846774321221: # so i can test
                         await filter_links(self.bot, after)
         end = time.perf_counter()
-        print('parsed message in {1 - 0}'.format(start, end))
+        print(f'parsed message in {end - start}')
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -90,7 +90,7 @@ class General(commands.Cog):
                     if after.author.id == 690420846774321221: # so i can test
                         await filter_links(self.bot, after)
         end = time.perf_counter()
-        print('parsed message in {1 - 0}'.format(start, end))
+        print(f'parsed message in {end - start}')
                     
     @commands.command(name="source", aliases=["github", "code"])
     @commands.cooldown(1, 1, commands.BucketType.channel)
