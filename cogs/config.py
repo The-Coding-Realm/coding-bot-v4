@@ -34,18 +34,20 @@ class Config(commands.Cog):
         prefixes = list(prefixes)
         prefixes = prefixes if not (prefixes == ['default'] or prefixes == self.bot.default_prefixes) else None
         previous_prefixes = self.bot.default_prefixes
+        try:
+            async with self.bot.pools.config.acquire() as connection:
 
-        async with self.bot.pools.config.acquire() as connection:
-            
-            data = await connection.fetchval('SELECT prefixes FROM serverconf WHERE id = $1', ctx.guild.id)
-            insert = self.bot.default_prefixes if prefixes is None else prefixes
-            if prefixes == []:
-                previous_prefixes = data or previous_prefixes
-            else:
-                if not data:
-                    await connection.execute(f'INSERT INTO serverconf (prefixes, id) VALUES (ARRAY{insert}, {ctx.guild.id})')
+                data = await connection.fetchval('SELECT prefixes FROM serverconf WHERE id = $1', ctx.guild.id)
+                insert = self.bot.default_prefixes if prefixes is None else prefixes
+                if prefixes == []:
+                    previous_prefixes = data or previous_prefixes
                 else:
-                    await connection.execute(f'UPDATE serverconf SET prefixes = ARRAY{insert} WHERE id = {ctx.guild.id}')
+                    if not data:
+                        await connection.execute(f'INSERT INTO serverconf (prefixes, id) VALUES (ARRAY{insert}, {ctx.guild.id})')
+                    else:
+                        await connection.execute(f'UPDATE serverconf SET prefixes = ARRAY{insert} WHERE id = {ctx.guild.id}')
+        except:
+            pass
 
         if prefixes == []:
             embed = ctx.embed(title='Prefix',description=f'Current Prefix(es): `{"`, `".join(previous_prefixes)}`\n\nOr, you can mention me as a prefix (try "{self.bot.user.mention} help")')
