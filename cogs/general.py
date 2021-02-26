@@ -172,11 +172,14 @@ class General(commands.Cog):
         await message.edit(embed=embed)
         await asyncio.sleep(0.5)
         start = time.perf_counter()
-        async with self.bot.pools.config.acquire() as connection:
-            await connection.fetchval('SELECT prefixes FROM serverconf WHERE id = 0')
-        end = time.perf_counter()
-        database = end - start
-        embed.description = f'**<a:DiscordSpin:795546311319355393> Websocket:** {(self.bot.latency * 1000):.2f}ms\n**:repeat: Round-Trip:** {(trip * 1000):.2f}ms\n**:elephant: Database:** {(database * 1000):.2f}ms'
+        try:
+            async with self.bot.pools.config.acquire() as connection:
+                await connection.fetchval('SELECT prefixes FROM serverconf WHERE id = 0')
+            end = time.perf_counter()
+            database = end - start
+            embed.description = f'**<a:DiscordSpin:795546311319355393> Websocket:** {(self.bot.latency * 1000):.2f}ms\n**:repeat: Round-Trip:** {(trip * 1000):.2f}ms\n**:elephant: Database:** {(database * 1000):.2f}ms'
+        except:
+            embed.description = f'**<a:DiscordSpin:795546311319355393> Websocket:** {(self.bot.latency * 1000):.2f}ms\n**:repeat: Round-Trip:** {(trip * 1000):.2f}ms\n**:elephant: Database:** *Did not respond!*'
         await message.edit(embed=embed)
 
 
