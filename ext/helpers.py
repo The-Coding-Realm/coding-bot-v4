@@ -81,7 +81,7 @@ def storage(bot, key=None, value=None, method=None, override=False):
     data['cogs'] = data.get('cogs', [])
     data['blacklisted'] = data.get('blacklisted', [])
     data['disabled'] = data.get('disabled', False)
-    data['owners'] = data.get('owners', [int(bot.default_owner) or 690420846774321221])
+    data['owners'] = data.get('owners', [int(bot.default_owner) if bot.default_owner else 690420846774321221])
     bot.restart_channel = data.get('restart_channel', None)
     data['restart_channel'] = None
     if key and value:
