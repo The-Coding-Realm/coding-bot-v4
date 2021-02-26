@@ -11,6 +11,7 @@ import time
 import asyncio
 import re
 import url_parser
+import inspect
 from jishaku.codeblocks import codeblock_converter
 from discord.ext import commands
 
