@@ -27,11 +27,8 @@ while true; do
     printf "Is this information correct (y/n)? "
     read yn
     case $yn in
-        [Yy]* ) saveinfo "$userid" "$token"; break;;
+        [Yy]* ) saveinfo "$userid" "$token"; git checkout main; . ./sync break;;
         [Nn]* ) break;;
         * ) echo "Please answer yes or no."; echo;;
     esac
 done
-# github stuff
-git checkout main
-. ./sync
