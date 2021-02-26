@@ -111,7 +111,7 @@ class General(commands.Cog):
             module = src.__module__
             filename = inspect.getsourcefile(src)
         else:
-            obj = self.client.get_command(command.replace('.', ' '))
+            obj = self.bot.get_command(command.replace('.', ' '))
             if obj is None:
                 return await ctx.send('Could not find command.')
 
