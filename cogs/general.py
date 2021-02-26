@@ -10,6 +10,7 @@ import discord
 import time
 import asyncio
 import re
+import os
 import url_parser
 import inspect
 from jishaku.codeblocks import codeblock_converter
