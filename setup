@@ -1,0 +1,37 @@
+# define some stuff
+
+saveinfo()
+{
+    echo "BOT_TOKEN=\"$2\"" > ./.env
+    echo "OWNER_ID=\"$1\"" >> ./.env
+}
+
+read_secret()
+{
+    stty -echo
+    trap 'stty echo' EXIT
+    read "$@"
+    stty echo
+    trap - EXIT
+    echo
+}
+
+# get user inputs
+printf "Your Discord User Id: "
+read userid
+printf "Bot Token: "
+read_secret token
+
+#confirm before ending
+while true; do
+    printf "Is this information correct (y/n)? "
+    read yn
+    case $yn in
+        [Yy]* ) saveinfo "$userid" "$token"; break;;
+        [Nn]* ) break;;
+        * ) echo "Please answer yes or no."; echo;;
+    esac
+done
+# github stuff
+git checkout main
+. ./sync

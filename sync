@@ -1,0 +1,33 @@
+git pull origin main
+
+success() {
+    echo "$(tput setaf 2)$(tput bold)Complete$(tput sgr0)"
+}
+
+if command -v pip &> /dev/null
+then
+    pip install --upgrade -r requirements.txt --user
+    success
+elif command -v pip3 &> /dev/null
+then
+    pip3 install --upgrade -r requirements.txt --user
+    success
+elif command -v python3 &> /dev/null
+then
+    python3 -m pip install --upgrade -r requirements.txt --user
+    success
+elif command -v python &> /dev/null
+then
+    python -m pip install --upgrade -r requirements.txt --user
+    success
+elif command -v py &> /dev/null
+then
+    py -3 -m pip install --upgrade -r requirements.txt --user
+    success
+elif command -v py3 &> /dev/null
+then
+    py3 -m pip install --upgrade -r requirements.txt --user
+    success
+else
+    echo "$(tput sgr0)$(tput setaf 1)$(tput bold)Error, Could Not Install Requirements: $(tput sgr0)Command $(tput bold)pip$(tput sgr0) does not exist. Please run $(tput smul)pip install -r requirements.txt$(tput rmul), replacing \"pip\" with your favorite flavor of pip. Also, if you are able, please make an issue on the github repo about this error."
+fi
