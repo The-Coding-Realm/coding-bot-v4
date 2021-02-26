@@ -100,6 +100,7 @@ bot = helpers.Bot(command_prefix=prefix,description='Coding Bot v4',case_insensi
 
 load_dotenv()
 bot.token = os.getenv('BOT_TOKEN')
+bot.default_owner = os.getenv('OWNER_ID')
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ['JISHAKU_RETAIN'] = "True"
 from jishaku.modules import ExtensionConverter # has to be after environ stuff ree
