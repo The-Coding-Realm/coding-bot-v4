@@ -107,7 +107,7 @@ class General(commands.Cog):
             return await ctx.send(source_url)
 
         if command == 'help':
-            src = type(self.client.help_command)
+            src = type(self.bot.help_command)
             module = src.__module__
             filename = inspect.getsourcefile(src)
         else:
