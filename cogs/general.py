@@ -59,8 +59,8 @@ async def filter_links(bot, message):
                         await message.delete()
                         await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
                         return
-        except:
-            pass
+        except Exception as e:
+            print(e)
             
 
 async def filter_invite(bot, message, content=None):
