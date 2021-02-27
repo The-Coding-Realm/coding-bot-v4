@@ -26,15 +26,36 @@ async def filter_links(bot, message):
     urls = []
     for link in matches:
         try:
-            urls = [''.join(url_parser.get_base_url(str(link)).split('//')[1:])]
+            urls = [] #[url_parser.get_url(link)] #[''.join(url_parser.get_base_url(str(link)).split('//')[1:])]
             async with bot.http._HTTPClient__session.get(link) as resp:
-                urls.append(str(''.join(url_parser.get_base_url(str(resp.real_url)).split('//')[1:])))
+                urls.append(url_parser.get_url(link)._asdict())
+                for redirect in resp.history:
+                    urls.append(url_parser.get_url(redirect.real_url)._asdict())
+                #str(''.join(url_parser.get_base_url(str(resp.real_url)).split('//')[1:])))
             for url in urls:
-                for blocked in [
-                    'grabify.link',                         # Ip Grabber
-                    'pornhub.com',                          # Porn
+                for blocked in [ # "*" means any
+                    # [http[s]://][sub.]<name>.<domain>[/path]                      # Reason
+                    ########################################################################
+                    
+                    '*.grabify.link/*',                                             # Ip Grabber
+                    '*.pornhub.com/*',                                              # Porn
                 ]:
-                    if url.startswith(blocked):
+                    parsed_blocked = url_parser.get_url(blocked.replace('*','-'))._asdict()
+                    for k, v in blocked.items():
+                        if k in ['protocol', 'www', 'dir', 'file', 'fragment', 'query']:
+                            continue
+                        if v == url[k]:
+                            continue
+                        if isinstance(v, str):
+                            if v.replace('.','') == '-':
+                                continue
+                            if k == 'path':
+                                if v[1:] == '-':
+                                    continue
+                        await message.delete()
+                        await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
+                        return
+                    if ''.join(url.split('.')[-2:]).startswith(blocked):
                         await message.delete()
                         await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
                         return
@@ -97,7 +118,7 @@ class General(commands.Cog):
                     
     @commands.command(name="source", aliases=["github", "code"])
     @commands.cooldown(1, 1, commands.BucketType.channel)
-    async def source(self, ctx, *, command: str = None):
+    async def _source(self, ctx, *, command: str = None):
         """Displays my full source code or for a specific command.
         To display the source code of a subcommand you can separate it by
         periods, e.g. tag.create for the create subcommand of the tag command
@@ -138,7 +159,7 @@ class General(commands.Cog):
 
     @commands.command(name="mystbin",aliases=["mb"])
     @commands.cooldown(1, 1, commands.BucketType.channel)
-    async def mystbin(self,ctx,*, code: codeblock_converter = None):
+    async def _mystbin(self,ctx,*, code: codeblock_converter = None):
         """Send your code to [Mystb.in](https://mystb.in). You may use codeblocks(by putting your code inside \`\`\`, followed by the language you want to use) Currently, this bot recognizes python and javascript codeblocks, but will support more in the future."""
         code = code.content if code else None
         attachments = None
@@ -160,8 +181,8 @@ class General(commands.Cog):
         embed = ctx.embed(title="Mystb.in Link", description='I pasted your code into a bin, click on the title access it!', url=f'https://mystb.in/{key}').set_thumbnail(url='https://cdn.discordapp.com/avatars/569566608817782824/14f120e096fb515d770eea38f9cddd88.png')
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def ping(self, ctx):
+    @commands.command(name='ping')
+    async def _ping(self, ctx):
         embed = ctx.embed(title='PONG!  :ping_pong:',description=f'**<a:DiscordSpin:795546311319355393> Websocket:** {(self.bot.latency * 1000):.2f}ms\n**:repeat: Round-Trip:** Calculating...\n**:elephant: Database:** Calculating...')
         start = time.perf_counter()
         message = await ctx.send(embed=embed)
@@ -181,7 +202,18 @@ class General(commands.Cog):
         except:
             embed.description = f'**<a:DiscordSpin:795546311319355393> Websocket:** {(self.bot.latency * 1000):.2f}ms\n**:repeat: Round-Trip:** {(trip * 1000):.2f}ms\n**:elephant: Database:** *Did not respond!*'
         await message.edit(embed=embed)
-
+        
+    @commands.command(name='revive', aliases=['revivechat', 'chatrevive', 'revchat', 'chatrev'])
+    @commands.guild_only()
+    @commands.cooldown(1, 1800, commands.BucketType.guild)
+    @commands.has_role(681895900070543411)
+    async def _revive(self, ctx):
+        try:
+            mention = guild.get_role(759219083639783448).mention
+        except:
+            mention = f'<@759219083639783448>'
+        embed = ctx.embed(title='Revive Chat Ping!', description='Come back to chat and make it alive again!')
+        await ctx.send(content=mention, embed=embed)
 
 def setup(bot):
     bot.add_cog(General(bot))
