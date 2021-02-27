@@ -207,7 +207,7 @@ class General(commands.Cog):
         try:
             mention = guild.get_role(759219083639783448).mention
         except:
-            mention = f'<@759219083639783448>'
+            mention = f'<@&759219083639783448>'
         embed = ctx.embed(title='Revive Chat Ping!', description='Come back to chat and make it alive again!')
         await ctx.send(content=mention, embed=embed)
 
