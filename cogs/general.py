@@ -55,10 +55,6 @@ async def filter_links(bot, message):
                         await message.delete()
                         await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
                         return
-                    if ''.join(url.split('.')[-2:]).startswith(blocked):
-                        await message.delete()
-                        await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
-                        return
         except Exception as e:
             print(e)
             
