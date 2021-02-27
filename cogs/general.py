@@ -41,7 +41,7 @@ async def filter_links(bot, message):
                     '*.pornhub.com/*',                                              # Porn
                 ]:
                     parsed_blocked = url_parser.get_url(blocked.replace('*','-'))._asdict()
-                    for k, v in blocked.items():
+                    for k, v in parsed_blocked.items():
                         if k in ['protocol', 'www', 'dir', 'file', 'fragment', 'query']:
                             continue
                         if v == url[k]:
