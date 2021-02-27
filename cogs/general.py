@@ -52,9 +52,10 @@ async def filter_links(bot, message):
                             if k == 'path':
                                 if v[1:] == '-':
                                     continue
-                        await message.delete()
-                        await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
-                        return
+                        return 
+                    await message.delete()
+                    await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
+                    return
         except Exception as e:
             print(e)
             
