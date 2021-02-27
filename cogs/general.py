@@ -156,7 +156,7 @@ class General(commands.Cog):
     @commands.command(name="mystbin",aliases=["mb"])
     @commands.cooldown(1, 1, commands.BucketType.channel)
     async def _mystbin(self,ctx,*, code: codeblock_converter = None):
-        """Send your code to [Mystb.in](https://mystb.in). You may use codeblocks(by putting your code inside \`\`\`, followed by the language you want to use) Currently, this bot recognizes python and javascript codeblocks, but will support more in the future."""
+        """Send your code to Mystb.in. You may use codeblocks, no codeblocks, or inside a file."""
         code = code.content if code else None
         attachments = None
 
