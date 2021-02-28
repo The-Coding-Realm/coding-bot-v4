@@ -73,7 +73,10 @@ async def filter_invite(bot, message, content=None):
         await message.channel.send(f':warning: {message.author.mention} Invite links are not allowed :warning:', delete_after=15)
         return True
     for code in matches:
-        invite = await bot.fetch_invite(code)
+        try:
+            invite = await bot.fetch_invite(code)
+        except discord.errors.NotFound:
+            invite = None # invite is fine
         if invite:
             if invite.guild.id != message.guild.id:
                 await message.delete()
