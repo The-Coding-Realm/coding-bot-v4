@@ -238,7 +238,7 @@ class Developer(commands.Cog):
 
     @commands.command(name='unloadall',aliases=['ua'])
     @commands.is_owner()
-    async def _unloadall(self, ctx, cog):
+    async def _unloadall(self, ctx):
         data = helpers.storage(self.bot)
         cogs = {
             'unloaded': [],
@@ -255,7 +255,7 @@ class Developer(commands.Cog):
 
     @commands.command(name='reloadall',aliases=['ra'])
     @commands.is_owner()
-    async def _reloadall(self, ctx, cog):
+    async def _reloadall(self, ctx):
         data = helpers.storage(self.bot)
         cogs = {
             'reloaded': [],
