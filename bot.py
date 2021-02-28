@@ -19,7 +19,7 @@ from discord_slash import SlashCommand, SlashContext
 
 async def prefix(bot, message):
     return commands.when_mentioned_or(*(await helpers.prefix(bot, message)))(bot, message)
-.
+
 class CustomHelp(commands.HelpCommand):
     """This is an example of a HelpCommand that utilizes embeds.
     It's pretty basic but it lacks some nuances that people might expect.
@@ -226,7 +226,7 @@ class Developer(commands.Cog):
         embed = ctx.embed(title='Success',color=discord.Color.green())
         await ctx.send(embed=embed)
 
-    @commands.command(name='loadall', aliases=['la'])
+    @commands.command(name='reload', aliases=['la'])
     @commands.is_owner()
     async def _loadall(self, ctx):
         data = helpers.storage(self.bot)
