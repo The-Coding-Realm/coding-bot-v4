@@ -1,5 +1,5 @@
 def pytest_addoption(parser):
-    parser.addoption("--token", action="store", default="")
+    parser.addoption("--token", action="store")
 
 
 def pytest_generate_tests(metafunc):
