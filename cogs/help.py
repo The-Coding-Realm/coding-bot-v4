@@ -129,7 +129,7 @@ class Help(commands.Cog):
                 return await ctx.send(embed=ctx.error('Timed out!'))
         if len(description) < 10 or len(description) > 100:
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send(embed=ctx.error('Please provide a longer description'))
+            return await ctx.send(embed=ctx.error('Your reason must be 10-100 total characters'))
         if not description.isascii():
             ctx.command.reset_cooldown(ctx)
             return await ctx.send(embed=ctx.error('Invalid description'))
