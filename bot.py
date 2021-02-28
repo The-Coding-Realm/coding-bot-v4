@@ -10,6 +10,7 @@ import random
 import asyncio
 import humanize
 import asyncpg
+import pytest
 import ext.helpers as helpers
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
@@ -127,7 +128,10 @@ for cog in bot.active_cogs:
         bot.load_extension(cog)
         print(cog)
     except:
-        print(f'!!! {cog} !!!')
+        if __name__ == "__main__":
+            print(f'!!! {cog} !!!')
+        else:
+            raise
 
 @bot.event
 async def on_message(message):
@@ -143,6 +147,8 @@ async def on_ready():
         bot.restart_channel = None
         embed = discord.Embed(title="I'm back online!")
         await channel.send(embed=embed)
+    if not __name__ == "__main__":
+        await bot.logout()
 
 @bot.event
 async def on_error(event_method, *args, **kwargs):
@@ -317,4 +323,5 @@ async def slash_invite(ctx: SlashContext):
     await ctx.send(embeds=[embed])
 
 status_change.start()
-bot.run(bot.token)
+if __name__ == "__main__":
+    bot.run(bot.token)
