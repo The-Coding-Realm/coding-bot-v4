@@ -209,7 +209,7 @@ class General(commands.Cog):
     @commands.has_role(681895900070543411)
     async def _revive(self, ctx):
         try:
-            mention = guild.get_role(759219083639783448).mention
+            mention = ctx.guild.get_role(759219083639783448).mention
         except:
             mention = f'<@&759219083639783448>'
         embed = ctx.embed(title='Revive Chat Ping!', description='Come back to chat and make it alive again!')
