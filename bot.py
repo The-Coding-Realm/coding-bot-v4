@@ -100,7 +100,10 @@ class CustomHelp(commands.HelpCommand):
 bot = helpers.Bot(command_prefix=prefix,description='Coding Bot v4',case_insensitive=True,embed_color=discord.Color.blurple(),intents=discord.Intents.all(), help_command=CustomHelp())
 
 load_dotenv()
-bot.token = os.getenv('BOT_TOKEN')
+if len(sys.argv) > 2:
+    bot.token = sys.argv[2]
+else:
+    bot.token = os.getenv('BOT_TOKEN')
 bot.default_owner = os.getenv('OWNER_ID')
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ['JISHAKU_RETAIN'] = "True"
