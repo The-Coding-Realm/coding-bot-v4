@@ -127,6 +127,9 @@ for cog in bot.active_cogs:
         bot.load_extension(cog)
         print(cog)
     except:
+        if sys.argv[1:]:
+            if sys.argv[1] == 'test':
+                raise
         print(f'!!! {cog} !!!')
 
 @bot.event
@@ -143,6 +146,9 @@ async def on_ready():
         bot.restart_channel = None
         embed = discord.Embed(title="I'm back online!")
         await channel.send(embed=embed)
+    if sys.argv[1:]:
+        if sys.argv[1] == 'test':
+            await bot.logout()
 
 @bot.event
 async def on_error(event_method, *args, **kwargs):
