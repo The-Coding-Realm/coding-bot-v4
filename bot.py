@@ -226,7 +226,7 @@ class Developer(commands.Cog):
         embed = ctx.embed(title='Success',color=discord.Color.green())
         await ctx.send(embed=embed)
 
-    @commands.command(name='reload', aliases=['la'])
+    @commands.command(name='loadall', aliases=['la'])
     @commands.is_owner()
     async def _loadall(self, ctx):
         data = helpers.storage(self.bot)
