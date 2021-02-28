@@ -19,7 +19,7 @@ from discord_slash import SlashCommand, SlashContext
 
 async def prefix(bot, message):
     return commands.when_mentioned_or(*(await helpers.prefix(bot, message)))(bot, message)
-
+.
 class CustomHelp(commands.HelpCommand):
     """This is an example of a HelpCommand that utilizes embeds.
     It's pretty basic but it lacks some nuances that people might expect.
