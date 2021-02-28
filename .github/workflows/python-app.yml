@@ -20,8 +20,6 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
-      env: # Or as an environment variable
-        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -34,5 +32,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
+      env:
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       run: |
         pytest -q -ra --token="$BOT_TOKEN" test.py
