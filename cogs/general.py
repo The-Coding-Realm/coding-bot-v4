@@ -54,7 +54,7 @@ async def filter_links(bot, message):
                                     continue
                         return 
                     await message.delete()
-                    await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=5)
+                    await message.channel.send(f':warning: {message.author.mention} That link is not allowed :warning:', delete_after=15)
                     return
         except Exception as e:
             print(e)
@@ -70,14 +70,14 @@ async def filter_invite(bot, message, content=None):
     matches = re.findall(pattern,message.content, re.MULTILINE)
     if len(matches) > 5:
         await message.delete()
-        await message.channel.send(f':warning: {message.author.mention} Invite links are not allowed :warning:', delete_after=5)
+        await message.channel.send(f':warning: {message.author.mention} Invite links are not allowed :warning:', delete_after=15)
         return True
     for code in matches:
         invite = await bot.fetch_invite(code)
         if invite:
             if invite.guild.id != message.guild.id:
                 await message.delete()
-                await message.channel.send(f':warning: {message.author.mention} Invite links are not allowed :warning:', delete_after=5)
+                await message.channel.send(f':warning: {message.author.mention} Invite links are not allowed :warning:', delete_after=15)
                 return True
         
 
