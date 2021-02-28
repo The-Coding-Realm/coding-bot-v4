@@ -226,6 +226,8 @@ class Developer(commands.Cog):
             'not': []
         }
         for cog in data['cogs']:
+            if cog in bot.extensions:
+                continue
             try:
                 self.bot.load_extension(cog)
                 cogs['loaded'].append(cog)
@@ -237,12 +239,36 @@ class Developer(commands.Cog):
     @commands.command(name='unloadall',aliases=['ua'])
     @commands.is_owner()
     async def _unloadall(self, ctx, cog):
-        return
+        data = helpers.storage(self.bot)
+        cogs = {
+            'unloaded': [],
+            'not': []
+        }
+        for cog in bot.extensions:
+            try:
+                self.bot.unload_extension(cog)
+                cogs['unloaded'].append(cog)
+            except:
+                cogs['not'].append(cog)
+        embed = ctx.embed(title='Unload all cogs',description='\n'.join([('\U00002705' if cog in cogs['unloaded'] else '\U0000274c') + cog for cog in bot.extensions]))
+        await ctx.send(embed=embed)
 
     @commands.command(name='reloadall',aliases=['ra'])
     @commands.is_owner()
     async def _reloadall(self, ctx, cog):
-        return
+        data = helpers.storage(self.bot)
+        cogs = {
+            'reloaded': [],
+            'not': []
+        }
+        for cog in bot.extensions:
+            try:
+                self.bot.reload_extension(cog)
+                cogs['reloaded'].append(cog)
+            except:
+                cogs['not'].append(cog)
+        embed = ctx.embed(title='Reload all cogs',description='\n'.join([('\U00002705' if cog in cogs['reloaded'] else '\U0000274c') + cog for cog in bot.extensions]))
+        await ctx.send(embed=embed)
 
 bot.add_cog(Developer(bot))
 
