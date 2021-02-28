@@ -244,7 +244,7 @@ class Developer(commands.Cog):
             'unloaded': [],
             'not': []
         }
-        for cog in bot.extensions:
+        for cog in bot.extensions.copy():
             try:
                 self.bot.unload_extension(cog)
                 cogs['unloaded'].append(cog)
@@ -261,7 +261,7 @@ class Developer(commands.Cog):
             'reloaded': [],
             'not': []
         }
-        for cog in bot.extensions:
+        for cog in bot.extensions.copy():
             try:
                 self.bot.reload_extension(cog)
                 cogs['reloaded'].append(cog)
