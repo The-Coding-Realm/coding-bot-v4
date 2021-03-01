@@ -8,6 +8,7 @@ import inspect
 import math
 import random
 import asyncio
+import DiscordUtils
 import humanize
 import asyncpg
 import pytest
@@ -115,6 +116,7 @@ class pools:
     config = asyncpg.create_pool(database="codingbot", init=helpers.init_connection)
 
 bot.helpers = helpers
+bot.tracker = DiscordUtils.InviteTracker(bot)
 bot.default_prefixes = [',']
 bot.server_cache = {}
 bot.pools = pools
@@ -143,6 +145,7 @@ async def on_message(message):
 
 @bot.event
 async def on_ready():
+    await bot.tracker.cache_invites()
     await helpers.prepare(bot)
     print('Ready')
     if bot.restart_channel:
@@ -152,6 +155,41 @@ async def on_ready():
         await channel.send(embed=embed)
     if not __name__ == "__main__":
         await bot.logout()
+        
+@bot.event
+async def on_invite_create(invite):
+    await bot.tracker.update_invite_cache(invite)
+
+@bot.event
+async def on_guild_join(guild):
+    await bot.tracker.update_guild_cache(guild)
+
+@bot.event
+async def on_invite_delete(invite):
+    await bot.tracker.remove_invite_cache(invite)
+
+@bot.event
+async def on_guild_remove(guild):
+    await bot.tracker.remove_guild_cache(guild)
+    
+@bot.event
+async def on_member_join(member):
+    if not member.guild.id == 681882711945641997:
+        return
+    try:
+        inviter = await bot.tracker.fetch_inviter(member)
+    except:
+        inviter = None
+    embed = discord.Embed(title='Welcome to The Coding Academy!',
+                          description=f'''Welcome {member.mention}, we're glad you joined! Before you get started, here are some things to check out:
+**Read the Rules:** {guild.rules_channel}
+**Get roles:** <#816069037737377852> and <#816069037737377852>
+**Want help? Read here:** <#816069037737377852> and <#816069037737377852>
+''',
+                          timestamp=datetime.datetime.utcnow()
+    message = f'{member} joined, {"invited by " + str(inviter) + "(ID: " + inviter.id + ")" if inviter else "but I could not find who invited them"}'
+    channel = member.guild.get_channel(743817386792058971)
+    await channel.send(content=message, embed=embed)
 
 @bot.event
 async def on_error(event_method, *args, **kwargs):
