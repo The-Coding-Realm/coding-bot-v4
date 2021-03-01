@@ -6,3 +6,4 @@ discord-py-slash-command
 psutil
 asyncpg
 DiscordUtils
+pytest
