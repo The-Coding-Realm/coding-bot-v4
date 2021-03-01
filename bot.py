@@ -182,7 +182,7 @@ async def on_member_join(member):
         inviter = None
     embed = discord.Embed(title='Welcome to The Coding Academy!',
                           description=f'''Welcome {member.mention}, we're glad you joined! Before you get started, here are some things to check out:
-**Read the Rules:** {guild.rules_channel.mention}
+**Read the Rules:** {member.guild.rules_channel.mention}
 **Get roles:** <#816069037737377852> and <#816069037737377852>
 **Want help? Read here:** <#816069037737377852> and <#816069037737377852>
 ''',
