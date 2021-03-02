@@ -189,7 +189,11 @@ async def on_member_join(member):
                           timestamp=datetime.datetime.utcnow())
     message = f'{member} joined, {"invited by " + str(inviter) + "(ID: " + inviter.id + ")" if inviter else "but I could not find who invited them"}'
     channel = member.guild.get_channel(743817386792058971)
-    await channel.send(content=message, embed=embed)
+    #await channel.send(content=message, embed=embed)
+    try:
+        await member.send(embed=embed)
+    except:
+        pass
 
 @bot.event
 async def on_error(event_method, *args, **kwargs):
