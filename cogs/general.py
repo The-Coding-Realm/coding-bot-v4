@@ -208,7 +208,7 @@ class General(commands.Cog):
     @commands.command(name='revive', aliases=['revivechat', 'chatrevive', 'revchat', 'chatrev'])
     @commands.guild_only()
     @commands.cooldown(1, 1800, commands.BucketType.guild)
-    @commands.has_role(681895900070543411)
+    @commands.has_role(729530191109554237, 795136568805294097, 725899526350831616)
     async def _revive(self, ctx):
         try:
             mention = ctx.guild.get_role(759219083639783448).mention
