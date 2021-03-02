@@ -95,7 +95,7 @@ class General(commands.Cog):
        
         start = time.perf_counter()
         if before.content != after.content: # invoke the command again if it is edited
-            ctx = await self.bot.get_context(after, cls=helpers.Context)
+            ctx = await self.bot.get_context(after, cls=self.bot.helpers.Context)
             await self.bot.invoke(ctx)
         if after.guild:
             if after.guild.id == 681882711945641997:
