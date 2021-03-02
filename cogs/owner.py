@@ -12,11 +12,19 @@ class Owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def eval(self, ctx, *, code: codeblock_converter):
+    @commands.command(name='eval')
+    async def _eval(self, ctx, *, code: codeblock_converter):
         """Eval some code"""
         cog = self.bot.get_cog("Jishaku")
         await cog.jsk_python(ctx, argument=code)
+        
+    @commands.command(name='refresh')
+    async def _refresh(self, ctx):
+        """Refresh the bot by invoking `jsk git pull` and `restart`"""
+        cog = self.bot.get_cog("Jishaku")
+        await cog.jsk_git(ctx, argument=codeblock_converter('pull'))
+        restart = self.bot.get_command('restart')
+        await ctx.invoke(restart)
 
     @commands.command(name='restart')
     async def _restart(self, ctx, flag=None):
