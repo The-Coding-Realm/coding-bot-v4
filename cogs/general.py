@@ -159,7 +159,7 @@ class General(commands.Cog):
 
     @commands.command(name="mystbin",aliases=["mb"])
     @commands.cooldown(1, 1, commands.BucketType.channel)
-    async def _mystbin(self,ctx,*, code: codeblock_converter = None):
+    async def _mystbin(self, ctx, *, code: codeblock_converter = None):
         """Send your code to Mystb.in. You may use codeblocks, no codeblocks, or inside a file."""
         code = code.content if code else None
         attachments = None
