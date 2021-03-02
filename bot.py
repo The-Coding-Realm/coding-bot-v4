@@ -187,9 +187,9 @@ async def on_member_join(member):
 **Want help? Read here:** <#799527165863395338> and <#754712400757784709>
 ''',
                           timestamp=datetime.datetime.utcnow())
-    message = f'{member} joined, {"invited by " + str(inviter) + "(ID: " + inviter.id + ")" if inviter else "but I could not find who invited them"}'
+    message = f'{member} (ID: {member.id}) joined, {"invited by " + str(inviter) + "(ID: " + str(inviter.id) + ")" if inviter else "but I could not find who invited them"}'
     channel = member.guild.get_channel(743817386792058971)
-    #await channel.send(content=message, embed=embed)
+    #await channel.send(content=message)
     try:
         await member.send(embed=embed)
     except:
