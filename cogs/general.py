@@ -94,8 +94,6 @@ class General(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-       
-        start = time.perf_counter()
         if before.content != after.content: # invoke the command again if it is edited
             ctx = await self.bot.get_context(after, cls=self.bot.helpers.Context)
             await self.bot.invoke(ctx)
@@ -104,19 +102,14 @@ class General(commands.Cog):
                 invite = await filter_invite(self.bot, after)
                 if not invite:
                     await filter_links(self.bot, after)
-        end = time.perf_counter()
-        print(f'parsed message in {end - start}')
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        start = time.perf_counter()
         if message.guild:
             if message.guild.id == 681882711945641997:
                 invite = await filter_invite(self.bot, message)
                 if not invite:
                     await filter_links(self.bot, message)
-        end = time.perf_counter()
-        print(f'parsed message in {end - start}')
                     
     @commands.command(name="source", aliases=["github", "code"])
     @commands.cooldown(1, 1, commands.BucketType.channel)
