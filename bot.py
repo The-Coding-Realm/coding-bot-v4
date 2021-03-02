@@ -183,8 +183,8 @@ async def on_member_join(member):
     embed = discord.Embed(title='Welcome to The Coding Academy!',
                           description=f'''Welcome {member.mention}, we're glad you joined! Before you get started, here are some things to check out:
 **Read the Rules:** {member.guild.rules_channel.mention}
-**Get roles:** <#816069037737377852> and <#816069037737377852>
-**Want help? Read here:** <#816069037737377852> and <#816069037737377852>
+**Get roles:** <#726074137168183356> and <#806909970482069556>
+**Want help? Read here:** <#799527165863395338> and <#754712400757784709>
 ''',
                           timestamp=datetime.datetime.utcnow())
     message = f'{member} joined, {"invited by " + str(inviter) + "(ID: " + inviter.id + ")" if inviter else "but I could not find who invited them"}'
