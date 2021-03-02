@@ -92,8 +92,8 @@ class Owner(commands.Cog):
             await ctx.send(embed=ctx.error('Failed to stop systemd service, attempting to logout normally'))
             await self.bot.logout()
 
-    @commands.command()
-    async def disable(self, ctx, toggle: bool = None):
+    @commands.command(name='disable')
+    async def _disable(self, ctx, toggle: bool = None):
         """
         Disable the bot in case of an exploit, major bug, or other emergency. The bot will remain online, but only bot owners will be able to run commands on it
         """
