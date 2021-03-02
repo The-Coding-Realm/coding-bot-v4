@@ -61,6 +61,8 @@ async def filter_links(bot, message):
             
 
 async def filter_invite(bot, message, content=None):
+    if message.author.permissions_in(message.channel).manage_messages:
+        return
     if message.channel.id in [
         754992725480439809,
         801641781028454420
