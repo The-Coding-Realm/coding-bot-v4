@@ -40,7 +40,10 @@ class Moderation(commands.Cog):
         
     @commands.check
     async def moderation_check(self):
-        if self.author.top_role <= self.kwargs['target'].top_role:
+        target = kwargs.get('target')
+        if not target:
+            return True
+        if self.author.top_role <= target.top_role:
             await self.send(embed=self.error('You cannot use moderation commands on users higher or equal to you.'))
             return False
         return True
