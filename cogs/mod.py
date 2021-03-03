@@ -63,7 +63,7 @@ class Moderation(commands.Cog):
         embed.set_author(name=f'{moderator} (ID: {moderator.id}',
                          icon_url=moderator.avatar_url)
         embed.set_thumbnail(url=target.avatar_url)
-        logs = self.bot.get_channel(791160138199335013)
+        logs = self.bot.get_channel(816512034228666419)
         await logs.send(embed=embed)
         
     @commands.check
