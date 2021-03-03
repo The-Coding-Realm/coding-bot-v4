@@ -107,10 +107,11 @@ async def prepare(bot, guild=None):
             connection = await bot.pools.config.acquire()
             await bot.pools.config.release(connection)
         except:
-            bot.server_cache[guild.id] = bot.server_cache.get(guild.id, {
-                'prefixes': bot.default_prefixes.copy(),
-                'commands': {}
-            })
+            if guild:
+                bot.server_cache[guild.id] = bot.server_cache.get(guild.id, {
+                    'prefixes': bot.default_prefixes.copy(),
+                    'commands': {}
+                })
             return
     async with bot.pools.config.acquire() as connection:
         if guild:
