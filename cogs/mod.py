@@ -12,13 +12,13 @@ class Moderation(commands.Cog):
         moderator = kwargs.pop(moderator)
         target = kwargs.pop(target)
         reason = kwargs.get('reason')
-        if action = 'kick':
+        if action == 'kick':
             color = discord.Color.yellow()
-        elif action = 'ban':
+        elif action == 'ban':
             color = discord.Color.red()
-        elif action = 'warn':
+        elif action == 'warn':
             color = discord.Color.green()
-        elif action = 'mute':
+        elif action == 'mute':
             color = discord.Color.blue()
         else:
             raise ValueError('Incorrect Type')
