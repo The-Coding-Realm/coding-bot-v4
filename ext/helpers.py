@@ -103,7 +103,7 @@ async def prepare(bot, guild=None):
         await bot.pools.config.release(connection)
     except:
         try:
-            bot.pools.config = await asyncio.wait_for(asyncpg.create_pool(init=init_connection), timeout=5)
+            bot.pools.config = await asyncio.wait_for(asyncpg.create_pool(database='codingbot_db', init=init_connection), timeout=5)
             connection = await bot.pools.config.acquire()
             await bot.pools.config.release(connection)
         except:
