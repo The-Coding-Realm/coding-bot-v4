@@ -9,18 +9,21 @@ class Moderation(commands.Cog):
         
     async def log(self, **kwargs):
         action = kwargs.pop('action')
-        action_string = action + 'ed' if not action.endswith('e') else action + 'd'
         moderator = kwargs.pop('moderator')
         target = kwargs.pop('target')
         reason = kwargs.get('reason')
         if action == 'kick':
             color = discord.Color.yellow()
+            action_string = 'kicked'
         elif action == 'ban':
             color = discord.Color.red()
+            action_string = 'banned'
         elif action == 'warn':
             color = discord.Color.green()
+            action_string = 'warned'
         elif action == 'mute':
             color = discord.Color.blue()
+            action_string = 'muted'
         else:
             raise ValueError('Incorrect Type')
         embed = discord.Embed(title=f'Member {action_string}',
