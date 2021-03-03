@@ -113,8 +113,16 @@ class Moderation(commands.Cog):
         except:
             pass
         await self.log(action='ban', moderator=ctx.author, target=target, reason=reason, undo=True)
-        some_member = discord.Object(id=userid)
-        await guild.unban(some_member)
+        try:
+            banned_member = discord.Object(id=target)
+        except:
+            await ctx.send(embed=ctx.error('I couldn\'t find that user.'))
+        try:
+            await guild.unban(banned_member)
+        except:
+            await ctx.send(embed=ctx.error('I couldn\'t unban that user.'))
+        await ctx.send(embed=discord.Embed(title=':unlock: Member Unbanned :unlock:',
+                                           description=f'{target.mention} has been unbanned \nReason: {reason}'))
 
     @commands.command(name='warn')
     @commands.has_guild_permissions(kick_members=True)
