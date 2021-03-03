@@ -7,7 +7,7 @@ class Moderation(commands.Cog):
         self.bot = bot
         
     async def log(self, **kwargs):
-        action = kwargs.pop(type)
+        action = kwargs.pop('type')
         action_string = action + 'ed' if not action.endswith('e') else action + 'd'
         moderator = kwargs.pop('moderator')
         target = kwargs.pop('target')
