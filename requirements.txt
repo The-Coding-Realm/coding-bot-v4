@@ -7,4 +7,4 @@ psutil
 asyncpg
 DiscordUtils
 pytest
-.aiosqlite_pool.zip
+aiosqlite_pool.zip
