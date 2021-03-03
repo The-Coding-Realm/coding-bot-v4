@@ -4,10 +4,12 @@ import time_str
 import datetime
 from discord.ext import commands
 
+
 class Moderation(commands.Cog):
   
     def __init__(self, bot):
         self.bot = bot
+        
         
     async def log(self, **kwargs):
         action = kwargs.pop('action')
@@ -107,20 +109,17 @@ class Moderation(commands.Cog):
     @commands.has_guild_permissions(ban_members=True)
     @commands.has_any_role(795136568805294097, 725899526350831616)
     @moderation_check
-    async def _unban(self, ctx, target: int, *, reason: str = None):
+    async def _unban(self, ctx, target: discord.User, *, reason: str = None):
         try:
             await target.send(f'You have been :unlock: **Unbanned** :unlock: from **{ctx.guild.name}**. \nReason: {reason}')
         except:
             pass
         await self.log(action='ban', moderator=ctx.author, target=target, reason=reason, undo=True)
         try:
-            banned_member = discord.Object(id=target)
-        except:
-            await ctx.send(embed=ctx.error('I couldn\'t find that user.'))
-        try:
-            await ctx.guild.unban(banned_member)
+            await ctx.guild.unban(target)
         except:
             await ctx.send(embed=ctx.error('I couldn\'t unban that user.'))
+            
         await ctx.send(embed=discord.Embed(title=':unlock: Member Unbanned :unlock:',
                                            description=f'{target.mention} has been unbanned \nReason: {reason}'))
 
