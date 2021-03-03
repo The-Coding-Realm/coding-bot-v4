@@ -30,7 +30,7 @@ class Moderation(commands.Cog):
                         description=target.mention)
         embed.add_field(name='Reason',
                         description=reason)
-        logs = bot.get_channel(757433319569883146)
+        logs = self.bot.get_channel(757433319569883146)
         await logs.send(embed=embed)
         
     @commands.command(name='kick')
