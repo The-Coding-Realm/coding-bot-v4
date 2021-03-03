@@ -1,4 +1,5 @@
 import discord
+import datetime
 from discord.ext import commands
 
 class Moderation(commands.Cog):
@@ -23,7 +24,8 @@ class Moderation(commands.Cog):
         else:
             raise ValueError('Incorrect Type')
         embed = discord.Embed(title=f'Member {action_string}',
-                              color=color)
+                              color=color,
+                              timestamp=datetime.datetime.utcnow())
         embed.add_field(name='Moderator',
                         value=moderator.mention)
         embed.add_field(name='Target',
@@ -36,7 +38,7 @@ class Moderation(commands.Cog):
     @commands.command(name='kick')
     @commands.bot_has_guild_permissions(kick_members=True)
     @commands.has_guild_permissions(kick_members=True)
-    async def _kick(self, ctx, target: discord.Member, reason: str = None):
+    async def _kick(self, ctx, target: discord.Member, *, reason: str = None):
         if ctx.author.top_role <= target.top_role:
             return await ctx.send(embed=ctx.error('You cannot use moderation commands on users higher or equal to you.'))
         try:
