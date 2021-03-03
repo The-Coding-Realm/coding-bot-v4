@@ -47,8 +47,23 @@ class Moderation(commands.Cog):
             pass
         await self.log(action='kick', moderator=ctx.author, target=target, reason=reason)
         await target.kick(reason=f'{ctx.author.id}: {reason}')
-        await ctx.send(embed=discord.Embed(title='Member kicked',
+        await ctx.send(embed=discord.Embed(title='Member Kicked',
                                            description=f'{target.mention} has been kicked \nReason: {reason}'))
+        
+    @commands.command(name='ban')
+    @commands.bot_has_guild_permissions(ban_members=True)
+    @commands.has_guild_permissions(ban_members=True)
+    async def _ban(self, ctx, target: discord.Member, *, reason: str = None):
+        if ctx.author.top_role <= target.top_role:
+            return await ctx.send(embed=ctx.error('You cannot use moderation commands on users higher or equal to you.'))
+        try:
+            await target.send(f'You have been banned from **{ctx.guild.name}**. \nReason: {reason}')
+        except:
+            pass
+        await self.log(action='ban', moderator=ctx.author, target=target, reason=reason)
+        await target.kick(reason=f'{ctx.author.id}: {reason}')
+        await ctx.send(embed=discord.Embed(title='Member Banned',
+                                           description=f'{target.mention} has been banned \nReason: {reason}'))
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
