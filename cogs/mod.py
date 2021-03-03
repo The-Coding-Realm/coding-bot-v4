@@ -64,6 +64,7 @@ class Moderation(commands.Cog):
     @commands.has_guild_permissions(ban_members=True)
     @moderation_check
     async def _ban(self, ctx, target: discord.Member, *, reason: str = None):
+        try:
             await target.send(f'You have been :no_entry: banned :no_entry: from **{ctx.guild.name}**. \nReason: {reason}')
         except:
             pass
