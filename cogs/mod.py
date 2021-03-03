@@ -9,8 +9,8 @@ class Moderation(commands.Cog):
     async def log(self, **kwargs):
         action = kwargs.pop(type)
         action_string = action + 'ed' if not action.endswith('e') else action + 'd'
-        moderator = kwargs.pop(moderator)
-        target = kwargs.pop(target)
+        moderator = kwargs.pop('moderator')
+        target = kwargs.pop('target')
         reason = kwargs.get('reason')
         if action == 'kick':
             color = discord.Color.yellow()
