@@ -159,7 +159,7 @@ async def prefix(bot, message):
             data = bot.server_cache[message.guild.id]['prefixes']
         except:
             try:
-                bot.server_cache[guild.id] = bot.server_cache.get(guild.id, {
+                bot.server_cache[message.guild.id] = bot.server_cache.get(message.guild.id, {
                     'prefixes': return_prefixes,
                     'commands': {}
                 })
