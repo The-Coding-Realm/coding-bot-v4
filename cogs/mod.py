@@ -40,7 +40,7 @@ class Moderation(commands.Cog):
         
     @commands.check
     async def moderation_check(self):
-        target = kwargs.get('target')
+        target = self.kwargs.get('target')
         if not target:
             return True
         if self.author.top_role <= target.top_role:
