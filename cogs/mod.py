@@ -25,11 +25,11 @@ class Moderation(commands.Cog):
         embed = discord.Embed(title=f'Member {action_string}',
                               color=color)
         embed.add_field(name='Moderator',
-                        description=moderator.mention)
+                        value=moderator.mention)
         embed.add_field(name='Target',
-                        description=target.mention)
+                        value=target.mention)
         embed.add_field(name='Reason',
-                        description=reason)
+                        value=reason)
         logs = self.bot.get_channel(757433319569883146)
         await logs.send(embed=embed)
         
