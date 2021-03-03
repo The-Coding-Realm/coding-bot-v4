@@ -113,7 +113,7 @@ data = helpers.storage(bot)
 
 
 class pools:
-    config = asyncpg.create_pool(init=helpers.init_connection)
+    config = asyncpg.create_pool(database='codingbot_db', init=helpers.init_connection)
 
 bot.helpers = helpers
 bot.tracker = DiscordUtils.InviteTracker(bot)
