@@ -23,6 +23,7 @@ class Owner(commands.Cog):
         """Refresh the bot by invoking `jsk git pull` and `restart`"""
         cog = self.bot.get_cog("Jishaku")
         await cog.jsk_git(ctx, argument=codeblock_converter('pull'))
+        await asyncio.sleep(2) # allow jsk git pull to finish before restarting
         restart = self.bot.get_command('restart')
         await ctx.invoke(restart)
 
