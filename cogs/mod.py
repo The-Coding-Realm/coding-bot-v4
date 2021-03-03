@@ -18,7 +18,7 @@ class Moderation(commands.Cog):
             pass
         await target.kick(reason=f'{ctx.author.id}: {reason}')
         await ctx.send(embed=discord.Embed(title='Member kicked',
-                                           description=f'{target.mention} has been kicked \nReason: {reason}')
+                                           description=f'{target.mention} has been kicked \nReason: {reason}'))
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
