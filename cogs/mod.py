@@ -55,7 +55,7 @@ class Moderation(commands.Cog):
         else:
             raise ValueError('Incorrect Type')
         description = f'**{icon} {action_string.title()} {target.name}**{target.discriminator} *(ID: {target.id})*\n**:page_facing_up: Reason:** {reason}' + (f' \n**:clock2: Duration:** {humanize.precisedelta(duration)}' if duration else '')
-        embed = discord.Embed(description=description
+        embed = discord.Embed(description=description,
                               color=color,
                               timestamp=datetime.datetime.utcnow())
         embed.set_author(name=f'{moderator} (ID: {moderator.id}',
