@@ -22,7 +22,7 @@ class Moderation(commands.Cog):
             color = discord.Color.blue()
         else:
             raise ValueError('Incorrect Type')
-        embed = discord.Embed(title=f'Member {action_string}'
+        embed = discord.Embed(title=f'Member {action_string}',
                               color=color)
         embed.add_field(name='Moderator',
                         description=moderator.mention)
