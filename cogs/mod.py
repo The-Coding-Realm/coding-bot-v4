@@ -118,7 +118,7 @@ class Moderation(commands.Cog):
         except:
             await ctx.send(embed=ctx.error('I couldn\'t find that user.'))
         try:
-            await guild.unban(banned_member)
+            await ctx.guild.unban(banned_member)
         except:
             await ctx.send(embed=ctx.error('I couldn\'t unban that user.'))
         await ctx.send(embed=discord.Embed(title=':unlock: Member Unbanned :unlock:',
