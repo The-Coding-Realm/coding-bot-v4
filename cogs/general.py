@@ -18,6 +18,8 @@ from discord.ext import commands
 
 
 async def filter_links(bot, message):
+    if not message.guild:
+        return
     if message.author.permissions_in(message.channel).manage_messages:
         return
     regex = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
