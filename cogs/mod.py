@@ -38,7 +38,7 @@ class Moderation(commands.Cog):
         logs = self.bot.get_channel(757433319569883146)
         await logs.send(embed=embed)
         
-    @commands.check()
+    @commands.check
     async def moderation_check(self):
         if self.author.top_role <= self.kwargs['target'].top_role:
             await self.send(embed=self.error('You cannot use moderation commands on users higher or equal to you.'))
