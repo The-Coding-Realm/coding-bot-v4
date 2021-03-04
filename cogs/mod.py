@@ -194,7 +194,7 @@ class Moderation(commands.Cog):
             [role for role in ctx.guild.roles if 'muted' in role.name]
         )[0]
 
-    @flags.add_flag("--test", type=bool)
+    @flags.add_flag("--test")
     @flags.command(name='test')
     async def _test(self, ctx, **flags):
         await ctx.send(flags)
