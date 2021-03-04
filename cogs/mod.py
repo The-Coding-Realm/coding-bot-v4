@@ -96,12 +96,12 @@ class Moderation(commands.Cog):
     @moderation_check
     async def _ban(self, ctx, target: discord.Member, *, reason: str = None):
         try:
-            await target.send(f'You have been :no_entry: **Banned** :no_entry: from **{ctx.guild.name}**. \nReason: {reason}')
+            await target.send(f'You have been :hammer: **Banned** :hammer: from **{ctx.guild.name}**. \nReason: {reason}')
         except:
             pass
         await self.log(action='ban', moderator=ctx.author, target=target, reason=reason)
-        await target.kick(reason=f'{ctx.author.id}: {reason}')
-        await ctx.send(embed=discord.Embed(title=':no_entry: Member Banned :no_entry:',
+        await target.ban(reason=f'{ctx.author.id}: {reason}')
+        await ctx.send(embed=discord.Embed(title=':hammer: Member Banned :hammer:',
                                            description=f'{target.mention} has been banned \nReason: {reason}'))
 
     @commands.command(name='unban')
@@ -118,7 +118,7 @@ class Moderation(commands.Cog):
         try:
             await ctx.guild.unban(target)
         except:
-            await ctx.send(embed=ctx.error('I couldn\'t unban that user.'))
+            return await ctx.send(embed=ctx.error('I couldn\'t unban that user.'))
             
         await ctx.send(embed=discord.Embed(title=':unlock: Member Unbanned :unlock:',
                                            description=f'{target.mention} has been unbanned \nReason: {reason}'))
