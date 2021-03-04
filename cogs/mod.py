@@ -3,13 +3,21 @@ import datetime
 import discord
 import humanize
 import time_str
-from discord.ext import flags, commands
+from discord.ext import commands
 
 
 class Moderation(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    async def execute(self, ctx, coro):
+        try:
+            await coro
+        except discord.errors.Forbidden:
+            await ctx.send(embed=ctx.error(
+                'I do not have permission to interact with that user'
+            ))
 
     async def log(self, **kwargs):
         action = kwargs.pop('action')
@@ -76,9 +84,9 @@ class Moderation(commands.Cog):
         if not target:
             return True
         if self.author.top_role <= target.top_role:
-            await self.send(embed=self.error((
-                'You cannot use moderation commands '
-                'on users higher or equal to you.')))
+            await self.send(embed=self.error(
+                'You do not have permission to interact with that user'
+                ))
             return False
         return True
 
@@ -104,7 +112,8 @@ class Moderation(commands.Cog):
             pass
         await self.log(action='kick', moderator=ctx.author, target=target,
                        reason=reason)
-        await target.kick(reason=f'{ctx.author.id}: {reason}')
+        await self.execute(ctx,
+                           target.kick(reason=f'{ctx.author.id}: {reason}'))
         await ctx.send(embed=discord.Embed(
             title=':boot: Member Kicked :boot:',
             description=f'{target.mention} has been kicked \nReason: {reason}')
@@ -125,7 +134,8 @@ class Moderation(commands.Cog):
             pass
         await self.log(action='ban', moderator=ctx.author, target=target,
                        reason=reason)
-        await target.ban(reason=f'{ctx.author.id}: {reason}')
+        await self.execute(ctx,
+                           target.ban(reason=f'{ctx.author.id}: {reason}'))
         await ctx.send(embed=discord.Embed(
             title=':hammer: Member Banned :hammer:',
             description=f'{target.mention} has been banned \nReason: {reason}')
@@ -151,7 +161,10 @@ class Moderation(commands.Cog):
             await ctx.guild.fetch_ban(target)
         except discord.NotFound:
             return await ctx.send(embed=ctx.error('That user is not banned'))
-        await ctx.guild.unban(target)
+        await self.execute(
+            ctx,
+            ctx.guild.unban(target, reason=f'{ctx.author.id}: {reason}')
+        )
         await ctx.send(embed=discord.Embed(
             title=':unlock: Member Unbanned :unlock:',
             description=(f'{target.mention} has been unbanned \nReason: '
@@ -184,20 +197,52 @@ class Moderation(commands.Cog):
                     duration: time_str.convert = datetime.timedelta(hours=1),
                     *, reason: str = None):
         try:
+            await target.send((
+                f'You have been :mute: **Muted** :mute: in **{ctx.guild.name}'
+                f'**. \nReason: {reason} \n**Duration**: '
+                f'{humanize.precisedelta(duration)}'
+            ))
+        except discord.errors.Forbidden:
+            pass
+        await self.log(action='mute', moderator=ctx.author, target=target,
+                       reason=reason)
+        mute_role = (
+            [role for role in ctx.guild.roles if 'muted' in role.name]
+        )[0]
+        await self.execute(
+            ctx,
+            target.add_roles(mute_role, reason=f'{ctx.author.id}: {reason}')
+        )
+        await ctx.send(embed=discord.Embed(
+            title=':mute: Member Muted :mute:',
+            description=(f'{target.mention} has been warned \nReason: '
+                         f'{reason}')))
+
+    @commands.command(name='unmute')
+    @commands.guild_only()
+    @moderation_check
+    @trainee_check
+    async def _unmute(self, ctx, target: discord.Member, *,
+                      reason: str = None):
+        try:
             await target.send(('You have been :mute: **Muted** :mute: in '
                                f'**{ctx.guild.name}**. \nReason: {reason}'))
         except discord.errors.Forbidden:
             pass
         await self.log(action='mute', moderator=ctx.author, target=target,
-                       reason=reason,)
-        mute_role = (
-            [role for role in ctx.guild.roles if 'muted' in role.name]
-        )[0]
-
-    @flags.add_flag("--test")
-    @flags.command(name='test')
-    async def _test(self, ctx, **flags):
-        await ctx.send(flags)
+                       reason=reason, undo=True)
+        mute_roles = (
+            role for role in ctx.guild.roles if 'muted' in role.name.lower()
+        )
+        await self.execute(
+            ctx,
+            target.remove_roles(*mute_roles,
+                                reason=f'{ctx.author.id}: {reason}')
+        )
+        await ctx.send(embed=discord.Embed(
+            title=':mute: Member Muted :mute:',
+            description=(f'{target.mention} has been warned \nReason: '
+                         f'{reason}')))
 
 
 def setup(bot):
