@@ -59,7 +59,7 @@ class Moderation(commands.Cog):
                 action_string = 'unmuted'
                 icon = ':loud_sound:'
             else:
-                color = discord.Color.gray()
+                color = discord.Color.grey()
                 action_string = 'muted'
                 icon = ':mute:'
         else:
