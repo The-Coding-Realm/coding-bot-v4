@@ -205,7 +205,7 @@ class Moderation(commands.Cog):
         except discord.errors.Forbidden:
             pass
         await self.log(action='mute', moderator=ctx.author, target=target,
-                       reason=reason)
+                       duration=duration, reason=reason)
         mute_role = (
             [role for role in ctx.guild.roles if 'muted' in role.name]
         )[0]
@@ -215,8 +215,10 @@ class Moderation(commands.Cog):
         )
         await ctx.send(embed=discord.Embed(
             title=':mute: Member Muted :mute:',
-            description=(f'{target.mention} has been warned \nReason: '
-                         f'{reason}')))
+            description=(
+                f'{target.mention} has been muted \nReason: {reason} \n'
+                f'**Duration**: {duration}'
+            )))
 
     @commands.command(name='unmute')
     @commands.guild_only()
@@ -240,8 +242,8 @@ class Moderation(commands.Cog):
                                 reason=f'{ctx.author.id}: {reason}')
         )
         await ctx.send(embed=discord.Embed(
-            title=':mute: Member Muted :mute:',
-            description=(f'{target.mention} has been warned \nReason: '
+            title=':loud_sound: Member Unmuted :loud_sound:',
+            description=(f'{target.mention} has been unmuted \nReason: '
                          f'{reason}')))
 
 
