@@ -207,8 +207,12 @@ class Moderation(commands.Cog):
         await self.log(action='mute', moderator=ctx.author, target=target,
                        duration=duration, reason=reason)
         mute_role = (
-            [role for role in ctx.guild.roles if 'muted' in role.name]
-        )[0]
+            [role for role in ctx.guild.roles if 'muted' in role.name.lower()]
+        )
+        if len(mute_role) == 0:
+            return await ctx.send(
+                error=ctx.error('I couldnt find a mute role')
+            )
         await self.execute(
             ctx,
             target.add_roles(mute_role, reason=f'{ctx.author.id}: {reason}')
