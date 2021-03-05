@@ -30,7 +30,7 @@ class Moderation(commands.Cog):
             color = discord.Color.green()
         if action == 'kick':
             if undo:
-                raise ValueError('Cannot unkick')
+                raise ValueError('Cannot un-kick')
             color = discord.Color.orange()
             action_string = 'kicked'
             icon = ':boot:'
@@ -211,8 +211,10 @@ class Moderation(commands.Cog):
         )
         if len(mute_role) == 0:
             return await ctx.send(
-                error=ctx.error('I couldnt find a mute role')
+                error=ctx.error('I couldn\'t find a mute role')
             )
+        else:
+            mute_role = mute_role[0]
         await self.execute(
             ctx,
             target.add_roles(mute_role, reason=f'{ctx.author.id}: {reason}')
