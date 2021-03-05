@@ -140,3 +140,4 @@ cython_debug/
 # Custom
 storage/
 .vscode/
+.history/
