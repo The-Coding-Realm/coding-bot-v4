@@ -93,7 +93,7 @@ def storage(bot, key=None, value=None, method=None, override=False):
     data['owners'] = data.get('owners', [temp_owner])
     bot.restart_channel = data.get('restart_channel', None)
     data['restart_channel'] = None
-    if key and value:
+    if key and value is not None:
         if method == 'append':
             if value not in data[key] or override:
                 data[key].append(value)

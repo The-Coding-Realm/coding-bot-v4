@@ -140,8 +140,7 @@ class Owner(commands.Cog):
         self.bot.disabled = not self.bot.disabled if toggle is None else toggle
         embed = ctx.embed(title='Bot Status', timestamp=ctx.message.created_at)
         embed.add_field(name='Disabled', value=self.bot.disabled)
-        self.bot.helpers.storage(self.bot, key='disabled',
-                                 value=self.bot.disabled)
+        self.bot.helpers.storage(self.bot, key='disabled', value=self.bot.disabled)
         await ctx.send(embed=embed)
 
     @commands.command(name='sudo', aliases=['su'])
