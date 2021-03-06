@@ -208,7 +208,7 @@ class General(commands.Cog):
     async def _ping(self, ctx):
         loading = '<a:DiscordSpin:795546311319355393>'
         embed = ctx.embed(title='PONG!  :ping_pong:', description=(
-            f'**<{loading} Websocket:** {(self.bot.latency * 1000):.2f}ms\n**'
+            f'**{loading} Websocket:** {(self.bot.latency * 1000):.2f}ms\n**'
             ':repeat: Round-Trip:** Calculating...\n**:elephant: Database:** '
             'Calculating...'))
         start = time.perf_counter()
@@ -235,7 +235,7 @@ class General(commands.Cog):
                 f' Database:** {(database * 1000):.2f}ms')
         except asyncpg.exceptions._base.InterfaceError:
             embed.description = (
-                f'**<{loading} Websocket:** {(self.bot.latency * 1000):.2f}ms'
+                f'**{loading} Websocket:** {(self.bot.latency * 1000):.2f}ms'
                 f'\n**:repeat: Round-Trip:** {(trip * 1000):.2f}ms\n**'
                 ':elephant: Database:** *Did not respond!*')
         await message.edit(embed=embed)
