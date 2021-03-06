@@ -204,10 +204,9 @@ async def on_member_join(member):
         except discord.errors.HTTPException:
             by = 'but I couldn\'t find who invited them'
     ago = datetime.datetime.utcnow() - member.created_at
-    char = '\U000027a5'
     message = (
         f'Welcome to *{member.guild.name}*, {member.mention}! {emojis[0]} \n'
-        f'{char} {by} \n➥ Account made {ago.days} days ago {emojis[2]} {char}')
+        f'➥ {by} \n➥ Account made {ago.days} days ago {emojis[2]}')
     channel = member.guild.get_channel(743817386792058971)
     await channel.send(content=message)
     try:
