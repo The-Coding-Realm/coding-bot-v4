@@ -14,9 +14,9 @@ from discord.ext import commands, tasks
 from discord_slash import SlashCommand, SlashContext
 
 
-async def prefix(bot, message):
-    return commands.when_mentioned_or(*(await helpers.prefix(bot, message)))(
-        bot, message)
+async def prefix(bot_, message):
+    return commands.when_mentioned_or(*(await helpers.prefix(bot_, message)))(
+        bot_, message)
 
 
 class CustomHelp(commands.HelpCommand):
@@ -43,25 +43,25 @@ class CustomHelp(commands.HelpCommand):
         if description:
             embed.description = description
 
-        for cog, cmds in mapping.items():
-            name = 'No Category' if cog is None else cog.qualified_name
+        for cog_, cmds in mapping.items():
+            name = 'No Category' if cog_ is None else cog_.qualified_name
             filtered = await self.filter_commands(cmds, sort=True)
             if filtered:
                 value = '\u2002'.join(c.name for c in cmds)
-                if cog and cog.description:
-                    value = '{0}\n{1}'.format(cog.description, value)
+                if cog_ and cog_.description:
+                    value = '{0}\n{1}'.format(cog_.description, value)
 
                 embed.add_field(name=name, value=value)
 
         embed.set_footer(text=self.get_ending_note())
         await self.get_destination().send(embed=embed)
 
-    async def send_cog_help(self, cog):
-        embed = discord.Embed(title='{0.qualified_name} Commands'.format(cog))
-        if cog.description:
-            embed.description = cog.description
+    async def send_cog_help(self, cog_):
+        embed = discord.Embed(title='{0.qualified_name} Commands'.format(cog_))
+        if cog_.description:
+            embed.description = cog_.description
 
-        filtered = await self.filter_commands(cog.get_commands(), sort=True)
+        filtered = await self.filter_commands(cog_.get_commands(), sort=True)
         for command in filtered:
             embed.add_field(name=self.get_command_signature(command),
                             value=command.short_doc or '...', inline=False)
@@ -100,7 +100,7 @@ else:
 bot.default_owner = os.getenv('OWNER_ID')
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ['JISHAKU_RETAIN'] = "True"
-data = helpers.storage(bot)
+init_data = helpers.storage(bot)
 
 
 class pools:
@@ -114,10 +114,10 @@ bot.default_prefixes = [',']
 bot.server_cache = {}
 bot.pools = pools
 bot.owner_id = None
-bot.owner_ids = data['owners']
-bot.blacklisted = data['blacklisted']
-bot.disabled = data['disabled']
-bot.active_cogs = data['cogs']
+bot.owner_ids = init_data['owners']
+bot.blacklisted = init_data['blacklisted']
+bot.disabled = init_data['disabled']
+bot.active_cogs = init_data['cogs']
 bot.load_extension('jishaku')
 bot.processing_commands = 0
 bot.slash = SlashCommand(bot, sync_commands=True)
@@ -264,8 +264,8 @@ async def on_command_error(ctx, error):
         time = datetime.timedelta(seconds=math.ceil(error.retry_after))
         error = (f'You are on cooldown. Try again after '
                  f'{humanize.precisedelta(time)}')
-        ctx.embed(title="Error", description=error,
-                  color=discord.Color.red())
+        embed = ctx.embed(title="Error", description=error,
+                          color=discord.Color.red())
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         owner = bot.get_user(ctx.bot.owner_ids[0])
         embed.set_footer(
@@ -287,15 +287,15 @@ async def on_command_error(ctx, error):
 
 class Developer(commands.Cog):
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot_):
+        self.bot = bot_
 
     @commands.command(name='load', aliases=['l'])
     @commands.is_owner()
-    async def _load(self, ctx, cog, save: bool = False):
+    async def _load(self, ctx, cog_, save: bool = False):
         if save:
-            helpers.storage(self.bot, key='cogs', value=cog, method='append')
-        self.bot.load_extension(cog)
+            helpers.storage(self.bot, key='cogs', value=cog_, method='append')
+        self.bot.load_extension(cog_)
         embed = ctx.embed(
             title='Success', description='Saved Preference' if save else None,
             color=discord.Color.green())
@@ -303,10 +303,10 @@ class Developer(commands.Cog):
 
     @commands.command(name='unload', aliases=['u'])
     @commands.is_owner()
-    async def _unload(self, ctx, cog, save: bool = False):
+    async def _unload(self, ctx, cog_, save: bool = False):
         if save:
-            helpers.storage(self.bot, key='cogs', value=cog, method='remove')
-        self.bot.unload_extension(cog)
+            helpers.storage(self.bot, key='cogs', value=cog_, method='remove')
+        self.bot.unload_extension(cog_)
         embed = ctx.embed(
             title='Success', description='Saved Preference' if save else None,
             color=discord.Color.green())
@@ -314,8 +314,8 @@ class Developer(commands.Cog):
 
     @commands.command(name='reload', aliases=['r'])
     @commands.is_owner()
-    async def _reload(self, ctx, cog):
-        self.bot.reload_extension(cog)
+    async def _reload(self, ctx, cog_):
+        self.bot.reload_extension(cog_)
         embed = ctx.embed(title='Success', color=discord.Color.green())
         await ctx.send(embed=embed)
 
@@ -327,17 +327,17 @@ class Developer(commands.Cog):
             'loaded': [],
             'not': []
         }
-        for cog in data['cogs']:
-            if cog in bot.extensions:
+        for cog_ in data['cogs']:
+            if cog_ in bot.extensions:
                 continue
             try:
-                self.bot.load_extension(cog)
-                cogs['loaded'].append(cog)
+                self.bot.load_extension(cog_)
+                cogs['loaded'].append(cog_)
             except discord.DiscordException:
-                cogs['not'].append(cog)
+                cogs['not'].append(cog_)
         embed = ctx.embed(title='Load all cogs', description='\n'.join([
-            ('\U00002705' if cog in cogs['loaded'] else '\U0000274c')
-            + cog for cog in data['cogs']]))
+            ('\U00002705' if cog_ in cogs['loaded'] else '\U0000274c')
+            + cog_ for cog_ in data['cogs']]))
         await ctx.send(embed=embed)
 
     @commands.command(name='unloadall', aliases=['ua'])
@@ -348,15 +348,15 @@ class Developer(commands.Cog):
             'not': []
         }
         processing = bot.extensions.copy()
-        for cog in processing:
+        for cog_ in processing:
             try:
-                self.bot.unload_extension(cog)
-                cogs['unloaded'].append(cog)
+                self.bot.unload_extension(cog_)
+                cogs['unloaded'].append(cog_)
             except discord.DiscordException:
-                cogs['not'].append(cog)
+                cogs['not'].append(cog_)
         embed = ctx.embed(title='Unload all cogs', description='\n'.join([
-            ('\U00002705' if cog in cogs['unloaded'] else '\U0000274c')
-            + cog for cog in processing]))
+            ('\U00002705' if cog_ in cogs['unloaded'] else '\U0000274c')
+            + cog_ for cog_ in processing]))
         await ctx.send(embed=embed)
 
     @commands.command(name='reloadall', aliases=['ra'])
@@ -367,15 +367,15 @@ class Developer(commands.Cog):
             'not': []
         }
         processing = bot.extensions.copy()
-        for cog in processing:
+        for cog_ in processing:
             try:
-                self.bot.reload_extension(cog)
-                cogs['reloaded'].append(cog)
+                self.bot.reload_extension(cog_)
+                cogs['reloaded'].append(cog_)
             except discord.DiscordException:
-                cogs['not'].append(cog)
+                cogs['not'].append(cog_)
         embed = ctx.embed(title='Reload all cogs', description='\n'.join([
-            ('\U00002705' if cog in cogs['reloaded'] else '\U0000274c')
-            + cog for cog in processing]))
+            ('\U00002705' if cog_ in cogs['reloaded'] else '\U0000274c')
+            + cog_ for cog_ in processing]))
         await ctx.send(embed=embed)
 
 

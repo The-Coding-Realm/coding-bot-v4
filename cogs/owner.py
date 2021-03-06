@@ -42,7 +42,7 @@ class Owner(commands.Cog):
                                  'restart --force` to force restart.'),
                     timestamp=ctx.message.created_at)
                 embed.set_footer(text=(f'{self.bot.processing_commands - 1} '
-                                       'commands currently in progess'))
+                                       'commands currently in progress'))
                 await ctx.send(embed=embed)
                 for i in range(10):
                     await asyncio.sleep(30)
@@ -55,7 +55,7 @@ class Owner(commands.Cog):
                             timestamp=ctx.message.created_at)
                         embed.set_footer(
                             text=(f'{self.bot.processing_commands - 1} '
-                                  'commands currently in progess')
+                                  'commands currently in progress')
                         )
                         await ctx.send(embed=embed)
                     else:
@@ -63,7 +63,7 @@ class Owner(commands.Cog):
                 if self.bot.processing_commands > 1:
                     embed = discord.Embed(title='Restart Failed', description=(
                         f'{self.bot.processing_commands - 1} commands '
-                        f'currently in progess. Use `{ctx.prefix}restart '
+                        f'currently in progress. Use `{ctx.prefix}restart '
                         '--force` to force restart.'),
                                           timestamp=ctx.message.created_at)
                     return await ctx.send(embed=embed)
@@ -92,7 +92,7 @@ class Owner(commands.Cog):
                                       timestamp=ctx.message.created_at)
                 embed.set_footer(text=(
                     f'{self.bot.processing_commands - 1} commands currently '
-                    'in progess'))
+                    'in progress'))
                 await ctx.send(embed=embed)
                 for i in range(10):
                     await asyncio.sleep(30)
@@ -104,7 +104,7 @@ class Owner(commands.Cog):
                         )
                         embed.set_footer(
                             text=(f'{self.bot.processing_commands - 1} '
-                                  'commands currently in progess'))
+                                  'commands currently in progress'))
                         await ctx.send(embed=embed)
                     else:
                         break
@@ -143,6 +143,22 @@ class Owner(commands.Cog):
         self.bot.helpers.storage(self.bot, key='disabled',
                                  value=self.bot.disabled)
         await ctx.send(embed=embed)
+
+    @commands.command(name='sudo', aliases=['su'])
+    async def _sudo(self, ctx):
+        """
+        Reinvoke someone's command, running with all checks overridden
+        """
+        try:
+            message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+        except discord.errors.NotFound:
+            return await ctx.send(embed=ctx.error('I couldn\'t find that message'))
+        if message.author == ctx.author:
+            await ctx.message.add_reaction('\U00002705')
+            context = await ctx.bot.get_context(message)
+            await context.reinvoke()
+        else:
+            await ctx.send(embed=ctx.error('That isn\'t your message'))
 
     async def cog_check(self, ctx):
         return ctx.author.id in self.bot.owner_ids

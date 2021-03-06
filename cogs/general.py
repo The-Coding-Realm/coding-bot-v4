@@ -253,6 +253,22 @@ class General(commands.Cog):
             description='Come back to chat and make it alive again!')
         await ctx.send(content=mention, embed=embed)
 
+    @commands.command(name='reinvoke', aliases=['re'])
+    async def _reinvoke(self, ctx):
+        """
+        Reinvoke a command, running it again. This does NOT bypass any permissions checks
+        """
+        try:
+            message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+        except discord.errors.NotFound:
+            return await ctx.send(embed=ctx.error('I couldn\'t find that message'))
+        if message.author == ctx.author:
+            await ctx.message.add_reaction('\U00002705')
+            context = await self.bot.get_context(
+                message, cls=self.bot.helpers.Context)
+            await self.bot.invoke(context)
+        else:
+            await ctx.send(embed=ctx.error('That isn\'t your message'))
 
 def setup(bot):
     bot.add_cog(General(bot))
