@@ -153,12 +153,9 @@ class Owner(commands.Cog):
             message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
         except discord.errors.NotFound:
             return await ctx.send(embed=ctx.error('I couldn\'t find that message'))
-        if message.author == ctx.author:
-            await ctx.message.add_reaction('\U00002705')
-            context = await ctx.bot.get_context(message)
-            await context.reinvoke()
-        else:
-            await ctx.send(embed=ctx.error('That isn\'t your message'))
+        await ctx.message.add_reaction('\U00002705')
+        context = await ctx.bot.get_context(message)
+        await context.reinvoke()
 
     async def cog_check(self, ctx):
         return ctx.author.id in self.bot.owner_ids
