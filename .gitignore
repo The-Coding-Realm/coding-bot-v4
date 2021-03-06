@@ -141,3 +141,4 @@ cython_debug/
 storage/
 .vscode/
 .history/
+.idea/
