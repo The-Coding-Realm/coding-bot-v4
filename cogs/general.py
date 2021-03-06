@@ -110,9 +110,10 @@ class General(commands.Cog):
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         if before.content != after.content:  # invoke the command again on edit
-            ctx = await self.bot.get_context(after,
-                                             cls=self.bot.helpers.Context)
-            await self.bot.invoke(ctx)
+            if not after.author.bot:
+                ctx = await self.bot.get_context(
+                    after, cls=self.bot.helpers.Context)
+                await self.bot.invoke(ctx)
         if after.guild:
             if after.guild.id == 681882711945641997:
                 invite = await filter_invite(self.bot, after)

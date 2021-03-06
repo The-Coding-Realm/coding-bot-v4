@@ -134,8 +134,9 @@ for cog in bot.active_cogs:
 
 @bot.event
 async def on_message(message):
-    ctx = await bot.get_context(message, cls=helpers.Context)
-    await bot.invoke(ctx)
+    if not message.author.bot:
+        ctx = await bot.get_context(message, cls=helpers.Context)
+        await bot.invoke(ctx)
 
 
 @bot.event
