@@ -117,7 +117,8 @@ async def prepare(bot, guild=None):
                 database='codingbot_db', init=init_connection), timeout=5)
             connection = await bot.pools.config.acquire()
             await bot.pools.config.release(connection)
-        except (OSError, asyncpg.exceptions._base.InterfaceError):
+        except (OSError, asyncpg.exceptions._base.InterfaceError,
+                asyncio.exceptions.TimeoutError):
             if guild:
                 bot.server_cache[guild.id] = bot.server_cache.get(guild.id, {
                     'prefixes': bot.default_prefixes.copy(),
