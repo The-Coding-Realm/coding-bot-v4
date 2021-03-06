@@ -22,13 +22,24 @@ read userid
 printf "Bot Token: "
 read_secret token
 
+
+get_input(){
+    while true; do
+        printf "Is this information correct (y/n)? "
+        read yn
+        case $yn in
+            [Yy]* ) return 1;;
+            [Nn]* ) return 0;;
+            * ) echo "Incorrect option (y/n)? "; echo;
+        esac
+    done
+}
+
 #confirm before ending
-while true; do
-    printf "Is this information correct (y/n)? "
-    read yn
-    case $yn in
-        [Yy]* ) saveinfo "$userid" "$token"; git checkout main; . ./sync break;;
-        [Nn]* ) break;;
-        * ) echo "Please answer yes or no."; echo;;
-    esac
-done
+get_input
+if [[ $? == 1 ]];
+then
+    saveinfo "$userid" "$token"; git checkout main; . ./sync
+else
+    exit
+fi
