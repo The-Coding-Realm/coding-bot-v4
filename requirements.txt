@@ -12,3 +12,4 @@ time-str
 discord-flags
 url-parser
 humanize
+Pillow
