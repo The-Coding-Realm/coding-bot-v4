@@ -197,6 +197,7 @@ async def on_member_join(member):
     img = io.BytesIO(await member.avatar_url_as(format='png', size=128).read())
     img2 = io.BytesIO(await member.guild.banner_url_as(format='png', size=512).read())
     base = Image.open(img).convert("RGBA")
+    base = base.resize((128, 128))
     txt = Image.open(img2).convert("RGBA")
     txt = txt.point(lambda p: p * 0.5)
     txt = txt.resize((512, 200))
