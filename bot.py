@@ -409,6 +409,25 @@ async def before_status_change():
     await asyncio.sleep(15)
 
 
+@tasks.loop(minutes=5)
+async def booster_perms():
+    guild = bot.get_guild(681882711945641997)
+    nitro_booster = guild.get_rule(737517726737629214)
+    active = guild.get_role(726029173067481129)
+    muted = guild.get_role(766469426429820949)
+    for member in nitro_booster.members:
+        if not (active in member.roles or muted in member.roles):
+            try:
+                await member.add_roles(active)
+            except discord.errors.Forbidden:
+                pass
+
+
+@booster_perms.before_loop
+async def before_booster_perms():
+    await bot.wait_until_ready()
+
+
 @bot.check
 def blacklist(ctx):
     return (ctx.author.id not in bot.blacklisted
@@ -443,5 +462,6 @@ async def slash_invite(ctx: SlashContext):
     await ctx.send(embeds=[embed])
 
 status_change.start()
+booster_perms.start()
 if __name__ == "__main__":
     bot.run(bot.token)
