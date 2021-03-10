@@ -6,9 +6,11 @@ import math
 import random
 import asyncio
 import DiscordUtils
+import io
 import humanize
 import asyncpg
 import ext.helpers as helpers
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
 from discord_slash import SlashCommand, SlashContext
@@ -191,24 +193,61 @@ async def on_member_join(member):
     emojis = (
         '<a:Helloooo:761264535192993832>', '<a:wobblegirl:798483987638386688>',
         '<a:greentick:763396791185571911>')
+    ago = datetime.datetime.utcnow() - member.created_at
+    img = io.BytesIO(await member.avatar_url_as(format='png', size=128).read())
+    img2 = io.BytesIO(await member.guild.banner_url_as(format='png', size=512).read())
+    base = Image.open(img).convert("RGBA")
+    txt = Image.open(img2).convert("RGBA")
+    txt = txt.point(lambda p: p * 0.5)
+    txt = txt.resize((512, 200))
+    d = ImageDraw.Draw(txt)
+    fill = (255,255,255,255)
+    font = ImageFont.truetype("storage/fonts/Poppins/Poppins-Bold.ttf", 25)
+    text = "Welcome to The Coding Academy"
+    text_width, text_height = d.textsize(text, font)
+    d.text(((txt.size[0] - text_width) // 2, (txt.size[1] // 31) * 1), text, font=font, fill=fill, align='center')
+    font = ImageFont.truetype("storage/fonts/Poppins/Poppins-Bold.ttf", 15)
+    text = str(member)
+    d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 4), text, font=font, fill=fill, align='center')
+    font = ImageFont.truetype("storage/fonts/Poppins/Poppins-Bold.ttf", 12)
+    text = f'ID: {member.id}'
+    d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 6), text, font=font, fill=fill, align='center')
     if inviter:
         inv = sum(i.uses for i in (await member.guild.invites()) if i.inviter
                   and i.inviter.id == inviter.id)
-        by = (f'Invited by **{inviter.name}** (ID: {inviter.id}, {inv} invites'
-              f') {emojis[1]}')
+
+        text = f'• Invited by: {inviter}'
+        d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 9), text, font=font, fill=fill, align='center')
+        text = f'• ID: {inviter.id}'
+        d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 11), text, font=font, fill=fill, align='center')
+        text = f'• Account created: {humanize.naturaldelta(ago)} ago'
+        d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 13), text, font=font, fill=fill, align='center')
     else:
         try:
             invite = await member.guild.vanity_invite()
-            by = (f'Joined using vanity invite code: *{invite.code}* ('
-                  f'{invite.uses} uses)')
+            text = f'• Joined using vanity invite: {invite.code} ({invite.uses} uses)'
         except discord.errors.HTTPException:
-            by = 'but I couldn\'t find who invited them'
-    ago = datetime.datetime.utcnow() - member.created_at
-    message = (
-        f'Welcome to *{member.guild.name}*, {member.mention}! {emojis[0]} \n'
-        f'➥ {by} \n➥ Account made {ago.days} days ago {emojis[2]}')
+            text = 'I couldn\'t find who invited them'
+        d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 9), text, font=font, fill=fill, align='center')
+        text = f'• Account created: {humanize.naturaldelta(ago)} ago'
+        d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 11), text, font=font, fill=fill, align='center')
+
+
+    blur_radius = 1
+    offset = 0
+    offset = blur_radius * 2 + offset
+    mask = Image.new("L", base.size, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((offset, offset, base.size[0] - offset, base.size[1] - offset), fill=255)
+    mask = mask.filter(ImageFilter.GaussianBlur(blur_radius))
+    out = txt.paste(base, (base.size[0] // 4, (base.size[1] // 8) * 3), mask)
+
+    buf = io.BytesIO()
+    txt.save(buf, format='png')
+    buf.seek(0)
+    file = discord.File(buf, filename='welcome.png')
     channel = member.guild.get_channel(743817386792058971)
-    await channel.send(content=message)
+    await channel.send(content=member.mention, file=file)
     try:
         await member.send(embed=embed)
     except discord.errors.Forbidden:
