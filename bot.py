@@ -190,9 +190,6 @@ async def on_member_join(member):
             '<#806909970482069556> \n**Want help? Read here:** '
             '<#799527165863395338> and <#754712400757784709>'),
         timestamp=datetime.datetime.utcnow())
-    emojis = (
-        '<a:Helloooo:761264535192993832>', '<a:wobblegirl:798483987638386688>',
-        '<a:greentick:763396791185571911>')
     ago = datetime.datetime.utcnow() - member.created_at
     img = io.BytesIO(await member.avatar_url_as(format='png', size=128).read())
     img2 = io.BytesIO(await member.guild.banner_url_as(format='png', size=512).read())
@@ -202,7 +199,7 @@ async def on_member_join(member):
     txt = txt.point(lambda p: p * 0.5)
     txt = txt.resize((512, 200))
     d = ImageDraw.Draw(txt)
-    fill = (255,255,255,255)
+    fill = (255, 255, 255, 255)
     font = ImageFont.truetype("storage/fonts/Poppins/Poppins-Bold.ttf", 25)
     text = "Welcome to The Coding Academy"
     text_width, text_height = d.textsize(text, font)
@@ -219,7 +216,7 @@ async def on_member_join(member):
 
         text = f'• Invited by: {inviter}'
         d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 9), text, font=font, fill=fill, align='center')
-        text = f'• ID: {inviter.id}'
+        text = f'• ID: {inviter.id}, Invites: {inv}'
         d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 11), text, font=font, fill=fill, align='center')
         text = f'• Account created: {humanize.naturaldelta(ago)} ago'
         d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 13), text, font=font, fill=fill, align='center')
@@ -233,7 +230,6 @@ async def on_member_join(member):
         text = f'• Account created: {humanize.naturaldelta(ago)} ago'
         d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 11), text, font=font, fill=fill, align='center')
 
-
     blur_radius = 1
     offset = 0
     offset = blur_radius * 2 + offset
@@ -241,7 +237,7 @@ async def on_member_join(member):
     draw = ImageDraw.Draw(mask)
     draw.ellipse((offset, offset, base.size[0] - offset, base.size[1] - offset), fill=255)
     mask = mask.filter(ImageFilter.GaussianBlur(blur_radius))
-    out = txt.paste(base, (base.size[0] // 4, (base.size[1] // 8) * 3), mask)
+    txt.paste(base, (base.size[0] // 4, (base.size[1] // 8) * 3), mask)
 
     buf = io.BytesIO()
     txt.save(buf, format='png')
