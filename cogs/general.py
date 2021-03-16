@@ -21,9 +21,8 @@ from discord.ext import commands
 
 
 async def filter_links(bot, message):
-    if not message.guild:
-        return
-    if message.author.permissions_in(message.channel).manage_messages:
+    if ((not isinstance(message.author, discord.Member)) or
+            message.author.permissions_in(message.channel).manage_messages):
         return
     regex = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|'
              r'(?:%[0-9a-fA-F][0-9a-fA-F]))+')
@@ -71,9 +70,8 @@ async def filter_links(bot, message):
 
 
 async def filter_invite(bot, message, content=None):
-    if not isinstance(message.author, discord.Member):
-        return
-    if message.author.permissions_in(message.channel).manage_messages:
+    if ((not isinstance(message.author, discord.Member)) or
+            message.author.permissions_in(message.channel).manage_messages):
         return
     if message.channel.id in [
         754992725480439809,
