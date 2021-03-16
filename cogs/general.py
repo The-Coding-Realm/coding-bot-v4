@@ -166,8 +166,7 @@ class General(commands.Cog):
         final_url = (f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L'
                      f'{firstlineno + len(lines) - 1}>')
         github = '<:githubwhite:804344724621230091>'
-        embed = ctx.embed(title=f'{github} GitHub {github}',
-                          description=f'[Click Here]({final_url})')
+        embed = ctx.embed(title=f'{github} GitHub {github}', url=final_url)
         await ctx.send(embed=embed)
 
     @commands.command(name="mystbin", aliases=["mb"])
