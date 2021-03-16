@@ -71,6 +71,8 @@ async def filter_links(bot, message):
 
 
 async def filter_invite(bot, message, content=None):
+    if not isinstance(message.author, discord.Member):
+        return
     if message.author.permissions_in(message.channel).manage_messages:
         return
     if message.channel.id in [
