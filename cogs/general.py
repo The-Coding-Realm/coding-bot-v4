@@ -136,6 +136,7 @@ class General(commands.Cog):
         periods, e.g. tag.create for the create subcommand of the tag command
         or by spaces.
         """
+        github = '<:githubwhite:804344724621230091>'
         embed = ctx.embed(title=f'{github} GitHub {github}')
         source_url = 'https://github.com/The-Coding-Academy/coding-bot-v4'
         branch = 'main'
@@ -167,7 +168,6 @@ class General(commands.Cog):
 
         final_url = (f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L'
                      f'{firstlineno + len(lines) - 1}>')
-        github = '<:githubwhite:804344724621230091>'
         embed.set_url(source_url)
         await ctx.send(embed=embed)
 
