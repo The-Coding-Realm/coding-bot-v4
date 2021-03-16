@@ -93,11 +93,16 @@ class Moderation(commands.Cog):
     @commands.check
     async def trainee_check(self):
         if not self.guild.id == 681882711945641997:
-            return True
+            return False
         trainee = self.guild.get_role(729537643951554583)
+        helper = self.guild.get_role(726650418444107869)
         if (self.author.top_role >= trainee or
                 self.author.guild_permissions.kick_members):
             return True
+        if helper in self.author.roles:
+            if self.command.qualified_name == 'mute':
+                return True
+        
 
     @commands.command(name='kick')
     @commands.guild_only()
@@ -196,6 +201,11 @@ class Moderation(commands.Cog):
     async def _mute(self, ctx, target: discord.Member,
                     duration: time_str.convert = datetime.timedelta(hours=1),
                     *, reason: str = None):
+        trainee = self.guild.get_role(729537643951554583)
+        helper = self.guild.get_role(726650418444107869)
+        if not (self.author.top_role >= trainee or
+                self.author.guild_permissions.kick_members):
+            duration = datetime.timedelta(minutes=15)
         try:
             await target.send((
                 f'You have been :mute: **Muted** :mute: in **{ctx.guild.name}'
