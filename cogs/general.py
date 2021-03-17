@@ -167,7 +167,7 @@ class General(commands.Cog):
 
         final_url = (f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L'
                      f'{firstlineno + len(lines) - 1}>')
-        embed.url = source_url
+        embed.url = final_url
         await ctx.send(embed=embed)
 
     @commands.command(name="mystbin", aliases=["mb"])
