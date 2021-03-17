@@ -136,7 +136,7 @@ class General(commands.Cog):
         periods or spaces.
         """
         github = '<:githubwhite:804344724621230091>'
-        embed = ctx.embed(title=f'{github} GitHub {github}')
+        embed = ctx.embed(title=f'{github} GitHub (Click Here) {github}')
         source_url = 'https://github.com/The-Coding-Academy/coding-bot-v4'
         branch = 'main'
         if command is None:
@@ -165,8 +165,8 @@ class General(commands.Cog):
             source_url = 'https://github.com/Rapptz/discord.py'
             branch = 'master'
 
-        final_url = (f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L'
-                     f'{firstlineno + len(lines) - 1}>')
+        final_url = (f'{source_url}/blob/{branch}/{location}#L{firstlineno}-L'
+                     f'{firstlineno + len(lines) - 1}')
         embed.url = final_url
         await ctx.send(embed=embed)
 
