@@ -133,15 +133,14 @@ class General(commands.Cog):
     async def _source(self, ctx, *, command: str = None):
         """Displays my full source code or for a specific command.
         To display the source code of a subcommand you can separate it by
-        periods, e.g. tag.create for the create subcommand of the tag command
-        or by spaces.
+        periods or spaces.
         """
         github = '<:githubwhite:804344724621230091>'
         embed = ctx.embed(title=f'{github} GitHub {github}')
         source_url = 'https://github.com/The-Coding-Academy/coding-bot-v4'
         branch = 'main'
         if command is None:
-            embed.set_url(source_url)
+            embed.url = source_url
             return await ctx.send(embed=embed)
 
         if command == 'help':
@@ -168,7 +167,7 @@ class General(commands.Cog):
 
         final_url = (f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L'
                      f'{firstlineno + len(lines) - 1}>')
-        embed.set_url(source_url)
+        embed.url = source_url
         await ctx.send(embed=embed)
 
     @commands.command(name="mystbin", aliases=["mb"])
