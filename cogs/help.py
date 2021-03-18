@@ -48,6 +48,8 @@ class Help(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @helper_check
+    @commands.cooldown(2, 86400, commands.BucketType.user)
+    @commands.cooldown(15, 86400, commands.BucketType.guild)
     @commands.cooldown(1, 1800, commands.BucketType.user)
     async def helper(self, ctx, language=None, *, description=None):
         """
