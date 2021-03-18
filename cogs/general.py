@@ -79,7 +79,7 @@ async def filter_invite(bot, message, content=None):
     ]:
         return
     pattern = (
-        r'discord(?:(?:(?:app)?\.com)\/invite|\.gg)/([a-zA-z0-9\-]{2,})(?!\S)')
+        r'discord(?:(?:(?:app)?\.com)\/invite|\.gg)/([a-zA-z0-9\-]{2,})(?!\b)')
     matches = re.findall(pattern, message.content, re.MULTILINE)
     if len(matches) > 5:
         await message.delete()
