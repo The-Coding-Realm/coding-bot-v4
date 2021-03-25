@@ -5,6 +5,17 @@ import humanize
 import time_str
 from discord.ext import commands
 
+class BelowMember(discord.Member):
+    pass
+class BelowMemberConverter(commands.MemberConverter):
+    async def convert(self, ctx, *args, **kwargs):
+        res = await super().convert(ctx, *args, **kwargs)
+        if ctx.author.top_role.position <= res.top_role.position: raise commands.CheckFailure('You do not have permissions to interact with that user')
+        return res
+
+commands.converter.BelowMemberConverter = BelowMemberConverter
+BelowMember.__module__ = "discord.belowmember"
+
 
 class Moderation(commands.Cog):
 
@@ -79,18 +90,6 @@ class Moderation(commands.Cog):
         await logs.send(embed=embed)
 
     @commands.check
-    async def moderation_check(self):
-        target = self.kwargs.get('target')
-        if not target:
-            return True
-        if self.author.top_role <= target.top_role:
-            await self.send(embed=self.error(
-                'You do not have permission to interact with that user'
-                ))
-            return False
-        return True
-
-    @commands.check
     async def trainee_check(self):
         if not self.guild.id == 681882711945641997:
             return False
@@ -108,8 +107,7 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_guild_permissions(kick_members=True)
     @commands.has_guild_permissions(kick_members=True)
-    @moderation_check
-    async def _kick(self, ctx, target: discord.Member, *, reason: str = None):
+    async def _kick(self, ctx, target: BelowMember, *, reason: str = None):
         try:
             await target.send(('You have been :boot: **Kicked** :boot: from '
                                f'**{ctx.guild.name}**. \nReason: {reason}'))
@@ -128,8 +126,7 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_guild_permissions(ban_members=True)
     @commands.has_guild_permissions(ban_members=True)
-    @moderation_check
-    async def _ban(self, ctx, target: discord.Member, *, reason: str = None):
+    async def _ban(self, ctx, target: BelowMember, *, reason: str = None):
         try:
             await target.send(
                 ('You have been :hammer: **Banned** :hammer: from '
@@ -151,7 +148,6 @@ class Moderation(commands.Cog):
     @commands.bot_has_guild_permissions(ban_members=True)
     @commands.has_guild_permissions(ban_members=True)
     @commands.has_any_role(795136568805294097, 725899526350831616)
-    @moderation_check
     async def _unban(self, ctx, target: discord.User, *, reason: str = None):
         try:
             await target.send(
@@ -178,9 +174,8 @@ class Moderation(commands.Cog):
 
     @commands.command(name='warn')
     @commands.guild_only()
-    @moderation_check
     @trainee_check
-    async def _warn(self, ctx, target: discord.Member, *, reason: str = None):
+    async def _warn(self, ctx, target: BelowMember, *, reason: str = None):
         try:
             await target.send(('You have been :warning: **Warned** :warning: '
                                f'in **{ctx.guild.name}**. \nReason: {reason}'))
@@ -196,9 +191,8 @@ class Moderation(commands.Cog):
 
     @commands.command(name='mute')
     @commands.guild_only()
-    @moderation_check
     @trainee_check
-    async def _mute(self, ctx, target: discord.Member,
+    async def _mute(self, ctx, target: BelowMember,
                     duration: time_str.convert = datetime.timedelta(hours=1),
                     *, reason: str = None):
         trainee = self.guild.get_role(729537643951554583)
@@ -238,9 +232,8 @@ class Moderation(commands.Cog):
 
     @commands.command(name='unmute')
     @commands.guild_only()
-    @moderation_check
     @trainee_check
-    async def _unmute(self, ctx, target: discord.Member, *,
+    async def _unmute(self, ctx, target: BelowMember, *,
                       reason: str = None):
         try:
             await target.send(('You have been :mute: **Muted** :mute: in '
