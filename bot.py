@@ -448,7 +448,7 @@ async def before_status_change():
 @tasks.loop(minutes=5)
 async def booster_perms():
     guild = bot.get_guild(681882711945641997)
-    nitro_booster = guild.get_rule(737517726737629214)
+    nitro_booster = guild.get_role(737517726737629214)
     active = guild.get_role(726029173067481129)
     muted = guild.get_role(766469426429820949)
     for member in nitro_booster.members:
