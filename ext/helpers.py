@@ -192,9 +192,9 @@ async def prefix(bot, message):
 
 async def log_command_error(ctx, error, handled):
     if not handled:
-        channel = ctx.bot.get_channel(787461422896513104)
+        channel = ctx.bot.get_channel(826862029347749969)
     else:
-        channel = ctx.bot.get_channel(787476834689744926)
+        channel = ctx.bot.get_channel(826862028815597609)
     title = 'Ignoring exception in command {}:'.format(ctx.command)
     err = ''.join(traceback.format_exception(
         type(error), error, error.__traceback__))
@@ -219,7 +219,7 @@ async def log_command_error(ctx, error, handled):
 
 
 async def log_error(bot, event_method, *args, **kwargs):
-    channel = bot.get_channel(812359854890156073)
+    channel = bot.get_channel(826861610173333595)
     try:
         title = 'Ignoring exception in {}'.format(event_method)
         err = ''.join(traceback.format_exc())

@@ -35,7 +35,7 @@ async def filter_links(bot, message):
         try:
             urls = []
             async with bot.http._HTTPClient__session.get(link) as resp:
-                urls.append(url_parser.get_url(link)._asdict())
+                # urls.append(url_parser.get_url(link)._asdict())
                 for redirect in resp.history:
                     print(redirect.real_url)
                     urls.append(
@@ -52,20 +52,13 @@ async def filter_links(bot, message):
                     parsed_blocked = url_parser.get_url(
                         blocked.replace('*', '-'))._asdict()
                     delete = True
-                    for k, v in parsed_blocked.items():
-                        if k in ['protocol', 'www', 'dir', 'file', 'fragment',
-                                 'query']:
-                            continue
-                        if v == url[k]:
-                            continue
-                        if isinstance(v, str):
-                            if v.replace('.', '') == '-':
-                                continue
-                            if k == 'path':
-                                if v[1:] == '-':
-                                    continue
-                        print(k, v)
-                        delete = False
+                    for k in ['sub_domain', 'domain', 'top_domain', 'path']:
+                        rep = parsed_blocked[k]
+                        if k == 'path':
+                            rep = rep[1:]
+                        if url[k] != rep and rep.replace('.','') != '-':
+                            delete = False
+                            break
                     if delete:
                         try:
                             await message.delete()
