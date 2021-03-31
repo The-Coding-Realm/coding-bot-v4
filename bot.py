@@ -265,9 +265,13 @@ async def on_command_error(ctx, error):
 
     if ctx.author.id in ctx.bot.owner_ids:
         if (isinstance(error, (
+                commands.CheckFailure,
                 commands.DisabledCommand, commands.CommandOnCooldown,
                 commands.MissingPermissions, commands.MaxConcurrencyReached))):
-            return await ctx.reinvoke()
+            try:
+                await ctx.reinvoke()
+            except discord.ext.commands.CommandError as e:
+                return await on_command_error(ctx, e)
 
     if (isinstance(error, (
             commands.BadArgument, commands.MissingRequiredArgument,
