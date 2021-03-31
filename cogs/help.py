@@ -51,6 +51,7 @@ class Help(commands.Cog):
     @commands.cooldown(2, 86400, commands.BucketType.user)
     @commands.cooldown(15, 86400, commands.BucketType.guild)
     @commands.cooldown(1, 1800, commands.BucketType.user)
+    @commands.max_concurrency(1, commands.BucketType.user)
     async def helper(self, ctx, language=None, *, description=None):
         """
         Request help for your code. Misusing this command may result in a

@@ -14,6 +14,8 @@ import asyncio
 import re
 import asyncpg
 import os
+import sys
+import traceback
 import url_parser
 import inspect
 from jishaku.codeblocks import codeblock_converter
@@ -35,8 +37,9 @@ async def filter_links(bot, message):
             async with bot.http._HTTPClient__session.get(link) as resp:
                 urls.append(url_parser.get_url(link)._asdict())
                 for redirect in resp.history:
+                    print(redirect.real_url)
                     urls.append(
-                        url_parser.get_url(redirect.real_url)._asdict())
+                        url_parser.get_url(str(redirect.real_url))._asdict())
             for url in urls:
                 for blocked in [  # "*" means any
                     # [http[s]://][sub.]<name>.<domain>[/path]         # Reason
@@ -48,6 +51,7 @@ async def filter_links(bot, message):
                 ]:
                     parsed_blocked = url_parser.get_url(
                         blocked.replace('*', '-'))._asdict()
+                    delete = True
                     for k, v in parsed_blocked.items():
                         if k in ['protocol', 'www', 'dir', 'file', 'fragment',
                                  'query']:
@@ -60,14 +64,20 @@ async def filter_links(bot, message):
                             if k == 'path':
                                 if v[1:] == '-':
                                     continue
+                        print(k, v)
+                        delete = False
+                    if delete:
+                        try:
+                            await message.delete()
+                        except discord.errors.NotFound:
+                            pass
+                        await message.channel.send((
+                            f':warning: {message.author.mention} That link is not '
+                            'allowed :warning:'), delete_after=15)
                         return
-                    await message.delete()
-                    await message.channel.send((
-                        f':warning: {message.author.mention} That link is not '
-                        'allowed :warning:'), delete_after=15)
-                    return
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print('Ignoring exception in url filter {}:'.format(message.content), file=sys.stderr)
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 
 async def filter_invite(bot, message, content=None):
