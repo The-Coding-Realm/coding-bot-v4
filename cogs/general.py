@@ -44,6 +44,7 @@ async def filter_links(bot, message):
 
                     '*.grabify.link/*',                            # Ip Grabber
                     '*.pornhub.com/*',                                   # Porn
+                    '*.guilded.gg/*',                             # Advertising
                 ]:
                     parsed_blocked = url_parser.get_url(
                         blocked.replace('*', '-'))._asdict()
