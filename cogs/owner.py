@@ -70,7 +70,7 @@ class Owner(commands.Cog):
         embed = discord.Embed(title="Be right back!")
         await ctx.send(embed=embed)
         self.bot.helpers.storage(self.bot, 'restart_channel', ctx.channel.id)
-        if sys.stdin.isatty():  # if the bot was run from the command line
+        if sys.stdin.isatty() or True:  # if the bot was run from the command line, updated to default true
             try:
                 p = psutil.Process(os.getpid())
                 for handler in p.open_files() + p.connections():
