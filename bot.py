@@ -8,6 +8,7 @@ import asyncio
 import DiscordUtils
 import io
 import humanize
+import aiohttp
 import asyncpg
 import ext.helpers as helpers
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -192,7 +193,10 @@ async def on_member_join(member):
         timestamp=datetime.datetime.utcnow())
     ago = datetime.datetime.utcnow() - member.created_at
     img = io.BytesIO(await member.avatar_url_as(format='png', size=128).read())
-    img2 = io.BytesIO(await member.guild.banner_url_as(format='png', size=512).read())
+    try:
+        img2 = io.BytesIO(await member.guild.banner_url_as(format='png', size=512).read())
+    except:
+        img2 = 'storage/banner.png'
     base = Image.open(img).convert("RGBA")
     base = base.resize((128, 128))
     txt = Image.open(img2).convert("RGBA")
@@ -245,10 +249,12 @@ async def on_member_join(member):
     file = discord.File(buf, filename='welcome.png')
     channel = member.guild.get_channel(743817386792058971)
     await channel.send(content=member.mention, file=file)
-    try:
-        await member.send(embed=embed)
-    except discord.errors.Forbidden:
-        pass
+    verify_here = member.guild.get_channel(759220767711297566)
+    await verify_here.send(f'Welcome {member.mention}! Please check your DMs or use `>verify` in this channel to get started.', embed=embed)
+#     try:
+#         await member.send(embed=embed)
+#     except discord.errors.Forbidden:
+#         pass
 
 
 @bot.event
@@ -265,6 +271,7 @@ async def on_command_error(ctx, error):
 
     if ctx.author.id in ctx.bot.owner_ids:
         if (isinstance(error, (
+                commands.MissingAnyRole,
                 commands.CheckFailure,
                 commands.DisabledCommand, commands.CommandOnCooldown,
                 commands.MissingPermissions, commands.MaxConcurrencyReached))):

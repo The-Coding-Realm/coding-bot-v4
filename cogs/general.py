@@ -21,56 +21,62 @@ import inspect
 from jishaku.codeblocks import codeblock_converter
 from discord.ext import commands
 
+async def check_link(url):
+    url = url_parser.get_url(url)._asdict()
+    for blocked in [  # "*" means any
+        # [http[s]://][sub.]<name>.<domain>[/path]         # Reason
+        ###########################################################
+
+        '*.grabify.link/*',                            # Ip Grabber
+        '*.pornhub.com/*',                                   # Porn
+        '*.guilded.gg/*',                             # Advertising
+    ]:
+        parsed_blocked = url_parser.get_url(
+            blocked.replace('*', '-'))._asdict()
+        delete = True
+        for k in ['sub_domain', 'domain', 'top_domain', 'path']:
+            rep = parsed_blocked[k]
+            if k == 'path':
+                rep = rep[1:]
+            if url[k] != rep and rep.replace('.','') != '-':
+                delete = False
+                break
+        if delete:
+            return True
+
+async def find_links(bot,content):
+    regex = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|'
+             r'(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+    matches = re.findall(regex, content, re.MULTILINE)
+    urls = []
+    for link in matches:
+        location = link
+        try:
+            for i in range(10):
+                if await check_link(location): 
+                    return True
+                async with bot.http._HTTPClient__session.get(location, allow_redirects=False) as resp:
+                    location = resp.headers.get('Location')
+                    if location == resp.real_url or location is None:
+                        break
+        except Exception as error:
+            print('Ignoring exception in url filter {}:'.format(content), file=sys.stderr)
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
 
 async def filter_links(bot, message):
     if ((not isinstance(message.author, discord.Member)) or
             message.author.permissions_in(message.channel).manage_messages):
         return
-    regex = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|'
-             r'(?:%[0-9a-fA-F][0-9a-fA-F]))+')
-
-    matches = re.findall(regex, message.content, re.MULTILINE)
-    urls = []
-    for link in matches:
-        try:
-            urls = []
-            async with bot.http._HTTPClient__session.get(link) as resp:
-                # urls.append(url_parser.get_url(link)._asdict())
-                for redirect in resp.history:
-                    print(redirect.real_url)
-                    urls.append(
-                        url_parser.get_url(str(redirect.real_url))._asdict())
-            for url in urls:
-                for blocked in [  # "*" means any
-                    # [http[s]://][sub.]<name>.<domain>[/path]         # Reason
-                    ###########################################################
-
-                    '*.grabify.link/*',                            # Ip Grabber
-                    '*.pornhub.com/*',                                   # Porn
-                    '*.guilded.gg/*',                             # Advertising
-                ]:
-                    parsed_blocked = url_parser.get_url(
-                        blocked.replace('*', '-'))._asdict()
-                    delete = True
-                    for k in ['sub_domain', 'domain', 'top_domain', 'path']:
-                        rep = parsed_blocked[k]
-                        if k == 'path':
-                            rep = rep[1:]
-                        if url[k] != rep and rep.replace('.','') != '-':
-                            delete = False
-                            break
-                    if delete:
-                        try:
-                            await message.delete()
-                        except discord.errors.NotFound:
-                            pass
-                        await message.channel.send((
-                            f':warning: {message.author.mention} That link is not '
-                            'allowed :warning:'), delete_after=15)
-                        return
-        except Exception as error:
-            print('Ignoring exception in url filter {}:'.format(message.content), file=sys.stderr)
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+    if await find_links(bot, message.content):
+      try:
+          await message.delete()
+      except discord.errors.NotFound:
+          pass
+      await message.channel.send((
+          f':warning: {message.author.mention} That link is not '
+          'allowed :warning:'), delete_after=15)
+    return
 
 
 async def filter_invite(bot, message, content=None):
