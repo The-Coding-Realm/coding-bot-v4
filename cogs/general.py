@@ -30,6 +30,7 @@ async def check_link(url):
         '*.grabify.link/*',                            # Ip Grabber
         '*.pornhub.com/*',                                   # Porn
         '*.guilded.gg/*',                             # Advertising
+        'tornadus.net/orange',                    # Discord Crasher
     ]:
         parsed_blocked = url_parser.get_url(
             blocked.replace('*', '-'))._asdict()
