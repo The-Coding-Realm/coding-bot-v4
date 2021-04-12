@@ -258,7 +258,7 @@ class Moderation(commands.Cog):
     @commands.command(name='delete', aliases=['del'])
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
-    async def _delete(self, ctx, target: int = None)
+    async def _delete(self, ctx, target: int = None):
         if not target:
             target = ctx.message.reference.message_id
         message = await ctx.channel.fetch_message(target)
