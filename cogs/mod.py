@@ -254,6 +254,16 @@ class Moderation(commands.Cog):
             title=':loud_sound: Member Unmuted :loud_sound:',
             description=(f'{target.mention} has been unmuted \nReason: '
                          f'{reason}')))
+        
+    @commands.command(name='delete', aliases=['del'])
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def _delete(self, ctx, target: int = None)
+        if not target:
+            target = ctx.message.reference.message_id
+        message = await ctx.channel.fetch_message(target)
+        await message.delete()
+        await ctx.send(f'ok boomer ||(msg {target} deleted by {ctx.author}||')
 
 
 def setup(bot):
