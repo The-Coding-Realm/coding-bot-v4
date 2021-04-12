@@ -224,8 +224,8 @@ class General(commands.Cog):
             'Calculating...'))
         start = time.perf_counter()
         message = await ctx.send(embed=embed)
-        await asyncio.sleep(0.5)
         end = time.perf_counter()
+        await asyncio.sleep(0.5)
         trip = end - start
         embed.description = (
             f'**{loading} Websocket:** {(self.bot.latency * 1000):.2f}ms\n**'
