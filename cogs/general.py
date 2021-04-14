@@ -104,8 +104,13 @@ async def filter_invite(bot, message, content=None):
         except discord.errors.NotFound:
             invite = None  # invite is fine
         if invite:
-            if invite.guild.id not in [message.guild.id, 681882711945641997,
-                                       782903894468198450]:
+            if invite.guild.id not in [
+                    message.guild.id,
+                    681882711945641997,  # TCA
+                    782903894468198450,  # Swasville
+                    336642139381301249,  # Discord.py
+                    267624335836053506,  # Python
+                    ]:
                 await message.delete()
                 await message.channel.send((
                     f':warning: {message.author.mention} Invite links are not '
