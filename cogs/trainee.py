@@ -27,7 +27,7 @@ class Trainee(commands.Cog):
         embed = ctx.embed(title='Trainees', description='\n'.join(members))
         await ctx.send(embed=embed)
     
-    @trainee.command()
+    @trainee.command(name='ping')
     @commands.has_guild_permissions(administrator=True)
     async def trainee_ping(self, ctx, toggle: bool = None):
         """Toggle trainee pings"""
