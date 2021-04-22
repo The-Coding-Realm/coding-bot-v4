@@ -41,7 +41,7 @@ class ReactionTickets(commands.Cog):
                 em.set_author(name = user.name, icon_url = user.icon_url)
                 await ticket.send(embed = em)
                 # send a DM
-                await user.send(embed = discord.Embed(title = "Ticket Successfully Created!", description = f"Your ticket was successfully created, we should've pinged you and the available moderators at the time!\n**Ticket:** {ticket.mention}", color = author.color, timestamp = datetime.datetime.utcnow()))
+                await user.send(embed = discord.Embed(title = "Ticket Successfully Created!", description = f"Your ticket was successfully created, we should've pinged you and the available moderators at the time!\n**Ticket:** {ticket.mention}", color = user.color, timestamp = datetime.datetime.utcnow()))
                 # log the event
                 logs = self.client.get_channel(829936676021075999)
                 em = discord.Embed(title=  "New Ticket!", color = user.color, description = "A new ticket was created!")
