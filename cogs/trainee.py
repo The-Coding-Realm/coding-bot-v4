@@ -24,7 +24,7 @@ class Trainee(commands.Cog):
         members = [member.mention for member in role.members]
         if len(members) == 0:
             return await ctx.send('no trainees :sob:')
-        embed = ctx.(title='Trainees', description='\n'.join(members))
+        embed = ctx.embed(title='Trainees', description='\n'.join(members))
         await ctx.send(embed=embed)
     
     @trainee.command()
