@@ -35,10 +35,7 @@ class Trainee(commands.Cog):
             toggle = not self.enabled
         self.enabled = toggle
         await ctx.send(embed=ctx.embed(title='Trainee Pinging', description="enabled" if self.enabled else "disabled"))
-        try:
-            self.trainee_pings.cancel()
-        except:
-            pass
+        self.trainee_pings.cancel()
         await asyncio.sleep(5)
         self.ping_trainees.start()
 
