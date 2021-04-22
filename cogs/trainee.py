@@ -34,7 +34,7 @@ class Trainee(commands.Cog):
         if toggle is None:
             toggle = not self.enabled
         self.enabled = toggle
-        await ctx.send(ctx.embed(title='Trainee Pinging', description="enabled" if self.enabled else "disabled"))
+        await ctx.send(embed=ctx.embed(title='Trainee Pinging', description="enabled" if self.enabled else "disabled"))
         try:
             self.trainee_pings.cancel()
         except:
