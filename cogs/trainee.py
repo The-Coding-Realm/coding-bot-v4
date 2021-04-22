@@ -40,7 +40,7 @@ class Trainee(commands.Cog):
         except:
             pass
         await asyncio.sleep(5)
-        await self.ping_trainees.start()
+        self.ping_trainees.start()
 
     @tasks.loop(hours=1)
     async def ping_trainees(self):
