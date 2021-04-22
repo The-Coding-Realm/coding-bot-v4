@@ -15,23 +15,26 @@ class Trainee(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def trainee(self, ctx):
+        await ctx.send_help('trainee')
+        
+    @trainee.command(name='list')
+    async def trainee_list(self, ctx):
         """List trainees"""
         role = self.bot.get_guild(self.guild).get_role(self.role)
         members = [member.mention for member in role.members]
         if len(members) == 0:
             return await ctx.send('no trainees :sob:')
-        embed = discord.Embed(title='Trainees',description='\n'.join(members))
+        embed = ctx.(title='Trainees', description='\n'.join(members))
         await ctx.send(embed=embed)
     
     @trainee.command()
-    async def ping(self, ctx, toggle: bool = None):
+    @commands.has_guild_permissions(administrator=True)
+    async def trainee_ping(self, ctx, toggle: bool = None):
         """Toggle trainee pings"""
-        if not ctx.author.id in self.managing_ids and not ctx.author.guild_permissions.administrator:
-            return await ctx.send('no. only the admins can make the trainees suffer')
         if toggle is None:
             toggle = not self.enabled
         self.enabled = toggle
-        await ctx.send(f'Trainee pinging: {self.enabled}')
+        await ctx.send(ctx.embed(title='Trainee Pinging', description="enabled" if self.enabled else "disabled"))
         try:
             self.trainee_pings.cancel()
         except:
@@ -47,6 +50,9 @@ class Trainee(commands.Cog):
             target = random.choice([trainee.mention for trainee in role.members])
             msg = await channel.send(target + ' lol')
             await msg.delete()
+            
+    async def cog_check(self, ctx):
+        return ctx.guild.id == 681882711945641997
 
 def setup(bot):
     bot.add_cog(Trainee(bot))
