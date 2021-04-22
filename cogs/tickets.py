@@ -44,7 +44,7 @@ class ReactionTickets(commands.Cog):
                 await user.send(embed = discord.Embed(title = "Ticket Successfully Created!", description = f"Your ticket was successfully created, we should've pinged you and the available moderators at the time!\n**Ticket:** {ticket.mention}", color = author.color, timestamp = datetime.datetime.utcnow()))
                 # log the event
                 logs = self.client.get_channel(829936676021075999)
-                em = discord.Embed(title=  "New Ticket!", color = author.color, description = "A new ticket was created!")
+                em = discord.Embed(title=  "New Ticket!", color = user.color, description = "A new ticket was created!")
                 em.set_author(name = user.name, icon_url = user.avatar_url)
                 em.add_field(name = "Access point:", value = ticket.mention)
                 em.add_field(name = "User:", value = user.mention)
@@ -96,7 +96,7 @@ class ReactionTickets(commands.Cog):
             em.set_author(name = ctx.author.name, icon_url = ctx.author.avatar_url)
             await ctx.send(embed = em)
     
-    @commands.command(aliases=["add", "addmemberticket", "assignticket"])
+    @commands.command(aliases=["add", "addmemberticket"])
     @has_guild_permissions(kick_members = True)
     async def addmember(self, ctx, member_id: int = None, *, reason = None):
         channel = ctx.channel
