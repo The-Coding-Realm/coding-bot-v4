@@ -10,7 +10,7 @@ class Trainee(commands.Cog):
         self.guild = 681882711945641997
         self.channel = 743817386792058971
         self.role = 729537643951554583
-        self.managing_ids = [556119013298667520, 579326961038524446, 690420846774321221]
+        self.managing_ids = [690420846774321221]
         self.enabled = False
 
     @commands.group(invoke_without_command=True)
@@ -27,7 +27,7 @@ class Trainee(commands.Cog):
     async def ping(self, ctx, toggle: bool = None):
         """Toggle trainee pings"""
         if not ctx.author.id in self.managing_ids and not ctx.author.guild_permissions.administrator:
-            return await ctx.send('no. only the admins happy can make the trainees suffer')
+            return await ctx.send('no. only the admins can make the trainees suffer')
         if toggle is None:
             toggle = not self.enabled
         self.enabled = toggle
