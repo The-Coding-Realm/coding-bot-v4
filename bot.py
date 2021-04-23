@@ -444,7 +444,7 @@ async def after_invoke(ctx):
     bot.processing_commands -= 1
 
 
-@tasks.loop(seconds=60)
+@tasks.loop(minutes=2)
 async def status_change():
     statuses = ['over TCA', 'you', 'swas', '@everyone', 'general chat']
     await bot.change_presence(activity=discord.Activity(
