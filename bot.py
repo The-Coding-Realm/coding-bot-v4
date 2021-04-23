@@ -278,7 +278,9 @@ async def on_command_error(ctx, error):
             try:
                 await ctx.reinvoke()
             except discord.ext.commands.CommandError as e:
-                return await on_command_error(ctx, e)
+                pass
+            else:
+                return
 
     if (isinstance(error, (
             commands.BadArgument, commands.MissingRequiredArgument,
