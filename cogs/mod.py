@@ -264,6 +264,18 @@ class Moderation(commands.Cog):
         message = await ctx.channel.fetch_message(target)
         await message.delete()
         await ctx.send(f'ok boomer ||(msg {target} deleted by {ctx.author}||')
+        
+    @commands.command(name='verify', aliases=['v'])
+    @commands.guild_only()
+    @commands.has_guild_permissions(kick_members=True)
+    async def _verify(self, ctx, target: BelowMember):
+        if not ctx.guild.id == 681882711945641997:
+            return await ctx.send(embed=ctx.error('Must be in The Coding Academy'))
+        member = ctx.guild.get_role(744403871262179430)
+        if member in target.roles:
+            return await ctx.send(embed=ctx.error('Member is already verified'))
+        await target.add_roles(member)
+        await ctx.send(embed=ctx.embed(title='Member Verified', description=f'{target.mention} was successfully verified.'))
 
 
 def setup(bot):
