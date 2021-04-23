@@ -259,6 +259,9 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
     async def _delete(self, ctx, target: int = None):
+        """
+        Delete a message by it's ID.
+        """
         if not target:
             target = ctx.message.reference.message_id
         message = await ctx.channel.fetch_message(target)
@@ -269,6 +272,9 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.has_guild_permissions(kick_members=True)
     async def _verify(self, ctx, target: BelowMember):
+        """
+        Manually verify a member.
+        """
         if not ctx.guild.id == 681882711945641997:
             return await ctx.send(embed=ctx.error('Must be in The Coding Academy'))
         member = ctx.guild.get_role(744403871262179430)
