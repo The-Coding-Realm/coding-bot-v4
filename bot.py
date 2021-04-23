@@ -141,7 +141,7 @@ async def on_message(message):
         ctx = await bot.get_context(message, cls=helpers.Context)
         await bot.invoke(ctx)
         for prefix_ in await prefix(bot, message):
-            if message.content.startswith(f'\{prefix_}') and bot.get_command(message.content.split()[0][len(prefix_):]):
+            if message.content.startswith(f'\\{prefix_}') and bot.get_command(message.content.split()[0][len(prefix_) + 1:]):
                 return await message.channel.send('lol')
 
 
