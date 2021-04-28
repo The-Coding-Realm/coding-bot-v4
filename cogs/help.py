@@ -93,15 +93,15 @@ class Help(commands.Cog):
                 'cpp',
                 'c++',
             ],
-            'C#': [
-                'csharp',
-                'c#',
-                'cs',
-            ],
             'HTML/CSS': [
                 'html',
                 'css',
                 'html/css',
+            ],
+            'C#': [
+                'csharp',
+                'c#',
+                'cs',
             ],
             'Other': 'other',
         }
