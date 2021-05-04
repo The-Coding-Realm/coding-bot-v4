@@ -288,7 +288,7 @@ class General(commands.Cog):
             
     @commands.command(name="joined")
     async def _joined(self, ctx, position: int):
-        if position > guild.member_count:
+        if position > ctx.guild.member_count:
             return await ctx.send(embed=ctx.error('There are not that many members here'))
         all_members = {}
         for member in ctx.guild.members:
