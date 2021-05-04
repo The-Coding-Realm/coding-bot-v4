@@ -283,7 +283,7 @@ class Moderation(commands.Cog):
         await target.add_roles(member)
         await ctx.send(embed=ctx.embed(title='Member Verified', description=f'{target.mention} was successfully verified.'))
         
-    @commands.command(name='nickname', aliases=['nick']
+    @commands.command(name='nickname', aliases=['nick'])
     @commands.guild_only()
     @commands.has_permissions(manage_nicknames=True)
     async def _nickname(self, ctx, target: BelowMember, nick=None):
