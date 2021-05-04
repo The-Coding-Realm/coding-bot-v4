@@ -260,7 +260,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def _delete(self, ctx, target: int = None):
         """
-        Delete a message by it's ID.
+        Delete a message by it's ID or by replying.
         """
         if not target:
             target = ctx.message.reference.message_id
@@ -282,6 +282,16 @@ class Moderation(commands.Cog):
             return await ctx.send(embed=ctx.error('Member is already verified'))
         await target.add_roles(member)
         await ctx.send(embed=ctx.embed(title='Member Verified', description=f'{target.mention} was successfully verified.'))
+        
+    @commands.command(name='nickname', aliases=['nick']
+    @commands.guild_only()
+    @commands.has_permissions(manage_nicknames=True)
+    async def _nickname(self, ctx, target: BelowMember, nick=None):
+        """
+        Change a members nickname
+        """
+        await target.update(nick=nick)
+        await ctx.send(embed=ctx.embed(title='Updated Nickname', description=f'Updated the nickname of {target.mention} to {nick}' if nick else f'Removed the nickname of {target.mention}')
 
 
 def setup(bot):
