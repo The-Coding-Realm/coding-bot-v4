@@ -271,7 +271,7 @@ class Moderation(commands.Cog):
     @commands.command(name='verify', aliases=['v'])
     @commands.guild_only()
     @commands.has_guild_permissions(kick_members=True)
-    async def _verify(self, ctx, target: BelowMember):
+    async def _verify(self, ctx, *, target: BelowMember):
         """
         Manually verify a member.
         """
@@ -286,11 +286,11 @@ class Moderation(commands.Cog):
     @commands.command(name='nickname', aliases=['nick'])
     @commands.guild_only()
     @commands.has_permissions(manage_nicknames=True)
-    async def _nickname(self, ctx, target: BelowMember, nick=None):
+    async def _nickname(self, ctx, target: BelowMember, *, nick=None):
         """
         Change a members nickname
         """
-        await target.update(nick=nick)
+        await target.edit(nick=nick)
         await ctx.send(embed=ctx.embed(title='Updated Nickname', description=f'Updated the nickname of {target.mention} to {nick}' if nick else f'Removed the nickname of {target.mention}'))
 
 
