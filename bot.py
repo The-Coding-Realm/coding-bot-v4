@@ -1,6 +1,7 @@
 import discord
 import os
 import sys
+import unicodedata
 import datetime
 import math
 import random
@@ -183,6 +184,8 @@ async def on_guild_remove(guild):
 async def on_member_join(member):
     if not member.guild.id == 681882711945641997:
         return
+    if not member.name.isalnum():
+        await member.edit(nick=unicodedata.normalize('NFKD',member.name))
     inviter = await bot.tracker.fetch_inviter(member)
     rules = member.guild.rules_channel.mention
     embed = discord.Embed(
