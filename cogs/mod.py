@@ -291,7 +291,7 @@ class Moderation(commands.Cog):
         Change a members nickname
         """
         await target.update(nick=nick)
-        await ctx.send(embed=ctx.embed(title='Updated Nickname', description=f'Updated the nickname of {target.mention} to {nick}' if nick else f'Removed the nickname of {target.mention}')
+        await ctx.send(embed=ctx.embed(title='Updated Nickname', description=f'Updated the nickname of {target.mention} to {nick}' if nick else f'Removed the nickname of {target.mention}'))
 
 
 def setup(bot):
