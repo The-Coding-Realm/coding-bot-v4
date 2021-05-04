@@ -291,22 +291,18 @@ class General(commands.Cog):
         async with ctx.typing():
             if position > ctx.guild.member_count:
                 return await ctx.send(embed=ctx.error('There are not that many members here'))
-            all_members = {}
-            for member in ctx.guild.members:
-                pos = sum(m.joined_at < member.joined_at for m in ctx.guild.members if m.joined_at is not None)
-                all_members[pos] = member
+            all_members = list(ctx.guild.members)
+            all_members.sort(key=lambda m: m.joined_at)
             def ord(n):
                 return str(n)+("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
-            embed = ctx.embed(title = f"The {ord(position)} person to join is: ", description = all_members[position - 1].mention)
+            embed = ctx.embed(title = f"The {ord(position)} person to join is: ", description=all_members[position - 1].mention)
             await ctx.send(embed=embed)
         
     @commands.command(name="joinposition", aliases=['joinpos'])
     async def _join_position(self, ctx, member: discord.Member):
         async with ctx.typing():
-            all_members = {}
-            for mbm in ctx.guild.members:
-                pos = sum(m.joined_at < mbm.joined_at for m in ctx.guild.members if m.joined_at is not None)
-                all_members[pos] = mbm
+            all_members = list(ctx.guild.members)
+            all_members.sort(key=lambda m: m.joined_at)
             def ord(n):
                 return str(n)+("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
             embed = ctx.embed(title = "Member info", description = f'{member.mention} was the {ord(all_members.index(member) + 1)} person to join')
