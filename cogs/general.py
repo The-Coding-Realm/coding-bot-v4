@@ -112,7 +112,7 @@ async def filter_invite(bot, message=None, content=None):
         801641781028454420
     ]:
         return
-    matched = await check_invite(message.content)
+    matched = await check_invite(bot, message.content, message.guild)
     if matched:
         await message.delete()
         await message.channel.send((
