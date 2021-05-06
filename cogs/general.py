@@ -45,7 +45,7 @@ async def check_link(url):
         if delete:
             return True
 
-async def find_links(bot, content):
+async def find_links(bot, content, guild=None):
     regex = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|'
              r'(?:%[0-9a-fA-F][0-9a-fA-F]))+')
     matches = re.findall(regex, content, re.MULTILINE)
@@ -54,7 +54,7 @@ async def find_links(bot, content):
         location = link
         try:
             for i in range(10):
-                if await check_link(location) or await check_invite(bot, location): 
+                if await check_link(location) or await check_invite(bot, location, guild): 
                     return True
                 async with bot.http._HTTPClient__session.get(location, allow_redirects=False) as resp:
                     location = resp.headers.get('Location')
@@ -69,7 +69,7 @@ async def filter_links(bot, message):
     if ((not isinstance(message.author, discord.Member)) or
             message.author.permissions_in(message.channel).manage_messages):
         return
-    if await find_links(bot, message.content):
+    if await find_links(bot, message.content, message.guild):
       try:
           await message.delete()
       except discord.errors.NotFound:
@@ -79,7 +79,7 @@ async def filter_links(bot, message):
           'allowed :warning:'), delete_after=15)
     return
 
-async def check_invite(bot, content):
+async def check_invite(bot, content, guild=None):
     pattern = (
         r'discord(?:(?:(?:app)?\.com)\/invite|\.gg)/([a-zA-z0-9\-]{2,})\b')
     matches = re.findall(pattern, content, re.MULTILINE)
@@ -92,7 +92,7 @@ async def check_invite(bot, content):
             invite = None  # invite is fine
         if invite:
             if invite.guild.id not in [
-                    message.guild.id,
+                    guild.id if guild else None,
                     681882711945641997,  # TCA
                     782903894468198450,  # Swasville
                     336642139381301249,  # Discord.py
