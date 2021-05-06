@@ -45,7 +45,7 @@ async def check_link(url):
         if delete:
             return True
 
-async def find_links(bot,content):
+async def find_links(bot, content):
     regex = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|'
              r'(?:%[0-9a-fA-F][0-9a-fA-F]))+')
     matches = re.findall(regex, content, re.MULTILINE)
@@ -54,7 +54,7 @@ async def find_links(bot,content):
         location = link
         try:
             for i in range(10):
-                if await check_link(location): 
+                if await check_link(location) or await check_invite(bot, location): 
                     return True
                 async with bot.http._HTTPClient__session.get(location, allow_redirects=False) as resp:
                     location = resp.headers.get('Location')
@@ -79,24 +79,11 @@ async def filter_links(bot, message):
           'allowed :warning:'), delete_after=15)
     return
 
-
-async def filter_invite(bot, message, content=None):
-    if ((not isinstance(message.author, discord.Member)) or
-            message.author.permissions_in(message.channel).manage_messages):
-        return
-    if message.channel.id in [
-        754992725480439809,
-        801641781028454420
-    ]:
-        return
+async def check_invite(bot, content):
     pattern = (
         r'discord(?:(?:(?:app)?\.com)\/invite|\.gg)/([a-zA-z0-9\-]{2,})\b')
-    matches = re.findall(pattern, message.content, re.MULTILINE)
+    matches = re.findall(pattern, content, re.MULTILINE)
     if len(matches) > 5:
-        await message.delete()
-        await message.channel.send((
-            f':warning: {message.author.mention} Invite links are not allowed '
-            ':warning:'), delete_after=15)
         return True
     for code in matches:
         try:
@@ -111,11 +98,27 @@ async def filter_invite(bot, message, content=None):
                     336642139381301249,  # Discord.py
                     267624335836053506,  # Python
                     ]:
-                await message.delete()
-                await message.channel.send((
-                    f':warning: {message.author.mention} Invite links are not '
-                    'allowed :warning:'), delete_after=15)
                 return True
+    
+    return matches
+
+
+async def filter_invite(bot, message=None, content=None):
+    if ((not isinstance(message.author, discord.Member)) or
+            message.author.permissions_in(message.channel).manage_messages):
+        return
+    if message.channel.id in [
+        754992725480439809,
+        801641781028454420
+    ]:
+        return
+    matched = await check_invite(message.content)
+    if matched:
+        await message.delete()
+        await message.channel.send((
+            f':warning: {message.author.mention} Invite links are not allowed '
+            ':warning:'), delete_after=15)
+        return True
 
 
 class General(commands.Cog):
