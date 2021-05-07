@@ -45,7 +45,7 @@ async def check_link(url):
         if delete:
             return True
 
-async def find_links(bot, content, guild=None):
+async def find_links(bot, content, channel=None):
     regex = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|'
              r'(?:%[0-9a-fA-F][0-9a-fA-F]))+')
     matches = re.findall(regex, content, re.MULTILINE)
