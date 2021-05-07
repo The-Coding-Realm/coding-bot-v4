@@ -54,7 +54,7 @@ async def find_links(bot, content, guild=None):
         location = link
         try:
             for i in range(10):
-                if await check_link(location) or await check_invite(bot, location, guild): 
+                if await check_link(location) or await check_invite(bot, location, channel): 
                     return True
                 async with bot.http._HTTPClient__session.get(location, allow_redirects=False) as resp:
                     location = resp.headers.get('Location')
@@ -69,7 +69,7 @@ async def filter_links(bot, message):
     if ((not isinstance(message.author, discord.Member)) or
             message.author.permissions_in(message.channel).manage_messages):
         return
-    if await find_links(bot, message.content, message.guild):
+    if await find_links(bot, message.content, message.channel):
       try:
           await message.delete()
       except discord.errors.NotFound:
@@ -79,10 +79,15 @@ async def filter_links(bot, message):
           'allowed :warning:'), delete_after=15)
     return
 
-async def check_invite(bot, content, guild=None):
+async def check_invite(bot, content, channel=None):
     pattern = (
         r'discord(?:(?:(?:app)?\.com)\/invite|\.gg)/([a-zA-z0-9\-]{2,})\b')
     matches = re.findall(pattern, content, re.MULTILINE)
+    if message.channel.id in [
+        754992725480439809,
+        801641781028454420
+    ]:
+        return False
     if len(matches) > 5:
         return True
     for code in matches:
@@ -92,7 +97,7 @@ async def check_invite(bot, content, guild=None):
             invite = None  # invite is fine
         if invite:
             if invite.guild.id not in [
-                    guild.id if guild else None,
+                    channel.guild.id if channel else None,
                     681882711945641997,  # TCA
                     782903894468198450,  # Swasville
                     336642139381301249,  # Discord.py
@@ -107,12 +112,7 @@ async def filter_invite(bot, message=None, content=None):
     if ((not isinstance(message.author, discord.Member)) or
             message.author.permissions_in(message.channel).manage_messages):
         return
-    if message.channel.id in [
-        754992725480439809,
-        801641781028454420
-    ]:
-        return
-    matched = await check_invite(bot, message.content, message.guild)
+    matched = await check_invite(bot, message.content, message.channel)
     if matched:
         await message.delete()
         await message.channel.send((
