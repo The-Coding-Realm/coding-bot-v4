@@ -297,9 +297,9 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @trainee_check
     async def _slowmode(self, ctx, *, delay: time_str.convert = datetime.timedelta(seconds=1)):
-        if not 0 <= delay.total_seconds <= 21600:
+        if not 0 <= delay.total_seconds() <= 21600:
             return await ctx.send(embed=ctx.error(f'Slowmode cannot be more than {humanize.precisedelta(datetime.timedelta(seconds=21600))} or less than 0 seconds'))
-        await ctx.channel.edit(slowmode_delay=delay.total_seconds)
+        await ctx.channel.edit(slowmode_delay=delay.total_seconds())
         await ctx.send(embed=ctx.embed(title='Successfully changed slowmode', description=f'Set to {humanize.precisedelta(delay)}'))
 
                                   
