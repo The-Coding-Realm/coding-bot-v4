@@ -83,7 +83,7 @@ async def check_invite(bot, content, channel=None):
     pattern = (
         r'discord(?:(?:(?:app)?\.com)\/invite|\.gg)/([a-zA-z0-9\-]{2,})\b')
     matches = re.findall(pattern, content, re.MULTILINE)
-    if message.channel.id in [
+    if channel.id in [
         754992725480439809,
         801641781028454420
     ]:
