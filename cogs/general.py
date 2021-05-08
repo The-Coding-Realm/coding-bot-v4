@@ -105,7 +105,7 @@ async def check_invite(bot, content, channel=None):
                     ]:
                 return True
     
-    return matches
+    return False
 
 
 async def filter_invite(bot, message=None, content=None):
