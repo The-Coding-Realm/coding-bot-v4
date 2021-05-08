@@ -102,6 +102,7 @@ async def check_invite(bot, content, channel=None):
                     782903894468198450,  # Swasville
                     336642139381301249,  # Discord.py
                     267624335836053506,  # Python
+                    412754940885467146,  # Blurple
                     ]:
                 return True
     
