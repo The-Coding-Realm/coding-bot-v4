@@ -24,13 +24,14 @@ from discord.ext import commands
 async def check_link(url):
     url = url_parser.get_url(url)._asdict()
     for blocked in [  # "*" means any
-        # [http[s]://][sub.]<name>.<domain>[/path]         # Reason
-        ###########################################################
+        # [http[s]://][sub.]<name>.<tld>[/path]                 # Reason
+        ################################################################
 
-        '*.grabify.link/*',                            # Ip Grabber
-        '*.pornhub.com/*',                                   # Porn
-        '*.guilded.gg/*',                             # Advertising
-        '*.tornadus.net/orange',                    # Discord Crasher
+        '*.grabify.link/*',                                 # Ip Grabber
+        '*.pornhub.com/*',                                        # Porn
+        '*.guilded.gg/*',                                  # Advertising
+        '*.tornadus.net/orange',                       # Discord Crasher
+        'giant.gfycat.com/SizzlingScrawnyBudgie.mp4',  # Discord Crasher
     ]:
         parsed_blocked = url_parser.get_url(
             blocked.replace('*', '-'))._asdict()
