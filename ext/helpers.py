@@ -64,6 +64,9 @@ class Context(commands.Context):
             f'{self.bot.get_user(self.bot.owner_ids[0])}'))
         return return_embed
 
+    async def send_error(self, *args, **kwargs):
+        await self.send(embed=self.error(*args, *kwargs))
+
 
 async def init_connection(connection):
     await connection.set_type_codec(
