@@ -64,8 +64,25 @@ class Context(commands.Context):
             f'{self.bot.get_user(self.bot.owner_ids[0])}'))
         return return_embed
 
+    def success(self, description=None, *args, **kwargs):
+        default = {
+            'title': 'Success',
+            'color': discord.Color.green(),
+            'timestamp': self.message.created_at,
+            'description': description
+        }
+        default.update(kwargs)
+        return_embed = self.Embed(*args, **default)
+        return_embed.set_author(name=self.author,
+                                icon_url=self.author.avatar_url)
+        return_embed.set_footer(icon_url=self.bot.user.avatar_url, text='Action successful')
+        return return_embed
+
     async def send_error(self, *args, **kwargs):
         await self.send(embed=self.error(*args, *kwargs))
+
+    async def send_success(self, *args, **kwargs):
+        await self.send(embed=self.success(*args, *kwargs))
 
 
 async def init_connection(connection):
