@@ -186,6 +186,9 @@ async def on_member_join(member):
         return
     if not member.name.isalnum():
         await member.edit(nick=unicodedata.normalize('NFKD',member.name))
+    if member.bot:
+        channel = member.guild.get_channel(743817386792058971)
+        return await channel.send(content=f'Bot added: {member.mention}')
     inviter = await bot.tracker.fetch_inviter(member)
     rules = member.guild.rules_channel.mention
     embed = discord.Embed(
