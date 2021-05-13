@@ -70,7 +70,7 @@ class Context(commands.Context):
             'color': discord.Color.green(),
             'timestamp': self.message.created_at,
             'description': description
-        }
+            }
         default.update(kwargs)
         return_embed = self.Embed(*args, **default)
         return_embed.set_author(name=self.author,
