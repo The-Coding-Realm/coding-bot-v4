@@ -452,7 +452,11 @@ async def after_invoke(ctx):
 
 @tasks.loop(minutes=2)
 async def status_change():
-    statuses = ['over TCA', 'you', 'swas', '@everyone', 'general chat']
+    statuses = ['over TCA', 'you', 'swas', '@everyone', 'general chat', 'discord', ',help', 'your mom', 
+                'bob and shadow argue', 'swas simp for false', 'new members', 'the staff team', 
+                random.choice(bot.get_guild(681882711945641997).get_role(795145820210462771).members).name, 
+                'helpers', 'code', 'mass murders', 'karen be an idiot', 'a video', 'watches', 'bob', 
+                'fight club', 'youtube', 'https://devbio.me/u/CodingBot']
     await bot.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching,
         name=random.choice(
