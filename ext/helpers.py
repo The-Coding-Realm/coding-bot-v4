@@ -4,6 +4,7 @@ import discord
 import sys
 import datetime
 import asyncpg
+import random
 import asyncio
 from discord.ext import commands
 
@@ -38,10 +39,20 @@ class Context(commands.Context):
     Embed = Embed
 
     def embed(self, description=None, *args, **kwargs):
+        discord_colors = {
+            'Blurple': 0x5865F2,
+            'Green': 0x57F287,
+            'Yellow': 0xFEE75C,
+            'Fuchsia': 0xEB459E,
+            'Red': 0xed4245,
+            'White': 0xFFFFFE,
+            'Black': 0x23272A
+            }
         default = {
             'timestamp': self.message.created_at,
-            'description': description
-        }
+            'description': description,
+            'color': discord_colors[random.choice(discord_colors)]
+            }
         default.update(kwargs)
         return_embed = self.Embed(*args, **default)
         return_embed.set_footer(icon_url=self.author.avatar_url,
