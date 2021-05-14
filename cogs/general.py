@@ -104,6 +104,7 @@ async def check_invite(bot, content, channel=None):
                     336642139381301249,  # Discord.py
                     267624335836053506,  # Python
                     412754940885467146,  # Blurple
+                    613425648685547541,  # Discord Developers
                     ]:
                 return True
     
