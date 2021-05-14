@@ -37,6 +37,22 @@ class AddBot(commands.Cog):
     @property
     def user_bot_role(self):
         return self.tca.get_role(842101681806376980) if self.tca else None
+    
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.channel.id == 842627777429504051:
+            try:
+                msg = await self.pending_channel.fetch_message(message.content.split()[0])
+                reason = ' '.join(message.clean_content.split()[2:])
+                data = json.loads(msg.content)
+                user = message.guild.get_member(data['user'])
+                bot = await self.bot.fetch_user(data['bot'])
+                await user.send(f'Your bot, {bot}, has been rejected from joining {message.guild.name}. \n**Reason:** {reason}')
+                await message.add_reaction(self.emoji.checkmark)
+            except:
+                await message.add_reaction(self.emoji.cross)
+                raise
+            
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
