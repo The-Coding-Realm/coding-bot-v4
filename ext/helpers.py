@@ -51,7 +51,7 @@ class Context(commands.Context):
         default = {
             'timestamp': self.message.created_at,
             'description': description,
-            'color': random.choice(discord_colors[color] for color in discord_colors)
+            'color': random.choice([discord_colors[color] for color in discord_colors])
             }
         default.update(kwargs)
         return_embed = self.Embed(*args, **default)
