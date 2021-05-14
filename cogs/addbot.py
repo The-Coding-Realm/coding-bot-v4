@@ -43,7 +43,7 @@ class AddBot(commands.Cog):
         if message.channel.id == 842627777429504051:
             try:
                 msg = await self.pending_channel.fetch_message(message.content.split()[0])
-                reason = ' '.join(message.clean_content.split()[2:])
+                reason = ' '.join(message.clean_content.split()[1:])
                 data = json.loads(msg.content)
                 user = message.guild.get_member(data['user'])
                 bot = await self.bot.fetch_user(data['bot'])
