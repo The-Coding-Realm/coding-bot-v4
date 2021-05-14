@@ -265,7 +265,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_error(event_method, *args, **kwargs):
-    await helpers.log_error(bot, event_method, *args, *kwargs)
+    await helpers.log_error(bot, event_method, *args, **kwargs)
 
 
 @bot.event
