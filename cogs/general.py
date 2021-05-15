@@ -343,7 +343,7 @@ class General(commands.Cog):
         elif common_divisor == 1:
             final = f'{numerator}/{denominator}'
         else:
-            final = f'{reduced_numerator}/{reduced_denominator}'
+            final = f'{str(float(reduced_numerator)).strip('0').strip('.')}/{str(float(reduced_denominator)).strip('0').strip('.')}'
         await ctx.send(embed=ctx.embed(title='Reduced Fraction', description=final))
 
 def setup(bot):
