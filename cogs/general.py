@@ -329,7 +329,7 @@ class General(commands.Cog):
     @math.command(name='simplify')
     async def _math_simplify(self, ctx, fraction):
         try:
-            numerator, denominator = (int x for x in fraction.split('/'))
+            numerator, denominator = (int(x) for x in fraction.split('/'))
         except:
             await ctx.send_error('Not a fraction')
         if denominator == 0:
