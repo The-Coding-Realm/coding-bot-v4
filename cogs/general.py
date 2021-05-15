@@ -344,7 +344,7 @@ class General(commands.Cog):
             final = f'{numerator}/{denominator}'
         else:
             final = f'{reduced_numerator}/{reduced_denominator}'
-        await ctx.send(embed=ctx.embed(title='Reduced Fraction', description=final)
+        await ctx.send(embed=ctx.embed(title='Reduced Fraction', description=final))
 
 def setup(bot):
     bot.add_cog(General(bot))
