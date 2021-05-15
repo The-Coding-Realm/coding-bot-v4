@@ -122,6 +122,14 @@ async def filter_invite(bot, message=None, content=None):
             f':warning: {message.author.mention} Invite links are not allowed '
             ':warning:'), delete_after=15)
         return True
+    
+def gcd(a, b):
+    """
+    calculate the greatest common divisor of a and b.
+    """
+    while b:
+        a, b = b, a % b
+    return a
 
 
 class General(commands.Cog):
@@ -313,6 +321,30 @@ class General(commands.Cog):
                 return str(n)+("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
             embed = ctx.embed(title = "Member info", description = f'{member.mention} was the {ord(all_members.index(member) + 1)} person to join')
             await ctx.send(embed=embed)
+            
+    @commands.group(invoke_without_command=True)
+    async def math(self, ctx):
+        await ctx.send_help('math')
+        
+    @math.command(name='simplify')
+    async def _math_simplify(self, ctx, fraction):
+        try:
+            numerator, denominator = (int x for x in fraction.split('/'))
+        except:
+            await ctx.send_error('Not a fraction')
+        if denominator == 0:
+            await ctx.send_error("Division by 0")
+
+        common_divisor = gcd(numerator, denominator)
+        (reduced_numerator, reduced_denominator) = (numerator / common_divisor, denominator / common_divisor)
+
+        if reduced_denominator == 1:
+            final = reduced_numerator
+        elif common_divisor == 1:
+            final = f'{numerator}/{denominator}'
+        else:
+            final = f'{reduced_numerator}/{reduced_denominator}'
+        await ctx.send(embed=ctx.embed(title='Reduced Fraction', description=final)
 
 def setup(bot):
     bot.add_cog(General(bot))
