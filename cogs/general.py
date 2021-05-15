@@ -331,9 +331,9 @@ class General(commands.Cog):
         try:
             numerator, denominator = (int(x) for x in fraction.split('/'))
         except:
-            await ctx.send_error('Not a fraction')
+            return await ctx.send_error('Not a fraction')
         if denominator == 0:
-            await ctx.send_error("Division by 0")
+            return await ctx.send_error("Division by 0")
 
         common_divisor = gcd(numerator, denominator)
         (reduced_numerator, reduced_denominator) = (numerator / common_divisor, denominator / common_divisor)
@@ -343,7 +343,7 @@ class General(commands.Cog):
         elif common_divisor == 1:
             final = f'{numerator}/{denominator}'
         else:
-            final = f'{str(float(reduced_numerator)).strip("0").strip(".")}/{str(float(reduced_denominator)).strip("0").strip(".")}'
+            final = f'{int(reduced_numerator)}/{int(reduced_denominator)}'
         await ctx.send(embed=ctx.embed(title='Reduced Fraction', description=final))
 
 def setup(bot):
