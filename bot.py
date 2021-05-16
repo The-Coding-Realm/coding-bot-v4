@@ -456,7 +456,9 @@ async def status_change():
                 'bob and shadow argue', 'swas simp for false', 'new members', 'the staff team', 
                 random.choice(bot.get_guild(681882711945641997).get_role(795145820210462771).members).name, 
                 'helpers', 'code', 'mass murders', 'karen be an idiot', 'a video', 'watches', 'bob', 
-                'fight club', 'youtube', 'https://devbio.me/u/CodingBot']
+                'fight club', 'youtube', 'https://devbio.me/u/CodingBot', 'ph', 'simps', 'people', 'my server',
+                'humans destroy the world', 'AI take over the world', 'female bots 😳', 'dinosaurs', 
+                'https://youtu.be/dQw4w9WgXcQ', 'idiots', 'the beginning of WWIII', 'verified bot tags with envy']
     await bot.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching,
         name=random.choice(
