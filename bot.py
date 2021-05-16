@@ -461,7 +461,8 @@ async def status_change():
                 'https://youtu.be/dQw4w9WgXcQ', 'idiots', 'the beginning of WWIII', 'verified bot tags with envy',
                 random.choice(bot.get_guild(681882711945641997).get_role(737517726737629214).members).name +
                 ' (Server Booster)', 'Server Boosters (boost to get your name on here)', 'OG members', 
-                "dalek rising from the ashes", 'spongebob', 'turtles', 'SQUIRREL!!!', 'people get banned']
+                "dalek rising from the ashes", 'spongebob', 'turtles', 'SQUIRREL!!!', 'people get banned', 'por...'
+                'my poggers discriminator', 'tux', 'linux overcome windows', 'bob get a gf', 'a documentary']
     await bot.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching,
         name=random.choice(
