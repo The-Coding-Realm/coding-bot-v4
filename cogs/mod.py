@@ -130,6 +130,17 @@ class Moderation(commands.Cog):
         await ctx.send(embed=discord.Embed(title=':hammer: Member Banned :hammer:',
             description=f'{target.mention} has been banned \nReason: {reason}'))
 
+    @commands.command(name='massban')
+    @commands.guild_only()
+    @commands.bot_has_guild_permissions(ban_members=True)
+    @commands.has_guild_permissions(ban_members=True)
+    async def _massban(self, ctx, reason, *targets: commands.Greedy[BelowMember]):
+        fails = 0
+        for member in targets:
+            fails += await self.execute(ctx, target.ban(reason=f'{ctx.author.id}: {reason}'))
+            if fails >= 5:
+                return await ctx.send_error('Too many failed bans, aborting.')
+
     @commands.command(name='unban')
     @commands.guild_only()
     @commands.bot_has_guild_permissions(ban_members=True)
