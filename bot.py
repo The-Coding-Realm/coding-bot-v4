@@ -458,7 +458,10 @@ async def status_change():
                 'helpers', 'code', 'mass murders', 'karen be an idiot', 'a video', 'watches', 'bob', 
                 'fight club', 'youtube', 'https://devbio.me/u/CodingBot', 'ph', 'simps', 'people', 'my server',
                 'humans destroy the world', 'AI take over the world', 'female bots 😳', 'dinosaurs', 
-                'https://youtu.be/dQw4w9WgXcQ', 'idiots', 'the beginning of WWIII', 'verified bot tags with envy']
+                'https://youtu.be/dQw4w9WgXcQ', 'idiots', 'the beginning of WWIII', 'verified bot tags with envy',
+                random.choice(bot.get_guild(681882711945641997).get_role(737517726737629214).members).name +
+                ' (Server Booster)', 'Server Boosters (boost to get your name on here)', 'OG members', 
+                "dalek rising from the ashes", 'spongebob', 'turtles', 'SQUIRREL!!!', 'people get banned']
     await bot.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching,
         name=random.choice(
