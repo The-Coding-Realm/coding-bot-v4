@@ -144,7 +144,7 @@ class AddBot(commands.Cog):
 
 
     @commands.command(name='addbot')
-    @commands.has_role(729927579645247562)
+    @commands.has_any_role(729927579645247562, 737517726737629214)
     @commands.cooldown(1, 86400, commands.BucketType.user)
     @commands.max_concurrency(1, commands.BucketType.user)
     async def _addbot(self, ctx, bot: discord.User = None, *, reason: str = None):
