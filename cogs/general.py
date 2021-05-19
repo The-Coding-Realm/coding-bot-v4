@@ -382,7 +382,7 @@ class General(commands.Cog):
             }
         
         def build_string(res):
-            return f'{status_map[int(res.status / 100)]} [{(res.url_obj.host + res.url_obj.path).strip('/')}]({res.url_obj}) ({res.status} {res.reason})'
+            return f'{status_map[int(res.status / 100)]} [{(res.url_obj.host + res.url_obj.path).strip("/")}]({res.url_obj}) ({res.status} {res.reason})'
         
         try:
             async with ctx.typing():
