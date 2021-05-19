@@ -355,8 +355,7 @@ class General(commands.Cog):
         await ctx.send(embed=ctx.embed(title='Reduced Fraction', description=final))
         
     @commands.command(name='redirects', aliases=['checklink'])
-    async def _redirects(self, ctx, url: convert_link)
-
+    async def _redirects(self, ctx, url: convert_link):
         r = await self.session.get(url)
 
         class RedirectMenu(menus.ListPageSource):
