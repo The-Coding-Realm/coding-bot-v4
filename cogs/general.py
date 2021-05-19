@@ -36,8 +36,11 @@ class RedirectMenu(menus.ListPageSource):
 
 
 def convert_link(content):
-    if re.match(r'^[http[s]]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$', content):
+    base_regex = r'(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$'
+    if re.match(r'^http[s]?://' + base_regex, content):
         return content
+    elif re.match(r'^' + base_regex):
+        return 'https://' + content
     else:
         raise ValueError('Not a link')
 
