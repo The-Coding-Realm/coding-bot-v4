@@ -384,7 +384,7 @@ class General(commands.Cog):
         for res in r.history:
             hl.append(build_string(res))
         hl.append(build_string(r))
-        pages = menus.MenuPages(source=RedirectMenu(hl), delete_message_after=True)
+        pages = menus.MenuPages(source=RedirectMenu(hl, ctx), delete_message_after=True)
         await pages.start(ctx)
 
 
