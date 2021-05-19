@@ -372,7 +372,6 @@ class General(commands.Cog):
         
     @commands.command(name='redirects', aliases=['checklink'])
     async def _redirects(self, ctx, url: convert_link):
-        r = await self.session.get(url)
         hl = []
         status_map = {
             1: '\U0001f504',
@@ -381,12 +380,18 @@ class General(commands.Cog):
             4: '\U0000274c',
             5: '\U000026a0'
             }
-
+        
         def build_string(res):
             return f'{status_map[int(res.status / 100)]} [{res.url_obj.host + res.url_obj.path}]({res.url_obj}) ({res.status} {res.reason})'
-        for res in r.history:
-            hl.append(build_string(res))
-        hl.append(build_string(r))
+        
+        try:
+            async with ctx.typing():
+                r = await self.session.get(url)
+                for res in r.history:
+                    hl.append(build_string(res))
+                hl.append(build_string(r))
+        except:
+            hl.append(f'\U0001f6ab Failed to connect to "{url}"' )
         pages = menus.MenuPages(source=RedirectMenu(hl, ctx), delete_message_after=True)
         await pages.start(ctx)
 
