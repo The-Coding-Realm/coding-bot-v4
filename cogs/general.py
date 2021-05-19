@@ -391,7 +391,7 @@ class General(commands.Cog):
                     hl.append(build_string(res))
                 hl.append(build_string(r))
         except:
-            hl.append(f'\U0001f6ab Failed to connect to "{url}"' )
+            return await ctx.send_error(f'Could not reach "{url}"')
         pages = menus.MenuPages(source=RedirectMenu(hl, ctx), delete_message_after=True)
         await pages.start(ctx)
 
