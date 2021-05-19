@@ -31,7 +31,7 @@ class RedirectMenu(menus.ListPageSource):
 
     async def format_page(self, menu, entry):
         embed = self.ctx.embed(title='Redirect Checker', description=entry)
-        embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()} | ' + embed.footer.text, icon_url=embed.icon_url)
+        embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()} | ' + embed.footer.text, icon_url=embed.footer.icon_url)
         return embed
 
 
