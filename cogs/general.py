@@ -39,7 +39,7 @@ def convert_link(content):
     base_regex = r'(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$'
     if re.match(r'^http[s]?://' + base_regex, content):
         return content
-    elif re.match(r'^' + base_regex):
+    elif re.match(r'^' + base_regex, content):
         return 'https://' + content
     else:
         raise ValueError('Not a link')
