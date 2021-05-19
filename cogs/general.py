@@ -12,6 +12,7 @@ import discord
 import time
 import asyncio
 import re
+import aiohttp
 import asyncpg
 import os
 import sys
@@ -19,7 +20,13 @@ import traceback
 import url_parser
 import inspect
 from jishaku.codeblocks import codeblock_converter
-from discord.ext import commands
+from discord.ext import commands, menus
+
+def convert_link(content):
+    if re.match(r'^http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$', content):
+        return content
+    else:
+        raise ValueError('Not a link')
 
 async def check_link(url):
     url = url_parser.get_url(url)._asdict()
@@ -136,6 +143,7 @@ class General(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.session = aiohttp.ClientSession()
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -345,6 +353,38 @@ class General(commands.Cog):
         else:
             final = f'{int(reduced_numerator)}/{int(reduced_denominator)}'
         await ctx.send(embed=ctx.embed(title='Reduced Fraction', description=final))
+        
+    @commands.command(name='redirects', aliases=['checklink'])
+    async def _redirects(self, ctx, url: convert_link)
+
+        r = await self.session.get(url)
+
+        class RedirectMenu(menus.ListPageSource):
+            def __init__(self, data):
+                grouped = [' \n'.join(data[i:i + 5]) for i in range(0, len(data), 5)]
+                super().__init__(grouped, per_page=1)
+
+            async def format_page(self, menu, entry):
+                embed = discord.Embed(title='Redirect Checker', description=entry)
+                embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()}')
+                return embed
+        hl = []
+        status_map = {
+            1: '\U0001f504',
+            2: '\U00002705',
+            3: '\U000027a1',
+            4: '\U0000274c',
+            5: '\U000026a0'
+            }
+
+        def build_string(res):
+            return f'{status_map[int(res.status / 100)]} [{res.url_obj.host + res.url_obj.path}]({res.url_obj}) ({res.status} {res.reason})'
+        for res in r.history:
+            hl.append(build_string(res))
+        hl.append(build_string(r))
+        pages = menus.MenuPages(source=RedirectMenu(hl), delete_message_after=True)
+        await pages.start(ctx)
+
 
 def setup(bot):
     bot.add_cog(General(bot))
