@@ -22,6 +22,19 @@ import inspect
 from jishaku.codeblocks import codeblock_converter
 from discord.ext import commands, menus
 
+
+class RedirectMenu(menus.ListPageSource):
+    def __init__(self, data, ctx):
+        grouped = [' \n'.join(data[i:i + 5]) for i in range(0, len(data), 5)]
+        super().__init__(grouped, per_page=1)
+        self.ctx = ctx
+
+    async def format_page(self, menu, entry):
+        embed = self.ctx.embed(title='Redirect Checker', description=entry)
+        embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()} | ' + embed.footer.text, icon_url=embed.icon_url)
+        return embed
+
+
 def convert_link(content):
     if re.match(r'^http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$', content):
         return content
@@ -357,16 +370,6 @@ class General(commands.Cog):
     @commands.command(name='redirects', aliases=['checklink'])
     async def _redirects(self, ctx, url: convert_link):
         r = await self.session.get(url)
-
-        class RedirectMenu(menus.ListPageSource):
-            def __init__(self, data):
-                grouped = [' \n'.join(data[i:i + 5]) for i in range(0, len(data), 5)]
-                super().__init__(grouped, per_page=1)
-
-            async def format_page(self, menu, entry):
-                embed = discord.Embed(title='Redirect Checker', description=entry)
-                embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()}')
-                return embed
         hl = []
         status_map = {
             1: '\U0001f504',
