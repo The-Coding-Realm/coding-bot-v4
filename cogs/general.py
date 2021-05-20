@@ -23,39 +23,54 @@ from jishaku.codeblocks import codeblock_converter
 from discord.ext import commands, menus
 
 
+class ClientSession(aiohttp.ClientSession):
+    def __init__(self, *args, **kwargs):
+        try:
+            default = {
+                # 'response_class': ClientResponse,
+                'rickroll_queries': ["rickroll","rick roll","rick astley","never gonna give you up"],
+                'block': [],
+                'timeout': aiohttp.ClientTimeout(total=300, sock_read=10)  # to prevent attacks relating to sending massive payload and lagging the client
+            }
+            default.update(kwargs)
+
+            self.rickroll_regex = re.compile('|'.join(default['rickroll_queries']), re.IGNORECASE)
+            self.block_list = default['block']
+            del default['rickroll_queries']
+            del default['block']
+            super().__init__(*args, **default)
+        except:
+            raise
+            super().__init__(*args, **kwargs)
+
+    async def _request(self, *args, **kwargs):
+        req = await super()._request(*args, **kwargs)
+        regex = self.rickroll_regex
+        content = str(await req.content.read())
+        req.rickroll = bool(regex.search(content))
+        blocked_urls = self.block_list
+        urls = [str(redirect.url_obj) for redirect in req.history]
+        req.blocked = bool(await check_links(urls, blocked_urls))
+        return req
+
+
 class RedirectMenu(menus.ListPageSource):
-    def __init__(self, data, ctx):
+    def __init__(self, data, ctx, rickroll=False):
         grouped = [' \n'.join(data[i:i + 5]) for i in range(0, len(data), 5)]
         super().__init__(grouped, per_page=1)
         self.ctx = ctx
+        self.rickroll = rickroll
 
     async def format_page(self, menu, entry):
         embed = self.ctx.embed(title='Redirect Checker', description=entry)
         embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()} | ' + embed.footer.text, icon_url=embed.footer.icon_url)
+        if self.rickroll:
+            embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/814195797380825088/844955986674712646/rick.gif')
         return embed
-
-
-def convert_link(content):
-    base_regex = r'(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$'
-    if re.match(r'^http[s]?://' + base_regex, content):
-        return content
-    elif re.match(r'^' + base_regex, content):
-        return 'https://' + content
-    else:
-        raise ValueError('Not a link')
-
-async def check_link(url):
+    
+async def check_link_base(url, block_list):
     url = url_parser.get_url(url)._asdict()
-    for blocked in [  # "*" means any
-        # [http[s]://][sub.]<name>.<tld>[/path]                 # Reason
-        ################################################################
-
-        '*.grabify.link/*',                                 # Ip Grabber
-        '*.pornhub.com/*',                                        # Porn
-        '*.guilded.gg/*',                                  # Advertising
-        '*.tornadus.net/orange',                       # Discord Crasher
-        'giant.gfycat.com/SizzlingScrawnyBudgie.mp4',  # Discord Crasher
-    ]:
+    for blocked in block_list:
         parsed_blocked = url_parser.get_url(
             blocked.replace('*', '-'))._asdict()
         delete = True
@@ -68,6 +83,33 @@ async def check_link(url):
                 break
         if delete:
             return True
+
+async def check_links(urls, block_list):
+    for url in urls:
+        if await check_link_base(url, block_list):
+            return True
+
+
+def convert_link(content):
+    base_regex = r'(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$'
+    if re.match(r'^http[s]?://' + base_regex, content):
+        return content
+    elif re.match(r'^' + base_regex, content):
+        return 'https://' + content
+    else:
+        raise ValueError('Not a link')
+
+async def check_link(url):
+    return await check_link_base(url, [  # "*" means any
+        # [http[s]://][sub.]<name>.<tld>[/path]                 # Reason
+        ################################################################
+
+        '*.grabify.link/*',                                 # Ip Grabber
+        '*.pornhub.com/*',                                        # Porn
+        '*.guilded.gg/*',                                  # Advertising
+        '*.tornadus.net/orange',                       # Discord Crasher
+        'giant.gfycat.com/SizzlingScrawnyBudgie.mp4',  # Discord Crasher
+    ])
 
 async def find_links(bot, content, channel=None):
     regex = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|'
@@ -159,7 +201,7 @@ class General(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.session = aiohttp.ClientSession()
+        self.session = ClientSession()
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -384,15 +426,17 @@ class General(commands.Cog):
         def build_string(res):
             return f'{status_map[int(res.status / 100)]} [{(res.url_obj.host + res.url_obj.path).strip("/")}]({res.url_obj}) ({res.status} {res.reason})'
         
+        rickroll = False
         try:
             async with ctx.typing():
                 r = await self.session.get(url)
                 for res in r.history:
                     hl.append(build_string(res))
                 hl.append(build_string(r))
+                rickroll = r.rickroll
         except:
             return await ctx.send_error(f'Could not reach "{url}"')
-        pages = menus.MenuPages(source=RedirectMenu(hl, ctx), delete_message_after=True)
+        pages = menus.MenuPages(source=RedirectMenu(hl, ctx, rickroll=rickroll), delete_message_after=True)
         await pages.start(ctx)
 
 
