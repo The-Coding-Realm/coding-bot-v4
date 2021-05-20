@@ -130,10 +130,8 @@ class Fun(commands.Cog):
             user = await self.bot.sr_api.mc_user(username)
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
-        embed = ctx.embed(title='minecraft user', description=user.formatted_history)
-        embed.add_field(name='username', value=user.name)
-        embed.add_field(name='uuid', value=user.uuid)
-        embed.add_field(name='history', value=user.history)
+        embed = ctx.embed(title=user.name, description=user.formatted_history)
+        embed.set_author(username=user.uuid)
         await ctx.send(embed=embed)
 
 
