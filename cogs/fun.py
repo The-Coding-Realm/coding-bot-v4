@@ -81,7 +81,37 @@ class Fun(commands.Cog):
             image = await self.bot.sr_api.get_gif('wink')
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
-        embed = discord.Embed(title='Wink')
+        embed = ctx.embed(title='Wink')
+        embed.set_image(url=image.url)
+        await ctx.send(embed=embed)
+
+    @anime.command(name='pat')
+    async def _anime_pat(self, ctx):
+        try:
+            image = await self.bot.sr_api.get_gif('pat')
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        embed = ctx.embed(title='Pat')
+        embed.set_image(url=image.url)
+        await ctx.send(embed=embed)
+
+    @anime.command(name='hug')
+    async def _anime_hug(self, ctx):
+        try:
+            image = await self.bot.sr_api.get_gif('hug')
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        embed = ctx.embed(title='Hug')
+        embed.set_image(url=image.url)
+        await ctx.send(embed=embed)
+
+    @anime.command(name='facepalm', aliases=['fp'])
+    async def _anime_facepalm(self, ctx):
+        try:
+            image = await self.bot.sr_api.get_gif('face-palm')
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        embed = ctx.embed(title='Face Palm')
         embed.set_image(url=image.url)
         await ctx.send(embed=embed)
 
