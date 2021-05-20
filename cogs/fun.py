@@ -66,7 +66,7 @@ class Fun(commands.Cog):
     @commands.command(name="token", aliases=['bottoken', 'faketoken'])
     async def _token(self, ctx):
         try:
-            token = await self.bot.sr_api.get_token()
+            token = await self.bot.sr_api.bot_token()
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
         await ctx.send(token)
