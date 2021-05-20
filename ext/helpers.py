@@ -89,6 +89,9 @@ class Context(commands.Context):
         return_embed.set_footer(icon_url=self.bot.user.avatar_url, text='Action successful')
         return return_embed
 
+    async def send_embed(self, *args, **kwargs):
+        await self.send(embed=self.embed(*args, *kwargs))
+
     async def send_error(self, *args, **kwargs):
         await self.send(embed=self.error(*args, *kwargs))
 
