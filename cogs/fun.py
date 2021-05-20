@@ -30,7 +30,7 @@ class Fun(commands.Cog):
         impostor = percentage_bool(10) if impostor is None else impostor
         try:
             gif = self.bot.sr_api.amongus(user.name, user.avatar_url, impostor)
-        except:
+        except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
         buf = io.BytesIO(await gif.read())
         await ctx.send(file=discord.File(buf, filename=f"{user.name}.gif"))
@@ -40,7 +40,7 @@ class Fun(commands.Cog):
     async def _pet(self, ctx, user: discord.member):
         try:
             gif = self.bot.sr_api.petpet(user.avatar_url)
-        except:
+        except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
         buf = io.BytesIO(await gif.read())
         await ctx.send(file=discord.File(buf, filename=f"{user.name}.gif"))
@@ -57,11 +57,19 @@ class Fun(commands.Cog):
             response = await self.bot.sr_api.get_animal(animal)
             image = response['image']
             fact = response['fact']
-        except:
+        except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
         embed = ctx.embed(title=animal.title(), description=fact)
         embed.set_image(url=image)
         await ctx.send(embed=embed)
+
+    @commands.command(name="token", aliases=['bottoken', 'faketoken'])
+    async def _token(self, ctx):
+        try:
+            token = await self.bot.sr_api.get_token()
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        await ctx.send(token)
 
 
 def setup(bot):
