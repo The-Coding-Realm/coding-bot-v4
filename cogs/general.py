@@ -150,7 +150,7 @@ async def filter_links(cog, message):
             f':warning: {message.author.mention} That link is not '
             'allowed :warning:'), delete_after=15)
     elif checked == 2:
-        await message.add_reaction(bot.get_emoji(844957433511542794))
+        await message.add_reaction(cog.bot.get_emoji(844957433511542794))
     return
 
 async def check_invite(bot, content, channel=None):
