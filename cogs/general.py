@@ -415,7 +415,7 @@ class General(commands.Cog):
         if reduced_denominator == 1:
             final = reduced_numerator
         elif common_divisor == 1:
-            final = f'{numerator}/{denominator}'
+            final = f'{int(numerator)}/{int(denominator)}'
         else:
             final = f'{int(reduced_numerator)}/{int(reduced_denominator)}'
         await ctx.send(embed=ctx.embed(title='Reduced Fraction', description=final))
