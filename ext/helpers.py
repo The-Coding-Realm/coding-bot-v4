@@ -90,13 +90,13 @@ class Context(commands.Context):
         return return_embed
 
     async def send_embed(self, *args, **kwargs):
-        await self.send(embed=self.embed(*args, *kwargs))
+        await self.send(embed=self.embed(*args, **kwargs))
 
     async def send_error(self, *args, **kwargs):
-        await self.send(embed=self.error(*args, *kwargs))
+        await self.send(embed=self.error(*args, **kwargs))
 
     async def send_success(self, *args, **kwargs):
-        await self.send(embed=self.success(*args, *kwargs))
+        await self.send(embed=self.success(*args, **kwargs))
 
 
 async def init_connection(connection):
