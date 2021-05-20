@@ -127,10 +127,15 @@ class Fun(commands.Cog):
     @commands.command(name='minecraft', aliases=['mc', 'mcuser'])
     async def _minecraft(self, ctx, username):
         try:
-            resp = await self.bot.sr_api.mc_user(username)
+            user = await self.bot.sr_api.mc_user(username)
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
-        await ctx.send_embed(title='minecraft user', description=resp)
+        embed = ctx.send_embed(title='minecraft user', description=user.formatted_history)
+        embed.add_field(name='username', value=user.name)
+        embed.add_field(name='uuid', value=user.uuid)
+        embed.add_field(name='history', value=user.history)
+        await ctx.send_embed(title='minecraft user')
+
 
 
 def setup(bot):
