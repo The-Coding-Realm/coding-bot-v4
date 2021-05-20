@@ -413,7 +413,7 @@ class General(commands.Cog):
         (reduced_numerator, reduced_denominator) = (numerator / common_divisor, denominator / common_divisor)
 
         if reduced_denominator == 1:
-            final = reduced_numerator
+            final = int(reduced_numerator)
         elif common_divisor == 1:
             final = f'{int(numerator)}/{int(denominator)}'
         else:
