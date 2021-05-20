@@ -115,6 +115,23 @@ class Fun(commands.Cog):
         embed.set_image(url=image.url)
         await ctx.send(embed=embed)
 
+    @commands.command(name='chatbot', aliases=['chat'])
+    @is_premium()
+    async def _chatbot(self, ctx, message):
+        try:
+            reply = await self.bot.sr_api.chatbot(message)
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        await ctx.send_embed(title='Chatbot Says', description=reply)
+
+    @commands.command(name='minecraft', aliases=['mc', 'mcuser'])
+    async def _minecraft(self, ctx, username):
+        try:
+            resp = await self.bot.sr_api.mc_user(username)
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        await ctx.send_embed(title='minecraft user', description=resp)
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
