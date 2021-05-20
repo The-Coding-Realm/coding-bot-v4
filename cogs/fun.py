@@ -71,6 +71,20 @@ class Fun(commands.Cog):
             return await ctx.send_error('Error with API, please try again later')
         await ctx.send(token)
 
+    @commands.group(invoke_without_command=True)
+    async def anime(self, ctx):
+        await ctx.send_help('anime')
+
+    @anime.command(name='wink')
+    async def _anime_wink(self, ctx):
+        try:
+            image = await self.bot.sr_api.get_gif('wink')
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        embed = discord.Embed(title='Wink')
+        embed.set_image(url=image.url)
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
