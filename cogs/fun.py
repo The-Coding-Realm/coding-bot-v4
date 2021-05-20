@@ -131,7 +131,7 @@ class Fun(commands.Cog):
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
         embed = ctx.embed(title=user.name, description=user.formatted_history)
-        embed.set_author(name=user.uuid)
+        embed.set_author(name=f'UUID: {user.uuid}')
         await ctx.send(embed=embed)
 
 
