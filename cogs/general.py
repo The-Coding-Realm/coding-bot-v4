@@ -111,38 +111,46 @@ async def check_link(url):
         'giant.gfycat.com/SizzlingScrawnyBudgie.mp4',  # Discord Crasher
     ])
 
-async def find_links(bot, content, channel=None):
+async def find_links(cog, content, channel=None):
     regex = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|'
              r'(?:%[0-9a-fA-F][0-9a-fA-F]))+')
     matches = re.findall(regex, content, re.MULTILINE)
     urls = []
+    rickroll = False
     for link in matches:
         location = link
         try:
             for i in range(10):
-                if await check_link(location) or await check_invite(bot, location, channel): 
-                    return True
-                async with bot.http._HTTPClient__session.get(location, allow_redirects=False) as resp:
+                if await check_link(location) or await check_invite(cog.bot, location, channel): 
+                    return 1
+                async with cog.session.get(location, allow_redirects=False) as resp:
                     location = resp.headers.get('Location')
+                    if resp.rickroll:
+                        rickroll = True
                     if location == resp.real_url or location is None:
                         break
         except Exception as error:
             print('Ignoring exception in url filter {}:'.format(content), file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+    if rickroll:
+        return 2
 
 
-async def filter_links(bot, message):
+async def filter_links(cog, message):
     if ((not isinstance(message.author, discord.Member)) or
             message.author.permissions_in(message.channel).manage_messages):
         return
-    if await find_links(bot, message.content, message.channel):
-      try:
-          await message.delete()
-      except discord.errors.NotFound:
-          pass
-      await message.channel.send((
-          f':warning: {message.author.mention} That link is not '
-          'allowed :warning:'), delete_after=15)
+    checked = await find_links(cog, message.content, message.channel)
+    if checked == 1:
+        try:
+            await message.delete()
+        except discord.errors.NotFound:
+            pass
+        await message.channel.send((
+            f':warning: {message.author.mention} That link is not '
+            'allowed :warning:'), delete_after=15)
+    elif checked == 2:
+        await message.add_reaction(bot.get_emoji(844957433511542794))
     return
 
 async def check_invite(bot, content, channel=None):
@@ -214,7 +222,7 @@ class General(commands.Cog):
             if after.guild.id == 681882711945641997:
                 invite = await filter_invite(self.bot, after)
                 if not invite:
-                    await filter_links(self.bot, after)
+                    await filter_links(self, after)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -222,7 +230,7 @@ class General(commands.Cog):
             if message.guild.id == 681882711945641997:
                 invite = await filter_invite(self.bot, message)
                 if not invite:
-                    await filter_links(self.bot, message)
+                    await filter_links(self, message)
 
     @commands.command(name="source", aliases=["github", "code"])
     @commands.cooldown(1, 1, commands.BucketType.channel)
