@@ -33,7 +33,7 @@ class Fun(commands.Cog):
         except:
             return await ctx.send_error('Error with API, please try again later')
         buf = io.BytesIO(await gif.read())
-        await ctx.send(file=discord.File(buf, filename=f"{member.name}.gif"))
+        await ctx.send(file=discord.File(buf, filename=f"{user.name}.gif"))
 
     @commands.command(name='pet', aliases=['petpet'])
     @is_premium()
@@ -43,7 +43,7 @@ class Fun(commands.Cog):
         except:
             return await ctx.send_error('Error with API, please try again later')
         buf = io.BytesIO(await gif.read())
-        await ctx.send(file=discord.File(buf, filename=f"{member.name}.gif"))
+        await ctx.send(file=discord.File(buf, filename=f"{user.name}.gif"))
 
     @commands.command(name='animal')
     async def _animal(self, ctx, animal=None):
