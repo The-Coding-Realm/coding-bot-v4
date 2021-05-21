@@ -212,6 +212,9 @@ class Fun(commands.Cog):
         pages = menus.MenuPages(source=LyricsMenu(lyrics, ctx), delete_message_after=True)
         await pages.start(ctx)
 
+    async def cog_before_invoke(self, ctx):
+        await ctx.trigger_typing
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
