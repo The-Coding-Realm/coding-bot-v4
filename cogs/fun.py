@@ -204,6 +204,9 @@ class Fun(commands.Cog):
 
     @commands.command(name='owolyrics')
     async def _owolyrics(self, ctx, *, song):
+        """
+        get owo song lyrics
+        """
         try:
             lyrics = await self.bot.sr_api.get_lyrics(song, owo=True)
         except:  # noqa: E722
@@ -214,10 +217,16 @@ class Fun(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def binary(self, ctx):
+        """
+        binary commands
+        """
         await ctx.send_help('binary')
 
     @binary.command(name='encode')
     async def _binary_encode(self, ctx, *, text):
+        """
+        encode binary
+        """
         try:
             binary = await self.bot.sr_api.encode_binary(text)
         except:  # noqa: E722
@@ -226,6 +235,9 @@ class Fun(commands.Cog):
 
     @binary.command(name='decode')
     async def _binary_decode(self, ctx, *, binary):
+        """
+        decode binary
+        """
         try:
             text = await self.bot.sr_api.decode_binary(binary)
         except:  # noqa: E722
@@ -234,10 +246,16 @@ class Fun(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def base64(self, ctx):
+        """
+        base64 commands
+        """
         await ctx.send_help('base64')
 
     @base64.command(name='encode')
     async def _base64_encode(self, ctx, *, text):
+        """
+        encode base64
+        """
         try:
             b64 = await self.bot.sr_api.encode_base64(text)
         except:  # noqa: E722
@@ -246,6 +264,9 @@ class Fun(commands.Cog):
 
     @base64.command(name='decode')
     async def _base64_decode(self, ctx, *, base64):
+        """
+        decode base64
+        """
         try:
             text = await self.bot.sr_api.decode_base64(base64)
         except:  # noqa: E722
@@ -254,6 +275,9 @@ class Fun(commands.Cog):
 
     @commands.command(name="meme")
     async def _meme(self, ctx):
+        """
+        you are a meem
+        """
         try:
             meme = await self.bot.sr_api.get_meme()
         except:  # noqa: E722
