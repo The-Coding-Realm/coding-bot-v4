@@ -213,7 +213,8 @@ class Fun(commands.Cog):
         await pages.start(ctx)
 
     async def cog_before_invoke(self, ctx):
-        await ctx.trigger_typing
+        await ctx.trigger_typing()
+
 
 
 def setup(bot):
