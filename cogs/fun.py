@@ -262,7 +262,7 @@ class Fun(commands.Cog):
         embed.set_image(url=meme.image)
         embed.set_footer(text=f'{meme.category} Meme {meme.id} | ' + embed.footer.text,
                          icon_url=embed.footer.icon_url)
-        await ctx.send_embed()
+        await ctx.send(embed=embed)
 
 
     async def cog_before_invoke(self, ctx):
