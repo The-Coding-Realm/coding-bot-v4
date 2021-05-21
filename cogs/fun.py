@@ -212,9 +212,49 @@ class Fun(commands.Cog):
         pages = menus.MenuPages(source=LyricsMenu(lyrics, ctx), delete_message_after=True)
         await pages.start(ctx)
 
+    @commands.group(invoke_without_command=True)
+    async def binary(self, ctx):
+        await ctx.send_help('binary')
+
+    @binary.command(name='encode')
+    async def _binary_encode(self, ctx, *, text):
+        try:
+            binary = await self.bot.sr_api.encode_binary(text)
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        await ctx.send_embed(title='Binary Output', description=binary)
+
+    @binary.command(name='decode')
+    async def _binary_decode(self, ctx, *, binary):
+        try:
+            text = await self.bot.sr_api.decode_binary(binary)
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        await ctx.send_embed(title='Text Output', description=text)
+
+    @commands.group(invoke_without_command=True)
+    async def base64(self, ctx):
+        await ctx.send_help('base64')
+
+    @base64.command(name='encode')
+    async def _base64_encode(self, ctx, *, text):
+        try:
+            b64 = await self.bot.sr_api.encode_base64(text)
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        await ctx.send_embed(title='Base64 Output', description=b64)
+
+    @base64.command(name='decode')
+    async def _base64_decode(self, ctx, *, base64):
+        try:
+            text = await self.bot.sr_api.decode_base64(base64)
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        await ctx.send_embed(title='Text Output', description=text)
+
+
     async def cog_before_invoke(self, ctx):
         await ctx.trigger_typing()
-
 
 
 def setup(bot):
