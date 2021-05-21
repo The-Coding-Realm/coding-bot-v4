@@ -202,6 +202,16 @@ class Fun(commands.Cog):
         pages = menus.MenuPages(source=LyricsMenu(lyrics, ctx), delete_message_after=True)
         await pages.start(ctx)
 
+    @commands.command(name='owolyrics')
+    async def _owolyrics(self, ctx, *, song):
+        try:
+            lyrics = await self.bot.sr_api.get_lyrics(song, owo=True)
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        lyrics.title += ' (OwO)'
+        pages = menus.MenuPages(source=LyricsMenu(lyrics, ctx), delete_message_after=True)
+        await pages.start(ctx)
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
