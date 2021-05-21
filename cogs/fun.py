@@ -19,26 +19,26 @@ def is_premium():
 class LyricsMenu(menus.ListPageSource):
     def __init__(self, data, ctx):
         total = []
-        current = ''
+        current = []
         for line in data.lyrics.splitlines():
-            if len(current + line) <= 2048 and len((current + line).splitlines()) <= 25:
-                current += line
+            if len('\n'.join(current) + line) <= 2048 and len(('\n'.join(current) + line).splitlines()) <= 25:
+                current.append(line)
             else:
-                total.append(current)
-                current = ''
+                total.append('\n'.join(current))
+                current = []
         if current:
-            total.append(current)
+            total.append('\n'.join(current))
         super().__init__(total, per_page=1)
-        self.ctx = ctx
-        self.data = data
+        self.embed = ctx.embed(title=data.title, url=data.link)
+        self.embed.set_author(name=data.author)
+        if data.thumbnail:
+            self.embed.set_thumbnail(url=data.thumbnail)
 
     async def format_page(self, menu, entry):
-        embed = self.ctx.embed(title=self.data.title, description=entry, url=self.data.link)
+        embed = self.embed.copy()
+        embed.description = entry
         embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()} | ' + embed.footer.text,
                          icon_url=embed.footer.icon_url)
-        embed.set_author(name=self.data.author)
-        if self.data.thumbnail:
-            embed.set_thumbnail(url=self.data.thumbnail)
         return embed
 
 
