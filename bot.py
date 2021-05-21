@@ -125,6 +125,7 @@ bot.disabled = init_data['disabled']
 bot.active_cogs = init_data['cogs']
 bot.load_extension('jishaku')
 bot.sr_api = sr_api.Client()
+bot.sr_api_premium = False
 bot.processing_commands = 0
 bot.slash = SlashCommand(bot, sync_commands=True)
 for cog in bot.active_cogs:

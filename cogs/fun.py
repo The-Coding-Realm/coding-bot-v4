@@ -8,14 +8,16 @@ def percentage_bool(x: int) -> bool:
         raise ValueError('Number must be ≤ 100')
     return bool(int(random.choice(list("1" * x) + list("0" * (100 - x)))))
 
+
+def is_premium():
+    def predicate(ctx):
+        return ctx.bot.sr_api_premium
+    return commands.check(predicate)
+
+
 class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.sr_api_premium = False
-
-    @commands.check
-    async def is_premium(self, ctx):
-        return self.sr_api_premium
 
     @commands.command(name='eject', aliases=['amongus'])
     @is_premium()
