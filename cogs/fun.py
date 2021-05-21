@@ -30,7 +30,7 @@ class LyricsMenu(menus.ListPageSource):
         self.ctx = ctx
         self.data = data
 
-    async def format_page(self, menu, entries):
+    async def format_page(self, menu, entry):
         embed = self.ctx.embed(title=self.data.title, description=entry, url=self.data.link)
         embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()} | ' + embed.footer.text,
                          icon_url=embed.footer.icon_url)
