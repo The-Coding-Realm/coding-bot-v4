@@ -1,7 +1,7 @@
 import discord
 import random
 import io
-from discord.ext import commands
+from discord.ext import commands, menus
 
 
 def percentage_bool(x: int) -> bool:
@@ -14,6 +14,30 @@ def is_premium():
     def predicate(ctx):
         return ctx.bot.sr_api_premium
     return commands.check(predicate)
+
+
+class LyricsMenu(menus.ListPageSource):
+    def __init__(self, data, ctx):
+        total = []
+        current = ''
+        for line in data.lyrics.splitlines():
+            if len(current + line) <= 2048 and len((current + line).splitlines()) <= 25:
+                current += line
+            else:
+                total.append(current)
+                current = ''
+        super().__init__(total, per_page=1)
+        self.ctx = ctx
+        self.data = data
+
+    async def format_page(self, menu, entries):
+        embed = self.ctx.embed(title=self.data.title, description=entry, url=self.data.link)
+        embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()} | ' + embed.footer.text,
+                         icon_url=embed.footer.icon_url)
+        embed.set_author(name=self.data.author)
+        if self.data.thumbnail:
+            embed.set_thumbnail(url=self.data.thumbnail)
+        return embed
 
 
 class Fun(commands.Cog):
@@ -38,6 +62,9 @@ class Fun(commands.Cog):
     @commands.command(name='pet', aliases=['petpet'])
     @is_premium()
     async def _pet(self, ctx, user: discord.member):
+        """
+        Pet a user
+        """
         try:
             gif = self.bot.sr_api.petpet(user.avatar_url)
         except:  # noqa: E722
@@ -47,6 +74,9 @@ class Fun(commands.Cog):
 
     @commands.command(name='animal')
     async def _animal(self, ctx, animal=None):
+        """
+        Options are "dog", "cat", "panda", "fox", "red_panda", "koala", "birb", "bird", "racoon", "raccoon", "kangaroo"
+        """
         options = ("dog", "cat", "panda", "fox", "red_panda", "koala", "birb",
                    "bird", "racoon", "raccoon", "kangaroo")
         if not animal:
@@ -65,6 +95,9 @@ class Fun(commands.Cog):
 
     @commands.command(name="token", aliases=['bottoken', 'faketoken'])
     async def _token(self, ctx):
+        """
+        Get a discord bot token lol
+        """
         try:
             token = await self.bot.sr_api.bot_token()
         except:  # noqa: E722
@@ -73,10 +106,16 @@ class Fun(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def anime(self, ctx):
+        """
+        Anime gif commands
+        """
         await ctx.send_help('anime')
 
     @anime.command(name='wink')
     async def _anime_wink(self, ctx):
+        """
+        anime wink gif
+        """
         try:
             image = await self.bot.sr_api.get_gif('wink')
         except:  # noqa: E722
@@ -87,6 +126,9 @@ class Fun(commands.Cog):
 
     @anime.command(name='pat')
     async def _anime_pat(self, ctx):
+        """
+        anime pat gif
+        """
         try:
             image = await self.bot.sr_api.get_gif('pat')
         except:  # noqa: E722
@@ -97,6 +139,9 @@ class Fun(commands.Cog):
 
     @anime.command(name='hug')
     async def _anime_hug(self, ctx):
+        """
+        anime hug gif
+        """
         try:
             image = await self.bot.sr_api.get_gif('hug')
         except:  # noqa: E722
@@ -107,6 +152,9 @@ class Fun(commands.Cog):
 
     @anime.command(name='facepalm', aliases=['fp'])
     async def _anime_facepalm(self, ctx):
+        """
+        anime facepalm gif
+        """
         try:
             image = await self.bot.sr_api.get_gif('face-palm')
         except:  # noqa: E722
@@ -117,7 +165,10 @@ class Fun(commands.Cog):
 
     @commands.command(name='chatbot', aliases=['chat'])
     @is_premium()
-    async def _chatbot(self, ctx, message):
+    async def _chatbot(self, ctx, *, message):
+        """
+        ai chatbot
+        """
         try:
             reply = await self.bot.sr_api.chatbot(message)
         except:  # noqa: E722
@@ -125,7 +176,10 @@ class Fun(commands.Cog):
         await ctx.send_embed(title='Chatbot Says', description=reply)
 
     @commands.command(name='minecraft', aliases=['mc', 'mcuser'])
-    async def _minecraft(self, ctx, username):
+    async def _minecraft(self, ctx, *, username):
+        """
+        minecraft user lookup
+        """
         try:
             user = await self.bot.sr_api.mc_user(username)
         except:  # noqa: E722
@@ -134,6 +188,17 @@ class Fun(commands.Cog):
         embed.set_author(name=f'UUID: {user.uuid}')
         await ctx.send(embed=embed)
 
+    @commands.command(name='lyrics')
+    async def _lyrics(self, ctx, *, song):
+        """
+        get song lyrics
+        """
+        try:
+            lyrics = await self.bot.sr_api.get_lyrics(song)
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        pages = menus.MenuPages(source=LyricsMenu(lyrics, ctx), delete_message_after=True)
+        await pages.start(ctx)
 
 
 def setup(bot):
