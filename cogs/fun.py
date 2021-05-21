@@ -1,5 +1,6 @@
 import discord
 import random
+import io
 from discord.ext import commands
 
 
@@ -31,7 +32,7 @@ class Fun(commands.Cog):
             gif = self.bot.sr_api.amongus(user.name, user.avatar_url, impostor)
         except:
             return await ctx.send_error('Error with API, please try again later')
-        buf = BytesIO(await gif.read())
+        buf = io.BytesIO(await gif.read())
         await ctx.send(file=discord.File(buf, filename=f"{member.name}.gif"))
 
     @commands.command(name='pet', aliases=['petpet'])
@@ -41,7 +42,7 @@ class Fun(commands.Cog):
             gif = self.bot.sr_api.petpet(user.avatar_url)
         except:
             return await ctx.send_error('Error with API, please try again later')
-        buf = BytesIO(await gif.read())
+        buf = io.BytesIO(await gif.read())
         await ctx.send(file=discord.File(buf, filename=f"{member.name}.gif"))
 
     @commands.command(name='animal')
