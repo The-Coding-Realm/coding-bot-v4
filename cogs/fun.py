@@ -26,6 +26,8 @@ class LyricsMenu(menus.ListPageSource):
             else:
                 total.append(current)
                 current = ''
+        if current:
+            total.append(current)
         super().__init__(total, per_page=1)
         self.ctx = ctx
         self.data = data
