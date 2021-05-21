@@ -14,3 +14,4 @@ url-parser
 humanize
 Pillow
 git+https://github.com/Rapptz/discord-ext-menus
+git+https://github.com/BobDotCom/sr_api

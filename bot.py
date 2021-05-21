@@ -8,6 +8,7 @@ import random
 import asyncio
 import DiscordUtils
 import io
+import sr_api
 import humanize
 import aiohttp
 import asyncpg
@@ -123,6 +124,7 @@ bot.blacklisted = init_data['blacklisted']
 bot.disabled = init_data['disabled']
 bot.active_cogs = init_data['cogs']
 bot.load_extension('jishaku')
+bot.sr_api = sr_api.Client()
 bot.processing_commands = 0
 bot.slash = SlashCommand(bot, sync_commands=True)
 for cog in bot.active_cogs:
