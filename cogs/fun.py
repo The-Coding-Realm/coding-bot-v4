@@ -252,6 +252,18 @@ class Fun(commands.Cog):
             return await ctx.send_error('Error with API, please try again later')
         await ctx.send_embed(title='Text Output', description=text)
 
+    @commands.command(name="meme")
+    async def _meme(self, ctx):
+        try:
+            meme = await self.bot.sr_api.get_meme()
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        embed = ctx.embed(title='Meme', description=meme.caption)
+        embed.set_image(url=meme.image)
+        embed.set_footer(text=f'{meme.category} Meme {meme.id} | ' + embed.footer.text,
+                         icon_url=embed.footer.icon_url)
+        await ctx.send_embed()
+
 
     async def cog_before_invoke(self, ctx):
         await ctx.trigger_typing()
