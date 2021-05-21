@@ -21,7 +21,7 @@ class Fun(commands.Cog):
 
     @commands.command(name='eject', aliases=['amongus'])
     @is_premium()
-    async def _eject(self, user: discord.Member = None, impostor: bool = None):
+    async def _eject(self, ctx, user: discord.Member = None, impostor: bool = None):
         """
         Eject someone. Among us is cringe tho
         """
@@ -36,7 +36,7 @@ class Fun(commands.Cog):
 
     @commands.command(name='pet', aliases=['petpet'])
     @is_premium()
-    async def _pet(self, user: discord.member):
+    async def _pet(self, ctx, user: discord.member):
         try:
             gif = self.bot.sr_api.petpet(user.avatar_url)
         except:
@@ -45,7 +45,7 @@ class Fun(commands.Cog):
         await ctx.send(file=discord.File(buf, filename=f"{member.name}.gif"))
 
     @commands.command(name='animal')
-    async def _animal(self, animal=None):
+    async def _animal(self, ctx, animal=None):
         options = ("dog", "cat", "panda", "fox", "red_panda", "koala", "birb",
                    "bird", "racoon", "raccoon", "kangaroo")
         if not animal:
