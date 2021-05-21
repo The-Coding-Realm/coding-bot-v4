@@ -260,7 +260,7 @@ class Fun(commands.Cog):
             return await ctx.send_error('Error with API, please try again later')
         embed = ctx.embed(title='Meme', description=meme.caption)
         embed.set_image(url=meme.image)
-        embed.set_footer(text=f'{meme.category} Meme {meme.id} | ' + embed.footer.text,
+        embed.set_footer(text=f'Meme {meme.id} ({meme.category}) | ' + embed.footer.text,
                          icon_url=embed.footer.icon_url)
         await ctx.send(embed=embed)
 
