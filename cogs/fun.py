@@ -50,7 +50,7 @@ class LyricsMenu(BaseMenu):
 
 class DefinitionMenu(BaseMenu):
     def __init__(self, data, ctx):
-        super().__init__(data.definition.strip('\n'), ctx)
+        super().__init__(data.definition.strip('\n').strip(' '), ctx)
         self.embed.title = data.word.title()
 
 
