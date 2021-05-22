@@ -311,8 +311,10 @@ class General(commands.Cog):
     @commands.command(name='ping')
     async def _ping(self, ctx):
         loading = '<a:DiscordSpin:795546311319355393>'
+        ws_ping = f'{(self.bot.latency * 1000):.2f}ms ' \
+                  f'({humanize.precisedelta(datetime.timedelta(seconds=self.bot.latency))})'
         embed = ctx.embed(title='PONG!  :ping_pong:', description=(
-            f'**{loading} Websocket:** {(self.bot.latency * 1000):.2f}ms\n**'
+            f'**{loading} Websocket:** {ws_ping}\n**'
             ':repeat: Round-Trip:** Calculating...\n**:elephant: Database:** '
             'Calculating...'))
         start = time.perf_counter()
@@ -320,9 +322,10 @@ class General(commands.Cog):
         end = time.perf_counter()
         await asyncio.sleep(0.5)
         trip = end - start
+        rt_ping = f'{(trip * 1000):.2f}ms ({humanize.precisedelta(datetime.timedelta(seconds=trip))})'
         embed.description = (
-            f'**{loading} Websocket:** {(self.bot.latency * 1000):.2f}ms\n**'
-            f':repeat: Round-Trip:** {(trip * 1000):.2f}ms\n**:elephant: '
+            f'**{loading} Websocket:** {ws_ping}\n**'
+            f':repeat: Round-Trip:** {rt_ping}\n**:elephant: '
             'Database:** Calculating...')
         await message.edit(embed=embed)
         await asyncio.sleep(0.5)
@@ -333,14 +336,15 @@ class General(commands.Cog):
                     'SELECT prefixes FROM serverconf WHERE id = 0')
             end = time.perf_counter()
             database = end - start
+            db_ping = f'{(database * 1000):.2f}ms ({humanize.precisedelta(datetime.timedelta(seconds=database))})'
             embed.description = (
-                f'**{loading} Websocket:** {(self.bot.latency * 1000):.2f}ms\n'
-                f'**:repeat: Round-Trip:** {(trip * 1000):.2f}ms\n**:elephant:'
-                f' Database:** {(database * 1000):.2f}ms')
+                f'**{loading} Websocket:** {ws_ping}\n'
+                f'**:repeat: Round-Trip:** {rt_ping}\n**:elephant:'
+                f' Database:** {db_ping}')
         except asyncpg.exceptions._base.InterfaceError:
             embed.description = (
-                f'**{loading} Websocket:** {(self.bot.latency * 1000):.2f}ms'
-                f'\n**:repeat: Round-Trip:** {(trip * 1000):.2f}ms\n**'
+                f'**{loading} Websocket:** {ws_ping}'
+                f'\n**:repeat: Round-Trip:** {rt_ping}\n**'
                 ':elephant: Database:** *Did not respond!*')
         await message.edit(embed=embed)
 
