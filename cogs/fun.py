@@ -288,6 +288,17 @@ class Fun(commands.Cog):
                          icon_url=embed.footer.icon_url)
         await ctx.send(embed=embed)
 
+    @commands.command(name='animequote')
+    async def _anime_quote(self, ctx):
+        """
+        random anime quote
+        """
+        try:
+            quote = await self.bot.sr_api.anime_quote()
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        embed = ctx.embed(title=quote.character.title(), description=quote.quote)
+        embed.set_author(name=quote.anime)
 
     async def cog_before_invoke(self, ctx):
         await ctx.trigger_typing()
