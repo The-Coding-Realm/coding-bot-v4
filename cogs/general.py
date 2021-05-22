@@ -18,6 +18,7 @@ import os
 import sys
 import traceback
 import url_parser
+import humanize
 import inspect
 from jishaku.codeblocks import codeblock_converter
 from discord.ext import commands, menus
