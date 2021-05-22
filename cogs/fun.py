@@ -301,6 +301,17 @@ class Fun(commands.Cog):
         embed.set_author(name=quote.anime)
         await ctx.send(embed=embed)
 
+    @commands.command(name='define')
+    async def _define(self, ctx, word):
+        """
+        define a word
+        """
+        try:
+            definition = await self.bot.sr_api.define(word)
+        except:  # noqa: E722
+            return await ctx.send_error('Error with API, please try again later')
+        await ctx.send_embed(title=definition.word.title(), description=description.definition)
+
     async def cog_before_invoke(self, ctx):
         await ctx.trigger_typing()
 
