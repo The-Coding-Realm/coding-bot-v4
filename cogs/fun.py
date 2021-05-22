@@ -15,12 +15,11 @@ def is_premium():
         return ctx.bot.sr_api_premium
     return commands.check(predicate)
 
-
-class LyricsMenu(menus.ListPageSource):
-    def __init__(self, data, ctx):
+class BaseMenu(menus.ListPageSource):
+    def __init__(self, content, ctx):
         total = []
         current = []
-        for line in data.lyrics.splitlines():
+        for line in content.splitlines():
             if len('\n'.join(current) + line) <= 2048 and len(('\n'.join(current) + line).splitlines()) <= 25:
                 current.append(line)
             else:
@@ -29,10 +28,7 @@ class LyricsMenu(menus.ListPageSource):
         if current:
             total.append('\n'.join(current))
         super().__init__(total, per_page=1)
-        self.embed = ctx.embed(title=data.title, url=data.link)
-        self.embed.set_author(name=data.author)
-        if data.thumbnail:
-            self.embed.set_thumbnail(url=data.thumbnail)
+        self.embed = ctx.embed()
 
     async def format_page(self, menu, entry):
         embed = self.embed.copy()
@@ -40,6 +36,22 @@ class LyricsMenu(menus.ListPageSource):
         embed.set_footer(text=f'Page {menu.current_page + 1}/{menu._source.get_max_pages()} | ' + embed.footer.text,
                          icon_url=embed.footer.icon_url)
         return embed
+
+
+class LyricsMenu(BaseMenu):
+    def __init__(self, data, ctx):
+        super().__init__(data.lyrics, ctx)
+        self.embed.title = data.title
+        self.embed.url = data.link
+        self.embed.set_author(name=data.author)
+        if data.thumbnail:
+            self.embed.set_thumbnail(url=data.thumbnail)
+
+
+class DefinitionMenu(BaseMenu):
+    def __init__(self, data, ctx):
+        super().__init__(data.definition, ctx)
+        self.embed.title = data.word.title()
 
 
 class Fun(commands.Cog):
@@ -310,7 +322,8 @@ class Fun(commands.Cog):
             definition = await self.bot.sr_api.define(word)
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
-        await ctx.send_embed(title=definition.word.title(), description=definition.definition)
+        pages = menus.MenuPages(source=DefinitionMenu(definition, ctx), delete_message_after=True)
+        await pages.start(ctx)
 
     async def cog_before_invoke(self, ctx):
         await ctx.trigger_typing()
