@@ -299,6 +299,7 @@ class Fun(commands.Cog):
             return await ctx.send_error('Error with API, please try again later')
         embed = ctx.embed(title=quote.character.title(), description=quote.quote)
         embed.set_author(name=quote.anime)
+        await ctx.send(embed=embed)
 
     async def cog_before_invoke(self, ctx):
         await ctx.trigger_typing()
