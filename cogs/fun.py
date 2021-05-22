@@ -310,7 +310,7 @@ class Fun(commands.Cog):
             definition = await self.bot.sr_api.define(word)
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
-        await ctx.send_embed(title=definition.word.title(), description=description.definition)
+        await ctx.send_embed(title=definition.word.title(), description=definition.definition)
 
     async def cog_before_invoke(self, ctx):
         await ctx.trigger_typing()
