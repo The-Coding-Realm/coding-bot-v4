@@ -297,7 +297,7 @@ class Fun(commands.Cog):
             quote = await self.bot.sr_api.anime_quote()
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
-        embed = ctx.embed(title=quote.character.title(), description=quote.quote)
+        embed = ctx.embed(title=quote.character, description=quote.quote)
         embed.set_author(name=quote.anime)
         await ctx.send(embed=embed)
 
