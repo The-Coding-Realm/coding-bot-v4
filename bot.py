@@ -262,7 +262,7 @@ async def on_member_join(member):
     channel = member.guild.get_channel(743817386792058971)
     await channel.send(content=member.mention, file=file)
     verify_here = member.guild.get_channel(759220767711297566)
-    await verify_here.send(f'Welcome {member.mention}! Please check your DMs or use `>verify` in this channel to get started.', embed=embed)
+    await verify_here.send(f'Welcome {member.mention}! Please check your DMs or use `v!verify` in this channel to get started.', embed=embed)
 #     try:
 #         await member.send(embed=embed)
 #     except discord.errors.Forbidden:
