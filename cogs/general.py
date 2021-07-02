@@ -156,6 +156,7 @@ async def filter_links(cog, message):
     return
 
 async def check_invite(bot, content, channel=None):
+    content = discord.utils.remove_markdown(content)
     pattern = (
         r'discord(?:(?:(?:app)?\.com)\/invite|\.gg)/([a-zA-z0-9\-]{2,})\b')
     matches = re.findall(pattern, content, re.MULTILINE)
