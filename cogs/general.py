@@ -161,7 +161,8 @@ async def check_invite(bot, content, channel=None):
     matches = re.findall(pattern, content, re.MULTILINE)
     if channel.id in [
         754992725480439809,
-        801641781028454420
+        801641781028454420,
+        727029474767667322
     ]:
         return False
     if len(matches) > 5:
