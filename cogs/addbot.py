@@ -112,7 +112,7 @@ class AddBot(commands.Cog):
                     if str(payload.emoji) == self.emoji.link:
                         invite = discord.utils.oauth_url(data['bot'], guild=payload.member.guild)
                         embed = message.embeds[0]
-                        temp_embed = embed.copy()
+                        temp_embed = message.embeds[0]
                         embed.set_author(name=embed.author.name, icon_url=embed.author.icon_url, url=invite)
                         embed.description = '**IMPORTANT:** Please add the bot within 5 minutes, or else the bot will have elevated permissions.'
                         embed.set_field_at(0, name='Status', value='Admin adding bot...')
@@ -126,7 +126,7 @@ class AddBot(commands.Cog):
                         try:
                             bot_joined = await self.bot.wait_for('member_join', check=check, timeout=300)
                         except asyncio.TimeoutError:
-                            data['status'] == 1
+                            data['status'] = 1
                             await message.edit(content=json.dumps(data), embed=temp_embed)
                             await message.add_reaction(self.emoji.link)
                             return
