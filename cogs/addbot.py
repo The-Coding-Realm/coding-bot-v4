@@ -127,7 +127,9 @@ class AddBot(commands.Cog):
                             bot_joined = await self.bot.wait_for('member_join', check=check, timeout=300)
                         except asyncio.TimeoutError:
                             data['status'] == 1
-                            return await message.edit(content=json.dumps(data), embed=temp_embed)
+                            await message.edit(content=json.dumps(data), embed=temp_embed)
+                            await message.add_reaction(self.emoji.link)
+                            return
                         await bot_joined.add_roles(self.user_bot_role)
                         data['admin'] = payload.member.id
                         embed.set_footer(text=f'Added by {payload.member}', icon_url=payload.member.avatar_url)
