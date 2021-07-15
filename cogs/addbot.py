@@ -6,6 +6,7 @@ import json
 import psutil
 import datetime
 import logging
+import copy
 from functools import cached_property
 from discord.ext import commands
 
@@ -112,7 +113,7 @@ class AddBot(commands.Cog):
                     if str(payload.emoji) == self.emoji.link:
                         invite = discord.utils.oauth_url(data['bot'], guild=payload.member.guild)
                         embed = message.embeds[0]
-                        temp_embed = message.embeds[0]
+                        temp_embed = copy.deepcopy(embed)
                         embed.set_author(name=embed.author.name, icon_url=embed.author.icon_url, url=invite)
                         embed.description = '**IMPORTANT:** Please add the bot within 5 minutes, or else the bot will have elevated permissions.'
                         embed.set_field_at(0, name='Status', value='Admin adding bot...')
