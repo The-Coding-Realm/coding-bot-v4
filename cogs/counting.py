@@ -25,7 +25,7 @@ class Counting(commands.Cog):
         if (
             not message.content.isdigit()
             or int(message.content) != self.current + 1
-            # or message.author == self.last_author
+            or message.author == self.last_author
         ):
             return await message.delete()
         self.current += 1
