@@ -6,6 +6,7 @@ import json
 import psutil
 import datetime
 import logging
+import copy
 from functools import cached_property
 from discord.ext import commands
 
@@ -112,7 +113,7 @@ class AddBot(commands.Cog):
                     if str(payload.emoji) == self.emoji.link:
                         invite = discord.utils.oauth_url(data['bot'], guild=payload.member.guild)
                         embed = message.embeds[0]
-                        temp_embed = embed.copy()
+                        temp_embed = copy.deepcopy(embed)
                         embed.set_author(name=embed.author.name, icon_url=embed.author.icon_url, url=invite)
                         embed.description = '**IMPORTANT:** Please add the bot within 5 minutes, or else the bot will have elevated permissions.'
                         embed.set_field_at(0, name='Status', value='Admin adding bot...')
@@ -126,8 +127,10 @@ class AddBot(commands.Cog):
                         try:
                             bot_joined = await self.bot.wait_for('member_join', check=check, timeout=300)
                         except asyncio.TimeoutError:
-                            data['status'] == 1
-                            return await message.edit(content=json.dumps(data), embed=temp_embed)
+                            data['status'] = 1
+                            await message.edit(content=json.dumps(data), embed=temp_embed)
+                            await message.add_reaction(self.emoji.link)
+                            return
                         await bot_joined.add_roles(self.user_bot_role)
                         data['admin'] = payload.member.id
                         embed.set_footer(text=f'Added by {payload.member}', icon_url=payload.member.avatar_url)
