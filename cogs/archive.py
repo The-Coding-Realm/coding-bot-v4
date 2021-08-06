@@ -4,7 +4,8 @@ from discord.ext import commands
 class Archive(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.bot.archive_category = None
+        self.bot.default_guild = self.bot.get_guild(681882711945641997)
+        self.bot.archive_category = discord.utils.get(self.bot.default_guild.categories, id=812881115705901088) # Defaulting to current archive category
 
     # Setting new archive category    
     @commands.command()
