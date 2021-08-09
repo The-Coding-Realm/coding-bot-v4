@@ -3,297 +3,12 @@ from discord.ext import commands
 from dislash import ActionRow, Button, ButtonStyle, SelectMenu, SelectOption
 import asyncio
 import random
+import json
+from datetime import datetime
+import os
 
-data = {
-    "BobDotCom": {
-        "class": "staff",
-        "pfp": "https://cdn.discordapp.com/avatars/690420846774321221/5a2e465e7a4a56aa18b50ee94cde4229.webp",
-        "catchphrase": ["Hmm", "Lol.", "LMFAO", "Poggers."],
-        "atk_1": {
-            "name": "Make a Bot",
-            "desc": "Make a Discord bot to harass your opponent.",
-            "type": "attack",
-            "dmg": 10,
-            "dmg_exc": {
-                "class": "coder",
-                "ext_dmg": -5
-            },
-        },
-        "atk_2": {
-            "name": "Mess Around",
-            "desc": "Confuse your opponent by messing with them.",
-            "type": "attack",
-            "dmg": 5
-        },
-        "ability": {
-            "name": "Go Camping",
-            "type": "stun",
-            "desc": "Make your opponent wait for you to get back from camping.",
-            "ext_turns": 2,
-        }
-    },
-
-    "ShadowX": {
-        "class": "staff",
-        "pfp": "https://cdn.discordapp.com/avatars/698225613617496094/cf5b4bc8b4a24432a1c4dcb171c701a2.webp",
-        "catchphrase": "I bully without discrimination.",
-        "atk_1": {
-            "name": "Yell",
-            "desc": "Yell at someone for some reason.",
-            "type": "attack",
-            "dmg": 10,
-            "dmg_exc": {
-                "character": "bob",
-                "ext_dmg": 10,
-            },
-        },
-        "atk_2": {
-            "name": "Lecture",
-            "desc": "Lecture your opponent about something.",
-            "type": "attack",
-            "dmg": 5,
-            "dmg_exc": {
-                "class": "staff",
-                "ext_dmg": 2
-            }
-        },
-        "ability": {
-            "name": "Switch Moods",
-            "desc": "Switch between angry and chill in a flash.",
-            "type": "options",
-            "options": {
-                "Chill": {
-                    "ext_dmg": 0,
-                    "color": ButtonStyle.green,
-                    "emoji": "😃"
-                },
-                "Angry": {
-                    "ext_dmg": 5,
-                    "color": ButtonStyle.red,
-                    "emoji": "😡",
-                }
-            }
-        },
-    },
-
-    "Swas.py": {
-        "class": "owner",
-        "pfp": "https://cdn.discordapp.com/avatars/556119013298667520/a_8f8ca8f13d8db81c818c61c5d7c89ba2.webp",
-        "catchphrase": "When the impostor is sus.",
-        "atk_1" : {
-            "name": "Demote",
-            "desc": "Demote someone.",
-            "type": "attack",
-            "dmg": 10,
-            "dmg_exc": {
-                "class": "staff",
-                "ext_dmg": 5
-            },
-        },
-        "atk_2": {
-            "name": "Succeed",
-            "desc": "Succeed at being a YouTuber/programmer and piss your opponent off because they can't.",
-            "type": "attack",
-            "dmg": 5,
-            "dmg_exc": {
-                "class": "coder",
-                "ext_dmg": -4
-            }
-        },
-        "ability": {
-            "name": "Make Video",
-            "type": "stun",
-            "desc": "Make your opponent watch the video you just made.",
-            "ext_turns": 2
-        }
-    },
-
-    "Nerd": {
-        "class": "coder",
-        "pfp": "https://cdn.discordapp.com/avatars/186202944461471745/7435b73891f328a1c7d097a169f6511e.webp",
-        "catchphrase": "It's refractor time.",
-        "atk_1": {
-            "name": "The Missile",
-            "desc": "You see, it knows where it is because it knows where it isn't.",
-            "type": "attack",
-            "dmg": 10,
-        },
-        "atk_2": {
-            "name": "Use AI",
-            "desc": "Use Artificial Intelligence to harm your opponent.",
-            "type": "attack",
-            "dmg": 5,
-            "dmg_exc": {
-                "class": "coder",
-                "ext_dmg": -3
-            },
-        },
-        "ability": {
-            "name": "Help",
-            "desc": "Help your opponent with code and get thanked.",
-            "type": "heal",
-            "health_gain_amt": 2,
-            "health": 5
-        }
-    },
-
-    "Tapu": {
-        "class": "member",
-        "pfp": "https://cdn.discordapp.com/avatars/673105565689446409/1c51e7f5efdb7ec3a74e5dde7c8123fe.webp",
-        "catchphrase": "Test.",
-        "atk_1": {
-            "name": "Risk Warn",
-            "desc": "Send a message that's warn debatable.",
-            "type": "attack",
-            "dmg": 5,
-            "dmg_exc": {
-                "class": "staff",
-                "ext_dmg": 5
-            },
-        },
-        "atk_2": {
-            "name": "Meme",
-            "desc": "Send memes in chat.",
-            "type": "attack",
-            "dmg": 5
-        },
-        "ability": {
-            "name": "Leave",
-            "type": "heal",
-            "health_gain_amt": 1,
-            "desc": "Leave the server.",
-            "health": -100
-        }
-    },
-
-    "Pleb": {
-        "class": "member",
-        "pfp": "https://cdn.discordapp.com/avatars/797448912419422208/3fede35d3233f33b10540c0836e4b9d8.webp",
-        "catchphrase": "Nothing.",
-        "atk_1": {
-            "name": "Raid",
-            "desc": "Raid TCA with spambots or something because you don't like it.",
-            "type": "attack",
-            "dmg": 5,
-            "dmg_exc": {
-                "class": "staff",
-                "ext_dmg": 10
-            }
-        },
-        "atk_2": {
-            "name": "Hate on TCA",
-            "type": "attack",
-            "desc": "Be angry at TCA for some reason.",
-            "dmg": 10,
-            "dmg_exc": {
-                "class": "staff",
-                "ext_dmg": -5
-            }
-        },
-        "ability": {
-            "name": "Tryhard",
-            "type": "placebo",
-            "desc": "Be a tryhard and think you're cool.",
-            "temp_xp": 10,
-            "turns": 1
-        }
-    },
-
-    "Average TCA Member": {
-        "class": "member",
-        "pfp": "https://cdn.discordapp.com/icons/681882711945641997/a_2c2eeae970672cefecdb5b8536f42a47.webp",
-        "catchphrase": "Yeah but how do I fix this error?",
-        "atk_1": {
-            "name": "Ask for \"help\"",
-            "desc": "Ask for help on the simplest parts of Python.",
-            "type": "attack",
-            "dmg": 10,
-            "dmg_exc": {
-                "class": "coder",
-                "ext_dmg": -5
-            },
-        },
-        "atk_2": {
-            "name": "Spam",
-            "desc": "Spam the chat, causing people to get annoyed.",
-            "type": "attack",
-            "dmg": 5,
-            "dmg_exc": {
-                "class": "staff",
-                "ext_dmg": 2
-            }
-        },
-        "ability": {
-            "name": "Halt Chat",
-            "desc": "Stop the chat because of that cringe shit you just said.",
-            "type": "stun",
-            "ext_turns": 2
-        }
-    },
-
-    "TheGenocide": {
-        "class": "staff",
-        "pfp": "https://cdn.discordapp.com/avatars/685082846993317953/68755d84255de78b8b3dd0b78de40991.webp",
-        "catchphrase": "I don't know lemme find it one sec.",
-        "atk_1": {
-            "name": "Moderate",
-            "desc": "Moderate your opponent's every move.",
-            "dmg": 5,
-            "type": "attack",
-            "dmg_exc": {
-                "class": "member",
-                "ext_dmg": 10
-            }
-        },
-        "atk_2": {
-            "name": "Be Active",
-            "desc": "Your opponent can't break the rules when you're not asleep.",
-            "dmg": 5,
-            "type": "attack",
-            "dmg_exc": {
-                "class": "member",
-                "ext_dmg": 5
-            }
-        },
-        "ability": {
-            "name": "Sweep",
-            "desc": "Sweep and regain some health.",
-            "type": "heal",
-            "health": 10,
-            "health_gain_amt": 1
-        }
-    },
-
-    "UnsoughtConch": {
-        "class": "staff",
-        "pfp": "https://cdn.discordapp.com/avatars/579041484796461076/a_5cb028f945b0616951cc59e00031b1f2.webp",
-        "catchphrase": "I'm too cool for a catchphrase.",
-        "atk_1": {
-            "name": "Randomly DM Someone",
-            "desc": "Give someone an unexpected DM of random origin.",
-            "type": "attack",
-            "dmg": 10,
-            "dmg_exc": {
-                "class": "member",
-                "ext_dmg": 3
-            }
-        },
-        "atk_2":{
-            "name": "Random Lyrics",
-            "desc": "Sing random lyrics from some obscure AJR song.",
-            "type": "attack",
-            "dmg": 5
-        },
-        "ability": {
-            "name": "Have a Stroke",
-            "desc": "Trick your opponent into giving you aid because you're having a stroke.",
-            "type": "heal",
-            "health": 5,
-            "health_gain_amt": 1
-        }
-
-    }
-}
+with open('./ext/brawl.json', 'r') as f:
+    data = json.load(f)
 
 class Brawl(commands.Cog):
     def __init__(self, client):
@@ -311,12 +26,32 @@ class Brawl(commands.Cog):
     # dmg = damage
     # amt = amount
 
+    async def write_action(self, id, action):
+        with open(f'./storage/brawl{id}.txt', 'a') as f:
+            f.write(f"{datetime.utcnow()}: {action}\n\n")
+
+    async def endgame(self, ctx, user=None):
+        await ctx.send("Game Log:", file=discord.File(f'./storage/brawl{ctx.author.id}.txt'))
+        os.remove(f'./storage/brawl{ctx.author.id}.txt')
+
+        if user:     
+            del self.battle_hp[ctx.author.id]
+            del self.battle_hp[user.id]
+            try:
+                del self.placebo[ctx.author.id]
+            except:
+                pass
+            try:
+                del self.placebo[user.id]
+            except:
+                pass
+
     @commands.group(invoke_without_command=True)
     async def brawl(self, ctx):
         embed=discord.Embed(title="TCA ***BRAWL*** Version 1.0.0", description="TCA Brawl is a turn-based fighting game written in Python and playable via a Discord bot. It includes all of your"
         " favorite TCA members and former TCA members.", color=discord.Color.random())
-        embed.add_field(name="How to Play:", value="Grab a friend and take a bot channel. Use the `brawl battle` command to get started! The `battle` command has one alias,"
-        " `fight`. You will be prompted to pick a character, then the game will begin! If you want info on a character before playing, use `;info`.", inline=False)
+        embed.add_field(name="How to Play:", value="Grab a friend and take a bot channel. Use the `brawl battle` command to get started! The `battle` command has two aliases,"
+        " `fight` and `start`. You will be prompted to pick a character, then the game will begin! If you want info on a character before playing, use `brawl info`.", inline=False)
         embed.add_field(name="All Commands:", value="`brawl`, `info`, `help`, `faq`.", inline=False)
         embed.add_field(name="Our FAQ", value="You may want to suggest a character, or you don't want your own person in the game. Check the FAQ to see how to deal with stuff.", inline=False)
         embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/SydGsxAv1JDLCgm4qALPhcke7fv6TWoyVR2lQhEu-NI/%3Fsize%3D128/https/cdn.discordapp.com/icons/681882711945641997/a_2c2eeae970672cefecdb5b8536f42a47.gif")
@@ -326,6 +61,7 @@ class Brawl(commands.Cog):
         faq = discord.Embed(title="Frequently Asked Questions", description="These aren't really frequently asked.", color=discord.Color.random())
         faq.add_field(name="Why am I not a character here?", value="This has a few answers. You either aren't very familiar, we haven't got to you yet, or we can't think of a good moveset for you.")
         faq.add_field(name="I'm in this game and don't want to be. How can I remove myself?", value="If you don't want to be in our game, please contact UnsoughtConch#9225.")
+        faq.add_field(name="I want to make improvements to the game/a character. Can I?", value="Of course! Make a pull request from [the Coding Bot repository](https://github.com/The-Coding-Academy/Coding-Bot-v4) and edit the JSON or code!")
         faq.add_field(name="How can I suggest a character?", value="Contact UnsoughtConch#9225.")
 
         chars = discord.Embed(title="TCA ***BRAWL*** Characters")
@@ -392,6 +128,7 @@ class Brawl(commands.Cog):
         faq.add_field(name="Why am I not a character here?", value="This has a few answers. You either aren't very familiar, we haven't got to you yet, or we can't think of a good moveset for you.")
         faq.add_field(name="I'm in this game and don't want to be. How can I remove myself?", value="If you don't want to be in our game, please contact UnsoughtConch#9225.")
         faq.add_field(name="How can I suggest a character?", value="Contact UnsoughtConch#9225.")
+        faq.add_field(name="I want to make improvements to the game/a character. Can I?", value="Of course! Make a pull request from [the Coding Bot repository](https://github.com/The-Coding-Academy/Coding-Bot-v4) and edit the JSON or code!")
         faq.add_field(name="I'm a character in this game and want to suggest changes to myself. Can I do that?", value="Of course you can! Contact UnsoughtConch#9225.")
 
         await ctx.send(embed=faq)
@@ -464,23 +201,27 @@ class Brawl(commands.Cog):
 
         await self.info(ctx)
 
-    @brawl.command(aliases=['fight'])
+    @brawl.command(aliases=['fight', 'start'])
     async def battle(self, ctx, user:discord.Member):
+        if user == ctx.author:
+            return await ctx.send(embed=discord.Embed(title="You cannot battle yourself.", color=discord.Color.red()))
+
         embed = discord.Embed(title=f"Waiting for {user.display_name} to accept...", color=discord.Color.random())
         buttons = ActionRow(
             Button(style=ButtonStyle.green, label="Accept", emoji="✅"),
             Button(style=ButtonStyle.red, label="Deny", emoji="❌")
         )
 
-        msg = await ctx.send(embed=embed, components=[buttons])
+        base = await ctx.send(embed=embed, components=[buttons])
 
         def check(m):
             return m.author == user
 
         try:
-            inter = await msg.wait_for_button_click(check=check, timeout=30)
+            inter = await base.wait_for_button_click(check=check, timeout=30)
         except:
-            await ctx.send(embed=f"{user.display_name} failed to respond in time!", color=discord.Color.red())
+            await base.edit(embed=f"{user.display_name} failed to respond in time!", color=discord.Color.red())
+            await self.endgame(ctx)
 
         await inter.reply(type=6)
 
@@ -496,15 +237,18 @@ class Brawl(commands.Cog):
 
         char_menu = SelectMenu(placeholder="Choose your user!", options=char_menu_opts)
 
-        msg = await ctx.send(embed=embed, components=[char_menu])
+        await base.delete()
+
+        base = await ctx.send(embed=embed, components=[char_menu])
 
         def check(m):
             return m.author == ctx.author
 
         try:
-            inter = await msg.wait_for_dropdown(check=check, timeout=120)
+            inter = await base.wait_for_dropdown(check=check, timeout=120)
         except:
-            await ctx.send(embed=discord.Embed(f"{ctx.author.display_name} failed to respond in time!", color=discord.Color.red()))
+            await base.edit(embed=discord.Embed(f"{ctx.author.display_name} failed to respond in time!", color=discord.Color.red()))
+            await self.endgame(ctx)
 
         await inter.reply(type=6)
 
@@ -512,17 +256,20 @@ class Brawl(commands.Cog):
 
         embed.title = f"{user.display_name}, choose your user!"
 
-        msg = await ctx.send(embed=embed, components=[char_menu])
+        await base.edit(embed=embed)
 
         def check(m):
             return m.author == user
 
         try:
-            inter = await msg.wait_for_dropdown(check=check, timeout=120)
+            inter = await base.wait_for_dropdown(check=check, timeout=120)
         except:
             await ctx.send(embed=discord.Embed(f"{user.display_name} failed to respond in time!", color=discord.Color.red()))
+            await self.endgame(ctx)
 
         await inter.reply(type=6)
+
+        await base.delete()
 
         user_character = [option.label for option in inter.select_menu.selected_options][0]
 
@@ -532,6 +279,8 @@ class Brawl(commands.Cog):
         # True means author turn, False means user turn
 
         turne = True
+
+        await self.write_action(ctx.author.id, f"{author_character} ({ctx.author.display_name}) picks a fight with {user_character} ({user.display_name})")
 
         while True:
             if self.battle_hp[ctx.author.id] < 1 or self.battle_hp[user.id] < 1:
@@ -610,15 +359,16 @@ class Brawl(commands.Cog):
                 options=options
             )
 
-            msg = await ctx.send(embed=embed, components=[menu])
+            msg1 = await ctx.send(embed=embed, components=[menu])
 
             def check(m):
                 return m.author == turn
 
             try:
-                inter = await msg.wait_for_dropdown(check=check, timeout=120)
+                inter = await msg1.wait_for_dropdown(check=check, timeout=120)
             except:
                 await ctx.send(embed=discord.Embed(title=f"{turn.display_name} failed to respond on time, making {enemy.display_name} the winner!", color=discord.Color.red()))
+                await self.endgame(ctx, user)
                 return
 
             await inter.reply(type=6)
@@ -652,13 +402,14 @@ class Brawl(commands.Cog):
                         Button(style=ButtonStyle.red, label="Angry", emoji="😡")
                     )
 
-                    msg = await ctx.send(embed=discord.Embed(title=f"{turn.display_name}, what option would you like to invoke?"), components=[buttons])
+                    msg2 = await ctx.send(embed=discord.Embed(title=f"{turn.display_name}, what option would you like to invoke?"), components=[buttons])
 
                     def check(m):
                         return m.author == turn
                     try:
-                        inter = await msg.wait_for_button_click(check=check, timeout=60)
+                        inter = await msg2.wait_for_button_click(check=check, timeout=60)
                     except:
+                        await self.endgame(ctx, user)
                         return await ctx.send(embed=discord.Embed(title=f"{turn.display_name} didn't choose in time, making {enemy.display_name} the winner!", color=discord.Color.red()))
 
                     await inter.reply(type=6)
@@ -674,14 +425,14 @@ class Brawl(commands.Cog):
                     self.options[turn.id] = data[character][move]['options'][option]['ext_dmg']
 
                     phrase = f"{turn.display_name} chooses {option} with {data[character][move]['name']} and gains {data[character][move]['options'][option]['ext_dmg']} extra power!"
+
+                    await msg2.delete()
                 
                 elif data[character][move]['type'] == "placebo":
                     self.battle_hp[turn.id] = self.battle_hp[turn.id] + data[character][move]['temp_xp']
                     self.placebo[turn.id] = data[character][move]['turns']
 
                     phrase = f"{turn.display_name} invokes a placebo with {data[character][move]['name']} that gives them {data[character][move]['temp_xp']} more HP for {data[character][move]['turns']} turns!"
-                    
-                await ctx.send(phrase)
 
             else:
                 try:
@@ -709,13 +460,18 @@ class Brawl(commands.Cog):
                     ext_dmg = self.options[turn.id]
                     dmg = ext_dmg + dmg
                     del self.options[turn.id]
-
-                await ctx.send(f"{character} deals {dmg} damage to {enemy_character} with {data[character][move]['name']}")
+                
+                phrase = f"{character} deals {dmg} damage to {enemy_character} with {data[character][move]['name']}"
 
                 if turne is True:
                     self.battle_hp[user.id] = self.battle_hp[user.id] - dmg
                 else:
                     self.battle_hp[ctx.author.id] = self.battle_hp[ctx.author.id] - dmg
+            
+            await msg1.delete()
+
+            await self.write_action(ctx.author.id, phrase)
+            phrsmsg = await ctx.send(phrase)
 
             try:
                 turns = self.ext_turns[turn.id]
@@ -729,25 +485,21 @@ class Brawl(commands.Cog):
 
             await asyncio.sleep(5)
 
-        del self.battle_hp[ctx.author.id]
-        del self.battle_hp[user.id]
-        try:
-            del self.placebo[ctx.author.id]
-        except:
-            pass
-        try:
-            del self.placebo[user.id]
-        except:
-            pass
+            await phrsmsg.delete()
 
         if self.battle_hp[ctx.author.id] < 1:
             embed = discord.Embed(title=user_character + ": " + data[user_character]['catchphrase'] if user_character != 'BobDotCom' else random.choice(data[user_character]['catchphrase']), 
             description=f"{user_character} won!")
+            embed.set_footer(text=f"Remaining HP: {turn_hp}")
             await ctx.send(embed=embed)
+            await self.endgame(ctx, user)
         else:
             embed = discord.Embed(title=author_character + ": " + data[author_character]['catchphrase'] if author_character != 'BobDotCom' else random.choice(data[author_character]['catchphrase']), 
             description=f"{author_character} won!")
+            embed.set_footer(text=f"Remaining HP: {turn_hp}")
             await ctx.send(embed=embed)
+            await self.write_action(ctx.author.id, f"{ctx.author.display_name} ({author_character}) wins the battle with {turn_hp} HP remaining.")
+            await self.endgame(ctx, user)
 
 def setup(client):
     client.add_cog(Brawl(client))

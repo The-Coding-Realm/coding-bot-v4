@@ -1,0 +1,287 @@
+import json
+
+data = {"BobDotCom": {
+        "class": "staff",
+        "pfp": "https://cdn.discordapp.com/avatars/690420846774321221/5a2e465e7a4a56aa18b50ee94cde4229.webp",
+        "catchphrase": ["Hmm", "Lol.", "LMFAO", "Poggers."],
+        "atk_1": {
+            "name": "Make a Bot",
+            "desc": "Make a Discord bot to harass your opponent.",
+            "type": "attack",
+            "dmg": 10,
+            "dmg_exc": {
+                "class": "coder",
+                "ext_dmg": -5
+            }
+        },
+        "atk_2": {
+            "name": "Mess Around",
+            "desc": "Confuse your opponent by messing with them.",
+            "type": "attack",
+            "dmg": 5
+        },
+        "ability": {
+            "name": "Go Camping",
+            "type": "stun",
+            "desc": "Make your opponent wait for you to get back from camping.",
+            "ext_turns": 2
+        }
+    },
+    "ShadowX": {
+        "class": "staff",
+        "pfp": "https://cdn.discordapp.com/avatars/698225613617496094/cf5b4bc8b4a24432a1c4dcb171c701a2.webp",
+        "catchphrase": "I bully without discrimination.",
+        "atk_1": {
+            "name": "Yell",
+            "desc": "Yell at someone for some reason.",
+            "type": "attack",
+            "dmg": 10,
+            "dmg_exc": {
+                "character": "bob",
+                "ext_dmg": 10
+            }
+        },
+        "atk_2": {
+            "name": "Lecture",
+            "desc": "Lecture your opponent about something.",
+            "type": "attack",
+            "dmg": 5,
+            "dmg_exc": {
+                "class": "staff",
+                "ext_dmg": 2
+            }
+        },
+        "ability": {
+            "name": "Switch Moods",
+            "desc": "Switch between angry and chill in a flash.",
+            "type": "options",
+            "options": {
+                "Chill": {
+                    "ext_dmg": 0,
+                    "color": "green",
+                    "emoji": "😃"
+                },
+                "Angry": {
+                    "ext_dmg": 5,
+                    "color": "red",
+                    "emoji": "😡"
+                }
+            }
+        }
+    },
+    "Swas.py": {
+        "class": "owner",
+        "pfp": "https://cdn.discordapp.com/avatars/556119013298667520/a_8f8ca8f13d8db81c818c61c5d7c89ba2.webp",
+        "catchphrase": "When the impostor is sus.",
+        "atk_1" : {
+            "name": "Demote",
+            "desc": "Demote someone.",
+            "type": "attack",
+            "dmg": 10,
+            "dmg_exc": {
+                "class": "staff",
+                "ext_dmg": 5
+            }
+        },
+        "atk_2": {
+            "name": "Succeed",
+            "desc": "Succeed at being a YouTuber/programmer and piss your opponent off because they can't.",
+            "type": "attack",
+            "dmg": 5,
+            "dmg_exc": {
+                "class": "coder",
+                "ext_dmg": -4
+            }
+        },
+        "ability": {
+            "name": "Make Video",
+            "type": "stun",
+            "desc": "Make your opponent watch the video you just made.",
+            "ext_turns": 2
+        }
+    },
+    "Nerd": {
+        "class": "coder",
+        "pfp": "https://cdn.discordapp.com/avatars/186202944461471745/7435b73891f328a1c7d097a169f6511e.webp",
+        "catchphrase": "It's refractor time.",
+        "atk_1": {
+            "name": "The Missile",
+            "desc": "You see, it knows where it is because it knows where it isn't.",
+            "type": "attack",
+            "dmg": 10
+        },
+        "atk_2": {
+            "name": "Use AI",
+            "desc": "Use Artificial Intelligence to harm your opponent.",
+            "type": "attack",
+            "dmg": 5,
+            "dmg_exc": {
+                "class": "coder",
+                "ext_dmg": -3
+            }
+        },
+        "ability": {
+            "name": "Help",
+            "desc": "Help your opponent with code and get thanked.",
+            "type": "heal",
+            "health_gain_amt": 2,
+            "health": 5
+        }
+    },
+    "Tapu": {
+        "class": "member",
+        "pfp": "https://cdn.discordapp.com/avatars/673105565689446409/1c51e7f5efdb7ec3a74e5dde7c8123fe.webp",
+        "catchphrase": "Test.",
+        "atk_1": {
+            "name": "Risk Warn",
+            "desc": "Send a message that's warn debatable.",
+            "type": "attack",
+            "dmg": 5,
+            "dmg_exc": {
+                "class": "staff",
+                "ext_dmg": 5
+            }
+        },
+        "atk_2": {
+            "name": "Meme",
+            "desc": "Send memes in chat.",
+            "type": "attack",
+            "dmg": 5
+        },
+        "ability": {
+            "name": "Leave",
+            "type": "heal",
+            "health_gain_amt": 1,
+            "desc": "Leave the server.",
+            "health": -100
+        }
+    },
+    "Pleb": {
+        "class": "member",
+        "pfp": "https://cdn.discordapp.com/avatars/797448912419422208/3fede35d3233f33b10540c0836e4b9d8.webp",
+        "catchphrase": "Nothing.",
+        "atk_1": {
+            "name": "Raid",
+            "desc": "Raid TCA with spambots or something because you don't like it.",
+            "type": "attack",
+            "dmg": 5,
+            "dmg_exc": {
+                "class": "staff",
+                "ext_dmg": 10
+            }
+        },
+        "atk_2": {
+            "name": "Hate on TCA",
+            "type": "attack",
+            "desc": "Be angry at TCA for some reason.",
+            "dmg": 10,
+            "dmg_exc": {
+                "class": "staff",
+                "ext_dmg": -5
+            }
+        },
+        "ability": {
+            "name": "Tryhard",
+            "type": "placebo",
+            "desc": "Be a tryhard and think you're cool.",
+            "temp_xp": 10,
+            "turns": 1
+        }
+    },
+    "Average TCA Member": {
+        "class": "member",
+        "pfp": "https://cdn.discordapp.com/icons/681882711945641997/a_2c2eeae970672cefecdb5b8536f42a47.webp",
+        "catchphrase": "Yeah but how do I fix this error?",
+        "atk_1": {
+            "name": "Ask for \"help\"",
+            "desc": "Ask for help on the simplest parts of Python.",
+            "type": "attack",
+            "dmg": 10,
+            "dmg_exc": {
+                "class": "coder",
+                "ext_dmg": -5
+            }
+        },
+        "atk_2": {
+            "name": "Spam",
+            "desc": "Spam the chat, causing people to get annoyed.",
+            "type": "attack",
+            "dmg": 5,
+            "dmg_exc": {
+                "class": "staff",
+                "ext_dmg": 2
+            }
+        },
+        "ability": {
+            "name": "Halt Chat",
+            "desc": "Stop the chat because of that cringe shit you just said.",
+            "type": "stun",
+            "ext_turns": 2
+        }
+    },
+    "TheGenocide": {
+        "class": "staff",
+        "pfp": "https://cdn.discordapp.com/avatars/685082846993317953/68755d84255de78b8b3dd0b78de40991.webp",
+        "catchphrase": "I don't know lemme find it one sec.",
+        "atk_1": {
+            "name": "Moderate",
+            "desc": "Moderate your opponent's every move.",
+            "dmg": 5,
+            "type": "attack",
+            "dmg_exc": {
+                "class": "member",
+                "ext_dmg": 10
+            }
+        },
+        "atk_2": {
+            "name": "Be Active",
+            "desc": "Your opponent can't break the rules when you're not asleep.",
+            "dmg": 5,
+            "type": "attack",
+            "dmg_exc": {
+                "class": "member",
+                "ext_dmg": 5
+            }
+        },
+        "ability": {
+            "name": "Sweep",
+            "desc": "Sweep and regain some health.",
+            "type": "heal",
+            "health": 10,
+            "health_gain_amt": 1
+        }
+    },
+    "UnsoughtConch": {
+        "class": "staff",
+        "pfp": "https://cdn.discordapp.com/avatars/579041484796461076/a_5cb028f945b0616951cc59e00031b1f2.webp",
+        "catchphrase": "I'm too cool for a catchphrase.",
+        "atk_1": {
+            "name": "Randomly DM Someone",
+            "desc": "Give someone an unexpected DM of random origin.",
+            "type": "attack",
+            "dmg": 10,
+            "dmg_exc": {
+                "class": "member",
+                "ext_dmg": 3
+            }
+        },
+        "atk_2":{
+            "name": "Random Lyrics",
+            "desc": "Sing random lyrics from some obscure AJR song.",
+            "type": "attack",
+            "dmg": 5
+        },
+        "ability": {
+            "name": "Have a Stroke",
+            "desc": "Trick your opponent into giving you aid because you're having a stroke.",
+            "type": "heal",
+            "health": 5,
+            "health_gain_amt": 1
+        }
+
+    }}
+
+with open('ext/brawl.json', 'w') as f:
+    json.dump(data, f, indent=4)
+
+print("done")

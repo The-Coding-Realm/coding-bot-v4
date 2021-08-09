@@ -129,7 +129,7 @@ bot.sr_api = sr_api.Client()
 bot.sr_api_premium = False
 bot.processing_commands = 0
 bot.slash = SlashCommand(bot, sync_commands=True)
-bot.dislash = SlashClient()
+bot.dislash = SlashClient(bot)
 for cog in bot.active_cogs:
     try:
         bot.load_extension(cog)
