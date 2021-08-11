@@ -270,6 +270,18 @@ class Moderation(commands.Cog):
         await ctx.send(embed=ctx.embed(title='Successfully changed slowmode',
                                        description=f'Set to {humanize.precisedelta(delay)}'))
 
+    @commands.command(name='clear', aliases=['purge', 'clean'])
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(manage_channels=True)
+    async def _clear(self, ctx, amount: int):
+        if not 1 <= amount <= (1000 if ctx.author.permissions.admin else 100):
+            return await ctx.send_error('Incorrect amount (1-100)')
+        await ctx.purge(amount)
+        await ctx.send(f'Cleared {amount} messages', delete_after=15)
+
+
+
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
