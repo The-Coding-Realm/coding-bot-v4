@@ -34,7 +34,7 @@ class Counting(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before: Message, after: Message) -> None:
-        if not self.active:
+        if not self.active or message.channel != self.channel or message.author.bot:
             return
         if before == self.last:
             if (not after.content.isdigit()) or int(after.content) != self.current:
