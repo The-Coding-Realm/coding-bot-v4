@@ -5,6 +5,7 @@ import unicodedata
 import datetime
 import math
 import random
+import re
 import asyncio
 import DiscordUtils
 import io
