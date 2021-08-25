@@ -14,7 +14,7 @@ class Archive(commands.Cog):
     
     @property
     def archive_category(self):
-        return discord.utils.get(self.default_guild.categories, id=812881115705901088) # Defaulting to current archive category
+        return discord.utils.get(self.default_guild.categories, id=812881115705901088) if self.default_guild else None
 
 
     # Setting new archive category    
