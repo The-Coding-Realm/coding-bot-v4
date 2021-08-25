@@ -1,11 +1,13 @@
 import discord
 from discord.ext import commands
 
+
 class Archive(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.default_guild = self.bot.get_guild(681882711945641997)
         self.bot.archive_category = discord.utils.get(self.bot.default_guild.categories, id=812881115705901088) # Defaulting to current archive category
+
 
     # Setting new archive category    
     @commands.command()
@@ -17,6 +19,7 @@ class Archive(commands.Cog):
             self.bot.archive_category = category
             await ctx.send(f"✅ Successfully set `{category.name}` as archive category. ")
 
+
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def archive(self, ctx, channel: discord.TextChannel=None):
@@ -26,12 +29,10 @@ class Archive(commands.Cog):
             if channel == None:
                 channel = ctx.channel
             await ctx.channel.purge(limit=1)
+            await ctx.channel.edit(category=self.bot.archive_category, sync_permissions=True)
             embed = discord.Embed(title="✅ Successfully Archived", description=f"`{channel.name}` has been successfully archived", color=discord.Color.green())
             await ctx.send(embed=embed)
 
-            # archive_category = discord.utils.get(ctx.guild.channels, name="archive")
-            await ctx.channel.edit(category=self.bot.archive_category)
-            
-            overwrite = ctx.channel.overwrites_for(ctx.guild.default_role)
-            overwrite.send_messages = False
-            await ctx.channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
+
+def setup(bot):
+    bot.add_cog(Archive(bot))
