@@ -8,12 +8,12 @@ class Archive(commands.Cog):
     
     
     @property
-    def default_guild:
+    def default_guild(self):
         return self.bot.get_guild(681882711945641997)
     
     
     @property
-    def archive_category:
+    def archive_category(self):
         return discord.utils.get(self.default_guild.categories, id=812881115705901088) # Defaulting to current archive category
 
 
