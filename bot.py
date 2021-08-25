@@ -310,8 +310,11 @@ async def on_command_error(ctx, error):
         if isinstance(error, commands.CheckFailure):
             if bot.disabled:
                 text = 'The bot is currently disabled. It will be back soon.'
+        text = text or str(error)
+        if isinstance(error, commands.MissingAnyRole):
+            text = re.sub(r"'(\d+)'", r"<@&\1>", text)
         if not isinstance(error, commands.CommandNotFound):
-            embed = ctx.embed(title="Error", description=text or str(error),
+            embed = ctx.embed(title="Error", description=text,
                               color=discord.Color.red())
             embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
             owner = bot.get_user(ctx.bot.owner_ids[0])
