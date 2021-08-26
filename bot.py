@@ -18,6 +18,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
 from discord_slash import SlashCommand, SlashContext
+from dislash import SlashClient
 
 
 async def prefix(bot_, message):
@@ -129,6 +130,7 @@ bot.sr_api = sr_api.Client()
 bot.sr_api_premium = False
 bot.processing_commands = 0
 bot.slash = SlashCommand(bot, sync_commands=True)
+bot.dislash = SlashClient(bot)
 for cog in bot.active_cogs:
     try:
         bot.load_extension(cog)

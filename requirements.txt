@@ -13,5 +13,6 @@ discord-flags
 url-parser
 humanize
 Pillow
+dislash.py
 git+https://github.com/Rapptz/discord-ext-menus
 git+https://github.com/BobDotCom/sr_api
