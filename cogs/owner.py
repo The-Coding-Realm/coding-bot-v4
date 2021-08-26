@@ -153,7 +153,7 @@ class Owner(commands.Cog):
         except discord.errors.NotFound:
             return await ctx.send(embed=ctx.error('I couldn\'t find that message'))
         await ctx.message.add_reaction('\U00002705')
-        context = await ctx.bot.get_context(message, cls=ctx.bot.helpers.Context))
+        context = await ctx.bot.get_context(message, cls=ctx.bot.helpers.Context)
         await context.reinvoke()
 
     async def cog_check(self, ctx):
