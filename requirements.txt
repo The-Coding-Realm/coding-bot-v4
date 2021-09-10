@@ -9,7 +9,6 @@ DiscordUtils
 pytest
 aiosqlite_pool.zip
 time-str
-discord-flags
 url-parser
 humanize
 Pillow
