@@ -179,6 +179,8 @@ async def check_invite(bot, content, channel=None):
                     681882711945641997,  # TCA
                     782903894468198450,  # Swasville
                     336642139381301249,  # Discord.py
+                    222078108977594368,  # Discord.js
+                    881207955029110855,  # Pycord
                     267624335836053506,  # Python
                     412754940885467146,  # Blurple
                     613425648685547541,  # Discord Developers
