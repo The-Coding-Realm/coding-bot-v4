@@ -1,5 +1,4 @@
-discord.py
-enhanced-dpy
+pycord
 python-dotenv
 jishaku
 discord-py-slash-command
