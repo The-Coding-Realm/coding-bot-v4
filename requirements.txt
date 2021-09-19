@@ -1,4 +1,4 @@
-pycord
+py-cord
 python-dotenv
 jishaku
 discord-py-slash-command
