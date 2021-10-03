@@ -198,7 +198,7 @@ async def on_member_join(member):
     inviter = await bot.tracker.fetch_inviter(member)
     rules = member.guild.rules_channel.mention
     embed = discord.Embed(
-        title='Welcome to The Coding Academy!',
+        title='Welcome to The Coding Realm!',
         description=(
             f'Welcome {member.mention}, we\'re glad you joined! Before you get'
             ' started, here are some things to check out: \n**Read the Rules:'
@@ -220,7 +220,7 @@ async def on_member_join(member):
     d = ImageDraw.Draw(txt)
     fill = (255, 255, 255, 255)
     font = ImageFont.truetype("storage/fonts/Poppins/Poppins-Bold.ttf", 25)
-    text = "Welcome to The Coding Academy"
+    text = "Welcome to The Coding Realm"
     text_width, text_height = d.textsize(text, font)
     d.text(((txt.size[0] - text_width) // 2, (txt.size[1] // 31) * 1), text, font=font, fill=fill, align='center')
     font = ImageFont.truetype("storage/fonts/Poppins/Poppins-Bold.ttf", 15)
@@ -461,7 +461,7 @@ async def after_invoke(ctx):
 
 @tasks.loop(minutes=2)
 async def status_change():
-    statuses = ['over TCA', 'you', 'swas', '@everyone', 'general chat', 'discord', ',help', 'your mom', 
+    statuses = ['over TCR', 'you', 'swas', '@everyone', 'general chat', 'discord', ',help', 'your mom', 
                 'bob and shadow argue', 'swas simp for false', 'new members', 'the staff team', 
                 random.choice(bot.get_guild(681882711945641997).get_role(795145820210462771).members).name, 
                 'helpers', 'code', 'mass murders', 'karen be an idiot', 'a video', 'watches', 'bob', 
