@@ -220,7 +220,7 @@ async def on_member_join(member):
     d = ImageDraw.Draw(txt)
     fill = (255, 255, 255, 255)
     font = ImageFont.truetype("storage/fonts/Poppins/Poppins-Bold.ttf", 25)
-    text = "Welcome to The Coding Academy"
+    text = "Welcome to The Coding Realm"
     text_width, text_height = d.textsize(text, font)
     d.text(((txt.size[0] - text_width) // 2, (txt.size[1] // 31) * 1), text, font=font, fill=fill, align='center')
     font = ImageFont.truetype("storage/fonts/Poppins/Poppins-Bold.ttf", 15)
