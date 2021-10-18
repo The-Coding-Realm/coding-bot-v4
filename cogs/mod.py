@@ -240,7 +240,7 @@ class Moderation(commands.Cog):
         Manually verify a member.
         """
         if not ctx.guild.id == 681882711945641997:
-            return await ctx.send(embed=ctx.error('Must be in The Coding Academy'))
+            return await ctx.send(embed=ctx.error('Must be in The Coding Realm'))
         member = ctx.guild.get_role(744403871262179430)
         if member in target.roles:
             return await ctx.send(embed=ctx.error('Member is already verified'))

@@ -48,15 +48,15 @@ class Brawl(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def brawl(self, ctx):
-        embed=discord.Embed(title="TCA ***BRAWL*** Version 1.0.0", description="TCA Brawl is a turn-based fighting game written in Python and playable via a Discord bot. It includes all of your"
-        " favorite TCA members and former TCA members.", color=discord.Color.random())
+        embed=discord.Embed(title="TCR ***BRAWL*** Version 1.0.0", description="TCR Brawl is a turn-based fighting game written in Python and playable via a Discord bot. It includes all of your"
+        " favorite TCR members and former TCR members.", color=discord.Color.random())
         embed.add_field(name="How to Play:", value="Grab a friend and take a bot channel. Use the `brawl battle` command to get started! The `battle` command has two aliases,"
         " `fight` and `start`. You will be prompted to pick a character, then the game will begin! If you want info on a character before playing, use `brawl info`.", inline=False)
         embed.add_field(name="All Commands:", value="`brawl`, `info`, `help`, `faq`.", inline=False)
         embed.add_field(name="Our FAQ", value="You may want to suggest a character, or you don't want your own person in the game. Check the FAQ to see how to deal with stuff.", inline=False)
         embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/SydGsxAv1JDLCgm4qALPhcke7fv6TWoyVR2lQhEu-NI/%3Fsize%3D128/https/cdn.discordapp.com/icons/681882711945641997/a_2c2eeae970672cefecdb5b8536f42a47.gif")
         embed.set_image(url="https://media.discordapp.net/attachments/773319739581136916/864310160520249384/tcabrawl.png?width=1025&height=404")
-        embed.set_footer(text="TCA Brawl created by UnsoughtConch.")
+        embed.set_footer(text="TCR Brawl created by UnsoughtConch.")
 
         faq = discord.Embed(title="Frequently Asked Questions", description="These aren't really frequently asked.", color=discord.Color.random())
         faq.add_field(name="Why am I not a character here?", value="This has a few answers. You either aren't very familiar, we haven't got to you yet, or we can't think of a good moveset for you.")
@@ -64,7 +64,7 @@ class Brawl(commands.Cog):
         faq.add_field(name="I want to make improvements to the game/a character. Can I?", value="Of course! Make a pull request from [the Coding Bot repository](https://github.com/The-Coding-Academy/Coding-Bot-v4) and edit the JSON or code!")
         faq.add_field(name="How can I suggest a character?", value="Contact UnsoughtConch#9225.")
 
-        chars = discord.Embed(title="TCA ***BRAWL*** Characters")
+        chars = discord.Embed(title="TCR ***BRAWL*** Characters")
         for character in data:
             char = data[character]
             desc = f"Class: {char['class']}\nAttack One: {char['atk_1']['name']}\nAttack Two: {char['atk_2']['name']}\nAbility: {char['ability']['name']}"
@@ -137,10 +137,10 @@ class Brawl(commands.Cog):
     async def info(self, ctx):
         menu_opts = [] 
         char_embds = dict()
-        chars = discord.Embed(title="TCA ***BRAWL*** Characters", description="Select a character from the select menu to get started!")
+        chars = discord.Embed(title="TCR ***BRAWL*** Characters", description="Select a character from the select menu to get started!")
         for character in data:
             menu_opts.append(SelectOption(character, character))
-            embed = discord.Embed(title="TCA ***BRAWL*** | " + character, color=discord.Color.random(), description=f"Character Class: {data[character]['class']}")
+            embed = discord.Embed(title="TCR ***BRAWL*** | " + character, color=discord.Color.random(), description=f"Character Class: {data[character]['class']}")
             embed.add_field(name="Attack One:", value=f"NAME: {data[character]['atk_1']['name']}\nDAMAGE: {data[character]['atk_1']['dmg']}")
             embed.add_field(name="Attack Two:", value=f"NAME: {data[character]['atk_2']['name']}\nDAMAGE: {data[character]['atk_2']['dmg']}")
             type = data[character]['ability']['type']
