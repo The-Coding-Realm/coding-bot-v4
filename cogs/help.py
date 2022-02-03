@@ -13,7 +13,7 @@ class Help(commands.Cog):
     async def callstaff_check(self):
         if self.guild:
             if self.guild.id == 681882711945641997:
-                if (datetime.datetime.utcnow()
+                if (datetime.datetime.now(datetime.timezone.utc)
                         - self.author.joined_at).days > 1:
                     return True
         return False
@@ -40,7 +40,7 @@ class Help(commands.Cog):
                     return True
                 # active = self.guild.get_role(726029173067481129)
                 # if active in self.author.roles:
-                #     if (datetime.datetime.utcnow()
+                #     if (datetime.datetime.now(datetime.timezone.utc)
                 #             - self.author.joined_at).days > 7:
                 #         return True
         return False

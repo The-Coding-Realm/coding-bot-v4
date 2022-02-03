@@ -67,7 +67,7 @@ class Fun(commands.Cog):
         user = user or ctx.author
         impostor = percentage_bool(10) if impostor is None else impostor
         try:
-            gif = self.bot.sr_api.amongus(user.name, user.avatar_url, impostor)
+            gif = self.bot.sr_api.amongus(user.name, user.avatar.url, impostor)
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
         buf = io.BytesIO(await gif.read())
@@ -80,7 +80,7 @@ class Fun(commands.Cog):
         Pet a user
         """
         try:
-            gif = self.bot.sr_api.petpet(user.avatar_url)
+            gif = self.bot.sr_api.petpet(user.avatar.url)
         except:  # noqa: E722
             return await ctx.send_error('Error with API, please try again later')
         buf = io.BytesIO(await gif.read())

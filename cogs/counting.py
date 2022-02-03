@@ -7,6 +7,8 @@ class Counting(commands.Cog):
         self.bot = bot
         self.current = None
         self.active = True
+        self.channel = None
+        self.last = None
         self.bot.loop.create_task(self.init())
 
     async def init(self) -> None:

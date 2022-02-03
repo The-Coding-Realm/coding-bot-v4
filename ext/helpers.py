@@ -55,7 +55,7 @@ class Context(commands.Context):
             }
         default.update(kwargs)
         return_embed = self.Embed(*args, **default)
-        return_embed.set_footer(icon_url=self.author.avatar_url,
+        return_embed.set_footer(icon_url=self.author.avatar.url,
                                 text=f'Requested by {self.author}')
         return return_embed
 
@@ -69,8 +69,8 @@ class Context(commands.Context):
         default.update(kwargs)
         return_embed = self.Embed(*args, **default)
         return_embed.set_author(name=self.author,
-                                icon_url=self.author.avatar_url)
-        return_embed.set_footer(icon_url=self.bot.user.avatar_url, text=(
+                                icon_url=self.author.avatar.url)
+        return_embed.set_footer(icon_url=self.bot.user.avatar.url, text=(
             'If you think this is a mistake please contact '
             f'{self.bot.get_user(self.bot.owner_ids[0])}'))
         return return_embed
@@ -85,8 +85,8 @@ class Context(commands.Context):
         default.update(kwargs)
         return_embed = self.Embed(*args, **default)
         return_embed.set_author(name=self.author,
-                                icon_url=self.author.avatar_url)
-        return_embed.set_footer(icon_url=self.bot.user.avatar_url, text='Action successful')
+                                icon_url=self.author.avatar.url)
+        return_embed.set_footer(icon_url=self.bot.user.avatar.url, text='Action successful')
         return return_embed
 
     async def send_embed(self, *args, **kwargs):
@@ -236,7 +236,7 @@ async def log_command_error(ctx, error, handled):
         embed = discord.Embed(title=title, description=f'```py\n{err}```',
                               timestamp=ctx.message.created_at,
                               color=discord.Color.red())
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         await channel.send(embed=embed)
     except discord.errors.Forbidden:
         try:
@@ -258,7 +258,7 @@ async def log_error(bot, event_method, *args, **kwargs):
         title = 'Ignoring exception in {}'.format(event_method)
         err = ''.join(traceback.format_exc())
         embed = discord.Embed(title=title, description=f'```py\n{err}```',
-                              timestamp=datetime.datetime.utcnow(),
+                              timestamp=datetime.datetime.now(datetime.timezone.utc),
                               color=discord.Color.red())
         await channel.send(embed=embed)
     except discord.errors.Forbidden:

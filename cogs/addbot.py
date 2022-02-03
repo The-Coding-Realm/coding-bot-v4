@@ -48,12 +48,12 @@ class AddBot(commands.Cog):
                 data = json.loads(msg.content)
                 user = message.guild.get_member(data['user'])
                 bot = await self.bot.fetch_user(data['bot'])
-                await user.send(f'Your bot, {bot}, has been rejected from joining {message.guild.name}. \n**Reason:** {reason}')
+                await user.send(f'Your bot, {bot}, has been rejected from joining {message.guild.name}. \n**Reason:** '
+                                f'{reason}')
                 await message.add_reaction(self.emoji.checkmark)
             except:
                 await message.add_reaction(self.emoji.cross)
                 raise
-            
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -81,14 +81,15 @@ class AddBot(commands.Cog):
                     if str(payload.emoji) == self.emoji.checkmark:
                         embed = message.embeds[0]
                         data['staff'] = payload.member.id
-                        embed.set_footer(text=f'Approved by {payload.member}', icon_url=payload.member.avatar_url)
+                        embed.set_footer(text=f'Approved by {payload.member}', icon_url=payload.member.avatar.url)
                         data['status'] = 1
                         embed.set_field_at(0, name='Status', value='Pending admin approval')
-                        embed.add_field(name='Approved by', value=payload.member.mention + ' (' + str(payload.member) + ')')
+                        embed.add_field(name='Approved by',
+                                        value=payload.member.mention + ' (' + str(payload.member) + ')')
                         embed.description = 'React to get an invite link'
                         embed.color = discord.Color.yellow()
                         embed.set_author(name=embed.author.name, icon_url=embed.author.icon_url)
-                        embed.timestamp = datetime.datetime.utcnow()
+                        embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
                         await message.edit(content=json.dumps(data), embed=embed)
                         await message.clear_reaction(self.emoji.checkmark)
                         await message.clear_reaction(self.emoji.cross)
@@ -96,14 +97,15 @@ class AddBot(commands.Cog):
                     elif str(payload.emoji) == self.emoji.cross:
                         embed = message.embeds[0]
                         data['staff'] = payload.member.id
-                        embed.set_footer(text=f'Declined by {payload.member}', icon_url=payload.member.avatar_url)
+                        embed.set_footer(text=f'Declined by {payload.member}', icon_url=payload.member.avatar.url)
                         data['status'] = -1
                         embed.set_field_at(0, name='Status', value='Declined')
-                        embed.add_field(name='Declined by', value=payload.member.mention + ' (' + str(payload.member) + ')')
+                        embed.add_field(name='Declined by',
+                                        value=payload.member.mention + ' (' + str(payload.member) + ')')
                         embed.description = 'Declined'
                         embed.color = discord.Color.red()
                         embed.set_author(name=embed.author.name, icon_url=embed.author.icon_url)
-                        embed.timestamp = datetime.datetime.utcnow()
+                        embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
                         await message.edit(content=json.dumps(data), embed=embed)
                         await message.clear_reaction(self.emoji.checkmark)
                         await message.clear_reaction(self.emoji.cross)
@@ -115,7 +117,8 @@ class AddBot(commands.Cog):
                         embed = message.embeds[0]
                         temp_embed = copy.deepcopy(embed)
                         embed.set_author(name=embed.author.name, icon_url=embed.author.icon_url, url=invite)
-                        embed.description = '**IMPORTANT:** Please add the bot within 5 minutes, or else the bot will have elevated permissions.'
+                        embed.description = ('**IMPORTANT:** Please add the bot within 5 minutes, or else the bot will '
+                                             'have elevated permissions.')
                         embed.set_field_at(0, name='Status', value='Admin adding bot...')
                         data['status'] = 2
                         await message.edit(content=json.dumps(data), embed=embed)
@@ -133,18 +136,18 @@ class AddBot(commands.Cog):
                             return
                         await bot_joined.add_roles(self.user_bot_role)
                         data['admin'] = payload.member.id
-                        embed.set_footer(text=f'Added by {payload.member}', icon_url=payload.member.avatar_url)
+                        embed.set_footer(text=f'Added by {payload.member}', icon_url=payload.member.avatar.url)
                         data['status'] = 3
                         embed.set_field_at(0, name='Status', value='Added')
-                        embed.add_field(name='Added by', value=payload.member.mention + ' (' + str(payload.member) + ')')
+                        embed.add_field(name='Added by',
+                                        value=payload.member.mention + ' (' + str(payload.member) + ')')
                         embed.description = 'Added'
                         embed.color = discord.Color.green()
                         embed.set_author(name=embed.author.name, icon_url=embed.author.icon_url)
-                        embed.timestamp = datetime.datetime.utcnow()
+                        embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
                         await message.edit(content=json.dumps(data), embed=embed)
                         await message.clear_reaction(self.emoji.checkmark)
                         await message.clear_reaction(self.emoji.cross)
-
 
     @commands.command(name='addbot')
     @commands.has_any_role(729927579645247562, 737517726737629214)
@@ -159,8 +162,8 @@ class AddBot(commands.Cog):
                 return m.channel == ctx.channel and m.author == ctx.author and m.content.isdigit()
 
             try:
-                bot = await commands.UserConverter().convert(ctx, 
-                    (await self.bot.wait_for('message', check=check, timeout=30)).content)
+                bot = await commands.UserConverter().convert(ctx, (
+                    await self.bot.wait_for('message', check=check, timeout=30)).content)
             except asyncio.TimeoutError:
                 ctx.command.reset_cooldown(ctx)
                 return await ctx.send(embed=ctx.error('Timed out!'))
@@ -190,7 +193,7 @@ class AddBot(commands.Cog):
             return await ctx.send(embed=ctx.error('Reason must be 50 to 1000 characters long.'))
 
         embed = ctx.embed(title='Is this correct?', description=f'**Reason:** {reason}')
-        embed.set_author(name=str(bot), icon_url=bot.avatar_url)
+        embed.set_author(name=str(bot), icon_url=bot.avatar.url)
         msg = await ctx.send(embed=embed)
         checkmark, cross = '\U00002705', '\U0000274c'
         await msg.add_reaction(self.emoji.checkmark)
@@ -226,12 +229,13 @@ class AddBot(commands.Cog):
             'status': 0
             }
         invite = discord.utils.oauth_url(bot.id, guild=self.testing_guild)
-        embed = ctx.embed(title='User-Made Bot', description=f'Click bot name to invite. React here to confirm or deny the bot.')
+        embed = ctx.embed(title='User-Made Bot', description='Click bot name to invite. React here to confirm or deny '
+                                                             'the bot.')
         embed.add_field(name='Status', value='Pending approval')
         embed.add_field(name='Submitted By', value=ctx.author.mention + ' (' + str(ctx.author) + ')')
         embed.add_field(name='Reason', value=reason)
         embed.add_field(name='Bot Account', value=bot.mention)
-        embed.set_author(name=str(bot), icon_url=bot.avatar_url, url=invite)
+        embed.set_author(name=str(bot), icon_url=bot.avatar.url, url=invite)
         msg = await self.pending_channel.send(json.dumps(data), embed=embed)
         await msg.add_reaction(self.emoji.checkmark)
         await msg.add_reaction(self.emoji.cross)
@@ -239,4 +243,3 @@ class AddBot(commands.Cog):
 
 def setup(bot):
     bot.add_cog(AddBot(bot))
-

@@ -1,7 +1,6 @@
-py-cord
+py-cord~=2.0.0b1
 python-dotenv
 jishaku
-discord-py-slash-command
 psutil
 asyncpg
 DiscordUtils
@@ -11,6 +10,5 @@ time-str
 url-parser
 humanize
 Pillow
-dislash.py
 git+https://github.com/Rapptz/discord-ext-menus
 git+https://github.com/BobDotCom/sr_api

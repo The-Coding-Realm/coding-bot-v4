@@ -11,14 +11,11 @@ import DiscordUtils
 import io
 import sr_api
 import humanize
-import aiohttp
 import asyncpg
 import ext.helpers as helpers
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
-from discord_slash import SlashCommand, SlashContext
-from dislash import SlashClient
 
 
 async def prefix(bot_, message):
@@ -30,7 +27,7 @@ class CustomHelp(commands.HelpCommand):
 
     def get_ending_note(self):
         return 'Use {0}{1} [command] for more info on a command.'.format(
-            self.clean_prefix, self.invoked_with)
+            self.context.clean_prefix, self.invoked_with)
 
     def get_command_signature(self, command):
         parent = command.full_parent_name
@@ -90,9 +87,9 @@ class CustomHelp(commands.HelpCommand):
         embed.set_footer(text=self.get_ending_note())
         await self.get_destination().send(embed=embed)
 
-    # This makes it so it uses the function above
+    # This makes it use the function above
     # Less work for us to do since they're both similar.
-    # If you want to make regular command help look different then override it
+    # If you want to make regular command help look different, then override it
     send_command_help = send_group_help
 
 
@@ -110,7 +107,7 @@ os.environ['JISHAKU_RETAIN'] = "True"
 init_data = helpers.storage(bot)
 
 
-class pools:
+class Pools:
     config = asyncpg.create_pool(database='codingbot_db',
                                  init=helpers.init_connection)
 
@@ -119,7 +116,7 @@ bot.helpers = helpers
 bot.tracker = DiscordUtils.InviteTracker(bot)
 bot.default_prefixes = [',']
 bot.server_cache = {}
-bot.pools = pools
+bot.pools = Pools
 bot.owner_id = None
 bot.owner_ids = init_data['owners']
 bot.blacklisted = init_data['blacklisted']
@@ -129,8 +126,6 @@ bot.load_extension('jishaku')
 bot.sr_api = sr_api.Client()
 bot.sr_api_premium = False
 bot.processing_commands = 0
-bot.slash = SlashCommand(bot, sync_commands=True)
-bot.dislash = SlashClient(bot)
 for cog in bot.active_cogs:
     try:
         bot.load_extension(cog)
@@ -148,7 +143,8 @@ async def on_message(message):
         ctx = await bot.get_context(message, cls=helpers.Context)
         await bot.invoke(ctx)
         for prefix_ in await prefix(bot, message):
-            if message.content.startswith(f'\\{prefix_}') and bot.get_command(message.content.split()[0][len(prefix_) + 1:]):
+            if (message.content.startswith(f'\\{prefix_}')
+                    and bot.get_command(message.content.split()[0][len(prefix_) + 1:])):
                 return await message.channel.send('lol')
 
 
@@ -191,31 +187,31 @@ async def on_member_join(member):
     if not member.guild.id == 681882711945641997:
         return
     if not member.name.isalnum():
-        await member.edit(nick=unicodedata.normalize('NFKD',member.name))
+        await member.edit(nick=unicodedata.normalize('NFKD', member.name))
     if member.bot:
         channel = member.guild.get_channel(743817386792058971)
         return await channel.send(content=f'Bot added: {member.mention}')
     inviter = await bot.tracker.fetch_inviter(member)
     rules = member.guild.rules_channel.mention
     embed = discord.Embed(
-        title='Welcome to The Coding Realm!',
+        title=f'Welcome to {member.guild.name}!',
         description=(
             f'Welcome {member.mention}, we\'re glad you joined! Before you get'
             ' started, here are some things to check out: \n**Read the Rules:'
             f'** {rules} \n**Get roles:** <#726074137168183356> and '
             '<#806909970482069556> \n**Want help? Read here:** '
             '<#799527165863395338> and <#754712400757784709>'),
-        timestamp=datetime.datetime.utcnow())
-    ago = datetime.datetime.utcnow() - member.created_at
-    img = io.BytesIO(await member.avatar_url_as(format='png', size=128).read())
+        timestamp=datetime.datetime.now(datetime.timezone.utc))
+    ago = datetime.datetime.now(datetime.timezone.utc) - member.created_at
+    img = io.BytesIO(await member.avatar.with_format("png").with_size(128).read())
     try:
-        img2 = io.BytesIO(await member.guild.banner_url_as(format='png', size=512).read())
+        img2 = io.BytesIO(await member.guild.banner.with_format("png").with_size(512).read())
     except:
         img2 = 'storage/banner.png'
     base = Image.open(img).convert("RGBA")
     base = base.resize((128, 128))
     txt = Image.open(img2).convert("RGBA")
-    txt = txt.point(lambda p: p * 0.5)
+    txt = txt.point(lambda p: int(p * 0.5))
     txt = txt.resize((512, 200))
     d = ImageDraw.Draw(txt)
     fill = (255, 255, 255, 255)
@@ -243,7 +239,7 @@ async def on_member_join(member):
         try:
             invite = await member.guild.vanity_invite()
             text = f'• Joined using vanity invite: {invite.code} ({invite.uses} uses)'
-        except discord.errors.HTTPException:
+        except discord.HTTPException:
             text = 'I couldn\'t find who invited them'
         d.text(((txt.size[0] // 8) * 3, (txt.size[1] // 16) * 9), text, font=font, fill=fill, align='center')
         text = f'• Account created: {humanize.naturaldelta(ago)} ago'
@@ -265,7 +261,10 @@ async def on_member_join(member):
     channel = member.guild.get_channel(743817386792058971)
     await channel.send(content=member.mention, file=file)
     verify_here = member.guild.get_channel(759220767711297566)
-    await verify_here.send(f'Welcome {member.mention}! Follow the instructions in other channels to get verified. :)', embed=embed)
+    await verify_here.send(f'Welcome {member.mention}! Follow the instructions in other channels to get verified. :)',
+                           embed=embed)
+
+
 #     try:
 #         await member.send(embed=embed)
 #     except discord.errors.Forbidden:
@@ -292,7 +291,7 @@ async def on_command_error(ctx, error):
                 commands.MissingPermissions, commands.MaxConcurrencyReached))):
             try:
                 await ctx.reinvoke()
-            except discord.ext.commands.CommandError as e:
+            except discord.ext.commands.CommandError:
                 pass
             else:
                 return
@@ -319,10 +318,10 @@ async def on_command_error(ctx, error):
         if not isinstance(error, commands.CommandNotFound):
             embed = ctx.embed(title="Error", description=text,
                               color=discord.Color.red())
-            embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
             owner = bot.get_user(ctx.bot.owner_ids[0])
             embed.set_footer(
-                icon_url=bot.user.avatar_url,
+                icon_url=bot.user.avatar.url,
                 text=f'If you think this is a mistake please contact {owner}')
             await ctx.send(embed=embed)
 
@@ -333,10 +332,10 @@ async def on_command_error(ctx, error):
                  f'{humanize.precisedelta(time)}')
         embed = ctx.embed(title="Error", description=error,
                           color=discord.Color.red())
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         owner = bot.get_user(ctx.bot.owner_ids[0])
         embed.set_footer(
-            icon_url=bot.user.avatar_url,
+            icon_url=bot.user.avatar.url,
             text=f'If you think this is a mistake please contact {owner}')
         await ctx.send(embed=embed)
 
@@ -347,7 +346,7 @@ async def on_command_error(ctx, error):
                 'but if it continues to occur please DM '
                 f'<@{ctx.bot.owner_ids[0]}>'), color=discord.Color.red())
             await ctx.send(embed=embed)
-        except discord.errors.Forbidden:
+        except discord.Forbidden:
             pass
         await helpers.log_command_error(ctx, exception, False)
 
@@ -451,27 +450,33 @@ bot.add_cog(Developer(bot))
 
 @bot.before_invoke
 async def before_invoke(ctx):
-    bot.processing_commands += 1
+    ctx.bot.processing_commands += 1
 
 
 @bot.after_invoke
 async def after_invoke(ctx):
-    bot.processing_commands -= 1
+    ctx.bot.processing_commands -= 1
 
 
 @tasks.loop(minutes=2)
 async def status_change():
-    statuses = ['over TCR', 'you', 'swas', '@everyone', 'general chat', 'discord', ',help', 'your mom', 
-                'bob and shadow argue', 'swas simp for false', 'new members', 'the staff team', 
-                random.choice(bot.get_guild(681882711945641997).get_role(795145820210462771).members).name, 
-                'helpers', 'code', 'mass murders', 'karen be an idiot', 'a video', 'watches', 'bob', 
-                'fight club', 'youtube', 'https://devbio.me/u/CodingBot', 'potatoes', 'simps', 'people', 'my server',
-                'humans destroy the world', 'AI take over the world', 'female bots 😳', 'dinosaurs', 
-                'https://youtu.be/dQw4w9WgXcQ', 'idiots', 'the beginning of WWIII', 'verified bot tags with envy',
-                random.choice(bot.get_guild(681882711945641997).get_role(737517726737629214).members).name +
-                ' (Server Booster)', 'Server Boosters (boost to get your name on here)', 'OG members', 
-                "dalek rising from the ashes", 'spongebob', 'turtles', 'SQUIRREL!!!', 'people get banned', 'por...k chops',
-                'my poggers discriminator', 'tux', 'linux overcome windows', 'bob get a gf', 'a documentary']
+
+    statuses = ['over TCR', 'you', 'swas', '@everyone', 'general chat', 'discord', ',help', 'your mom',
+                'bob and shadow argue', 'swas simp for false', 'new members', 'the staff team', 'helpers', 'code',
+                'mass murders', 'karen be an idiot', 'a video', 'watches', 'bob', 'fight club', 'youtube',
+                'https://devbio.me/u/CodingBot', 'potatoes', 'simps', 'people', 'my server', 'humans destroy the world',
+                'AI take over the world', 'female bots 😳', 'dinosaurs', 'https://youtu.be/dQw4w9WgXcQ', 'idiots',
+                'the beginning of WWIII', 'verified bot tags with envy',
+                'Server Boosters (boost to get your name on here)', 'OG members', "dalek rising from the ashes",
+                'spongebob', 'turtles', 'SQUIRREL!!!', 'people get banned', 'por...k chops', 'my poggers discriminator',
+                'tux', 'linux overcome windows', 'bob get a gf', 'a documentary']
+    tcr = bot.get_guild(681882711945641997)
+    if tcr:
+        if tcr.get_role(795145820210462771):
+            statuses.append(random.choice(tcr.get_role(795145820210462771).members).name)
+        if tcr.get_role(737517726737629214):
+            statuses.append(random.choice(tcr.get_role(737517726737629214).members).name + ' (Server Booster)')
+
     await bot.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching,
         name=random.choice(
@@ -489,6 +494,8 @@ async def before_status_change():
 @tasks.loop(minutes=5)
 async def booster_perms():
     guild = bot.get_guild(681882711945641997)
+    if not guild:
+        return
     nitro_booster = guild.get_role(737517726737629214)
     active = guild.get_role(726029173067481129)
     muted = guild.get_role(766469426429820949)
@@ -496,7 +503,7 @@ async def booster_perms():
         if not (active in member.roles or muted in member.roles):
             try:
                 await member.add_roles(active)
-            except discord.errors.Forbidden:
+            except discord.Forbidden:
                 pass
 
 
@@ -523,20 +530,21 @@ async def disabled_command(ctx):
             or ctx.author.id == ctx.guild.owner.id)
 
 
-@bot.slash.slash(name='help', description='Get the help for the bot')
-async def slash_help(ctx: SlashContext):
-    await ctx.send(embeds=[discord.Embed(title='Hello There!', description=(
+@bot.slash_command(name='help', description='Get the help for the bot')
+async def slash_help(ctx):
+    await ctx.respond(embed=discord.Embed(title='Hello There!', description=(
         'I use special command prefixes for my commands. Please type \n'
-        f'{bot.user.mention + " help"} \nfor my full help menu!'))])
+        f'{bot.user.mention + " help"} \nfor my full help menu!')))
 
 
-@bot.slash.slash(name='invite', description='Invite the bot to your server')
-async def slash_invite(ctx: SlashContext):
+@bot.slash_command(name='invite', description='Invite the bot to your server')
+async def slash_invite(ctx):
     embed = discord.Embed(title='Invite', description=(
         '[Click Here](https://discord.com/oauth2/authorize?client_id='
         f'{bot.user.id}&permissions=8&scope=bot%20applications.commands) '
-        'to invite me!'), timestamp=datetime.datetime.utcnow())
-    await ctx.send(embeds=[embed])
+        'to invite me!'), timestamp=datetime.datetime.now(datetime.timezone.utc))
+    await ctx.respond(embed=embed)
+
 
 status_change.start()
 booster_perms.start()

@@ -82,9 +82,9 @@ class Moderation(commands.Cog):
                        f'{target.discriminator} *(ID: {target.id})* \n**'
                        f':page_facing_up: Reason:** {reason}') + (' \n**:clock2: Duration:** '
                                                                   f'{humanize.precisedelta(duration)}') if duration else ''
-        embed = discord.Embed(description=description, color=color, timestamp=datetime.datetime.utcnow())
-        embed.set_author(name=f'{moderator} (ID: {moderator.id}', icon_url=moderator.avatar_url)
-        embed.set_thumbnail(url=target.avatar_url)
+        embed = discord.Embed(description=description, color=color, timestamp=datetime.datetime.now(datetime.timezone.utc))
+        embed.set_author(name=f'{moderator} (ID: {moderator.id}', icon_url=moderator.avatar.url)
+        embed.set_thumbnail(url=target.avatar.url)
         logs = self.bot.get_channel(816512034228666419)
         await logs.send(embed=embed)
 

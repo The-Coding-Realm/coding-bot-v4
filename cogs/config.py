@@ -49,7 +49,7 @@ class Config(commands.Cog):
                 insert = (
                     self.bot.default_prefixes if prefixes is None
                     else prefixes)
-                if prefixes == []:
+                if not prefixes:
                     previous_prefixes = data or previous_prefixes
                 else:
                     if not data:
@@ -64,7 +64,7 @@ class Config(commands.Cog):
         except asyncpg.exceptions._base.InterfaceError:
             pass
 
-        if prefixes == []:
+        if not prefixes:
             embed = ctx.embed(title='Prefix', description=(
                 f'Current Prefix(es): `{"`, `".join(previous_prefixes)}`\n\nOr'
                 ', you can mention me as a prefix (try "'
@@ -89,20 +89,20 @@ class Config(commands.Cog):
 
         """
         try:
-            commands = self.bot.server_cache[ctx.guild.id]['commands']
+            cmds = self.bot.server_cache[ctx.guild.id]['commands']
         except KeyError:
             await self.bot.helpers.prepare(self.bot, ctx.guild)
-            commands = self.bot.server_cache[ctx.guild.id]['commands']
-        if not commands:
+            cmds = self.bot.server_cache[ctx.guild.id]['commands']
+        if not cmds:
             return await ctx.send(embed=ctx.error('No commands are disabled'))
-        if len(commands) == 0:
+        if len(cmds) == 0:
             return await ctx.send(embed=ctx.error('No commands are disabled'))
 
         content = ('\n'.join([
             (await convert(ctx, command)).mention + ': '
-            + (('`' + '`, `'.join(commands[command]) + '`.')
-               if True not in commands[command] else 'All Commands')
-            for command in commands if commands.get(command, None)])
+            + (('`' + '`, `'.join(cmds[command]) + '`.')
+               if True not in cmds[command] else 'All Commands')
+            for command in cmds if cmds.get(command, None)])
             or 'No Commands are disabled')
         await ctx.send(embed=ctx.embed(content, title='Disabled Commands'))
 
@@ -136,16 +136,13 @@ class Config(commands.Cog):
         """
         if target is not None:
             try:
-                target = await discord.ext.commands.MemberConverter().convert(
-                    ctx, target)
+                target = await discord.ext.commands.MemberConverter().convert(ctx, target)
             except discord.ext.commands.errors.MemberNotFound:
                 try:
-                    target = (await discord.ext.commands.TextChannelConverter()
-                              ).convert(ctx, target)
+                    target = await discord.ext.commands.TextChannelConverter().convert(ctx, target)
                 except discord.ext.commands.errors.ChannelNotFound:
                     try:
-                        target = (await discord.ext.commands.RoleConverter()
-                                  ).convert(ctx, target)
+                        target = await discord.ext.commands.RoleConverter().convert(ctx, target)
                     except discord.ext.commands.errors.RoleNotFound:
                         return await ctx.send(f'I couldn\'t find `{target}`')
             the_for = ' for ' + target.mention
@@ -157,7 +154,7 @@ class Config(commands.Cog):
             return await ctx.send(embed=ctx.error('That isn\'t a command!'))
         if command.qualified_name.split()[0] in ['config', 'help']:
             return await ctx.send(embed=ctx.error(
-                "You cannot disable the config or help commands."))
+                "You cannot disable the config or help cmds."))
         embed = ctx.embed(title='Command Disabled', description=(
             f'I will now ignore the command {command.qualified_name}{the_for}.'
             ))
@@ -166,28 +163,28 @@ class Config(commands.Cog):
             data = await connection.fetchrow(
                 'SELECT * FROM serverconf WHERE id = $1', ctx.guild.id)
             if not data:
-                commands = {
+                cmds = {
                     str(target.id): [command.qualified_name]
                 }
                 await connection.execute(
-                    '''INSERT INTO serverconf (id, commands)
-                    VALUES ($1, $2::json)''', ctx.guild.id, commands)
+                    '''INSERT INTO serverconf (id, cmds)
+                    VALUES ($1, $2::json)''', ctx.guild.id, cmds)
             else:
-                commands = data['commands']
-                if isinstance(commands, dict):
-                    commands[str(target.id)] = commands.get(str(target.id), [])
+                cmds = data['cmds']
+                if isinstance(cmds, dict):
+                    cmds[str(target.id)] = cmds.get(str(target.id), [])
                 else:
-                    commands = {
+                    cmds = {
                         str(target.id): [command.qualified_name]
                     }
-                if command.qualified_name in commands[str(target.id)]:
+                if command.qualified_name in cmds[str(target.id)]:
                     return await ctx.send(embed=ctx.error((
                         f'`{command.qualified_name}` is already disabled'
                         f'{the_for}.')))
-                commands[str(target.id)].append(command.qualified_name)
+                cmds[str(target.id)].append(command.qualified_name)
                 await connection.execute(
-                    'UPDATE serverconf SET commands = $1 WHERE id = $2',
-                    commands, ctx.guild.id)
+                    'UPDATE serverconf SET cmds = $1 WHERE id = $2',
+                    cmds, ctx.guild.id)
         await self.bot.helpers.prepare(self.bot, ctx.guild)
         await ctx.send(embed=embed)
 
@@ -225,26 +222,26 @@ class Config(commands.Cog):
             data = await connection.fetchrow(
                 'SELECT * FROM serverconf WHERE id = $1', ctx.guild.id)
             if not data:
-                commands = {
+                cmds = {
                     str(target.id): [True]
                 }
                 await connection.execute('''INSERT INTO serverconf (id, commands)
-                    VALUES ($1, $2::json)''', ctx.guild.id, commands)
+                    VALUES ($1, $2::json)''', ctx.guild.id, cmds)
             else:
-                commands = data['commands']
-                if isinstance(commands, dict):
-                    commands[str(target.id)] = commands.get(str(target.id), [])
+                cmds = data['commands']
+                if isinstance(cmds, dict):
+                    cmds[str(target.id)] = cmds.get(str(target.id), [])
                 else:
-                    commands = {
+                    cmds = {
                         str(target.id): [True]
                     }
-                if True in commands[str(target.id)]:
+                if True in cmds[str(target.id)]:
                     return await ctx.send(embed=ctx.error(
                         f'All commands are already disabled{the_for}.'))
-                commands[str(target.id)].append(True)
+                cmds[str(target.id)].append(True)
                 await connection.execute(
                     'UPDATE serverconf SET commands = $1::json WHERE id = $2',
-                    commands, ctx.guild.id)
+                    cmds, ctx.guild.id)
         await self.bot.helpers.prepare(self.bot, ctx.guild)
         await ctx.send(embed=embed)
 
@@ -291,19 +288,19 @@ class Config(commands.Cog):
                 return await ctx.send(embed=ctx.error(
                     f'Commands are not disabled{the_for}.'))
             else:
-                commands = data['commands']
-                if isinstance(commands, dict):
-                    commands[str(target.id)] = commands.get(str(target.id), [])
+                cmds = data['commands']
+                if isinstance(cmds, dict):
+                    cmds[str(target.id)] = cmds.get(str(target.id), [])
                 else:
                     return await ctx.send(embed=ctx.error(
                         f'Commands are not disabled{the_for}.'))
                 try:
-                    commands[str(target.id)].remove(True)
+                    cmds[str(target.id)].remove(True)
                 except ValueError:
                     return await ctx.send(embed=ctx.error(
                         f'Commands are not disabled{the_for}.'))
                 await connection.execute('''UPDATE serverconf
-                SET commands = $1::json WHERE id = $2''', commands,
+                SET commands = $1::json WHERE id = $2''', cmds,
                                          ctx.guild.id)
         await self.bot.helpers.prepare(self.bot, ctx.guild)
         await ctx.send(embed=embed)
@@ -360,20 +357,20 @@ class Config(commands.Cog):
                 return await ctx.send(embed=ctx.error(
                     f'`{command.qualified_name}` is not disabled{the_for}.'))
             else:
-                commands = data['commands']
-                if isinstance(commands, dict):
-                    commands[str(target.id)] = commands.get(str(target.id), [])
+                cmds = data['commands']
+                if isinstance(cmds, dict):
+                    cmds[str(target.id)] = cmds.get(str(target.id), [])
                 else:
                     return await ctx.send(embed=ctx.error(
                         f'Commands are not disabled{the_for}.'))
                 try:
-                    commands[str(target.id)].remove(command.qualified_name)
+                    cmds[str(target.id)].remove(command.qualified_name)
                 except ValueError:
                     return await ctx.send(embed=ctx.error(
                         f'`{command.qualified_name}` is not disabled{the_for}.'
                     ))
                 await connection.execute('''UPDATE serverconf
-                SET commands = $1::json WHERE id = $2''', commands,
+                SET commands = $1::json WHERE id = $2''', cmds,
                                          ctx.guild.id)
         await self.bot.helpers.prepare(self.bot, ctx.guild)
         await ctx.send(embed=embed)
