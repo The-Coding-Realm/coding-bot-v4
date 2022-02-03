@@ -397,7 +397,8 @@ class General(commands.Cog):
             await ctx.send(embed=embed)
         
     @commands.command(name="joinposition", aliases=['joinpos'])
-    async def _join_position(self, ctx, member: discord.Member):
+    async def _join_position(self, ctx, member: discord.Member = None):
+        member = member or ctx.author
         async with ctx.typing():
             all_members = list(ctx.guild.members)
             all_members.sort(key=lambda m: m.joined_at)
