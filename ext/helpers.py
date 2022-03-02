@@ -55,7 +55,7 @@ class Context(commands.Context):
             }
         default.update(kwargs)
         return_embed = self.Embed(*args, **default)
-        return_embed.set_footer(icon_url=self.author.avatar.url,
+        return_embed.set_footer(icon_url=self.author.display_avatar.url,
                                 text=f'Requested by {self.author}')
         return return_embed
 
