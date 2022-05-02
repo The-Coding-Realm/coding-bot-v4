@@ -26,16 +26,7 @@ class Help(commands.Cog):
                     767641462179233792,  # help-a
                     767641487210315796,  # help-b
                     767641504092913674,  # help-c
-                    776272365223018516,  # help-d
-                    776272386856583178,  # help-e
                     797861120185991198,  # exclusive-help
-                    681892318915330084,  # python
-                    731170873221972049,  # java
-                    681893466682425407,  # javascript
-                    681892921074778184,  # html-css-php
-                    725880738293219479,  # c-cpp-cs
-                    726028249922273351,  # discord-py
-                    726028289939996713,  # discord-js
                 ]:
                     return True
                 # active = self.guild.get_role(726029173067481129)
