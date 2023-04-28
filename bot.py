@@ -7,7 +7,7 @@ import math
 import random
 import re
 import asyncio
-import DiscordUtils
+import PycordUtils
 import io
 import sr_api
 import humanize
@@ -113,7 +113,7 @@ class Pools:
 
 
 bot.helpers = helpers
-bot.tracker = DiscordUtils.InviteTracker(bot)
+bot.tracker = PycordUtils.InviteTracker(bot)
 bot.default_prefixes = [',']
 bot.server_cache = {}
 bot.pools = Pools
