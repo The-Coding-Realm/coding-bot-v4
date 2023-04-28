@@ -1,4 +1,4 @@
-py-cord==2.0.1
+py-cord==2.4.1
 python-dotenv==1.0.0
 jishaku==2.3.2
 psutil==5.9.5
