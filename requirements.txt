@@ -1,6 +1,6 @@
 py-cord==2.0.1
 python-dotenv==1.0.0
-jishaku==2.3.2
+jishaku==2.5.1
 psutil==5.9.5
 asyncpg==0.27.0
 PycordUtils==0.0.2
