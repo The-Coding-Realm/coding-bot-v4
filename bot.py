@@ -92,11 +92,10 @@ class CustomHelp(commands.HelpCommand):
     # If you want to make regular command help look different, then override it
     send_command_help = send_group_help
 
-
+load_dotenv()
 bot = helpers.Bot(command_prefix=prefix, description='Coding Bot v4',
                   case_insensitive=True, embed_color=discord.Color.blurple(),
-                  intents=discord.Intents.all(), help_command=CustomHelp())
-load_dotenv()
+                  intents=discord.Intents.all(), help_command=CustomHelp(), proxy=os.getenv("BOT_PROXY"))
 if len(sys.argv) > 2:
     bot.token = sys.argv[2]
 else:
