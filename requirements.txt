@@ -4,7 +4,7 @@ jishaku==2.3.2
 psutil==5.9.5
 asyncpg==0.27.0
 PycordUtils==0.0.2
-pytest==7.3.1
+pytest==7.3.2
 aiosqlite_pool.zip
 time-str==1.0.0
 url-parser==3.0.3
