@@ -8,7 +8,7 @@ pytest==7.3.1
 aiosqlite_pool.zip
 time-str==1.0.0
 url-parser==3.0.3
-humanize==4.6.0
+humanize==4.7.0
 Pillow==9.5.0
 git+https://github.com/The-Coding-Realm/discord-ext-menus
 git+https://github.com/BobDotCom/sr_api
